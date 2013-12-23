@@ -1,0 +1,306 @@
+package com.paad.wifi4us;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.widget.TabHost;
+
+public class MainActivity extends FragmentActivity {
+	private FragmentManager fragmentManager;
+    
+	private Fragment receive_wifi_switcher_button;
+	private Fragment receive_id_switcher_text_on;
+	private Fragment receive_id_switcher_text_off;
+	private Fragment receive_id_start_scan_button;
+	private Fragment receive_id_start_scan_resultlist;
+	private Fragment receive_id_start_scan_progressbar;
+	private Fragment receive_id_start_connect_progressbar;
+	private Fragment receive_id_start_scan_text_openwifi;
+	private Fragment receive_id_start_wifi_connected_state;
+
+	private Fragment send_id_start_share_button;
+	private Fragment send_id_progressbar;
+	private Fragment send_id_stop_share_button;
+
+	private Fragment send;
+	private Fragment receive;
+	private Fragment other;
+	
+	
+	
+	//Receive Service 	
+    private ReceiveService receiveService;
+	private boolean haveBondService;
+	private ServiceConnection sc = new ServiceConnection() {
+        @Override  
+        public void onServiceDisconnected(ComponentName arg0) {  
+        	haveBondService = false;
+        }  
+          
+        @Override  
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+        	receiveService = ((ReceiveService.MyBinder)binder).getService();
+        	haveBondService = true;
+        }  
+    };  
+
+	
+	protected void onCreate(Bundle savedInstanceState) {
+    	super.onCreate(savedInstanceState);
+		fragmentManager = this.getSupportFragmentManager();
+		Intent intent = new Intent(this, ReceiveService.class);  
+		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
+
+    	
+		startService(new Intent(this, ReceiveService.class));
+		startService(new Intent(this, SendService.class));
+
+    	setContentView(R.layout.activity_main);
+    	
+    	TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost); 
+    	
+    	
+    	tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {    
+            public void onTabChanged(String tabId) {  
+            	SharedPreferences sharedata = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE); 
+            	String lastTabId = sharedata.getString("LAST_TAB", "NULL");
+
+            	if(tabId.equals("receive")){
+            		if(lastTabId.equals("send")){
+                		StopSendFragment();
+            		}else{
+                		StopOtherFragment();
+            		}
+            		StartReceiveFragment();
+            	}else if(tabId.equals("send")){
+            		if(lastTabId.equals("other")){
+                		StopOtherFragment();
+            		}else{
+                		StopReceiveFragment();
+            		}
+            		StartSendFragment();
+            	}else{
+            		if(lastTabId.equals("receive")){
+                		StopReceiveFragment();
+            		}else{
+                		StopSendFragment();
+            		}
+            		StartOtherFragment();
+            	}
+            }  
+        }); 
+    	
+    	tabHost.setup();
+    	tabHost.addTab(tabHost.newTabSpec("receive").setIndicator("使用").setContent(R.id.receive));
+    	tabHost.addTab(tabHost.newTabSpec("send").setIndicator("分享").setContent(R.id.send));
+    	tabHost.addTab(tabHost.newTabSpec("other").setIndicator("其他").setContent(R.id.other));
+    	tabHost.setCurrentTab(0);
+    	
+    }
+	
+	public void onDestroy(){
+		super.onDestroy();
+		unbindService(sc);
+	}
+    public void onBackPressed() {  
+    	if(!haveBondService){
+    		return;
+    	}
+    	SharedPreferences sharedata = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE); 
+		Boolean finishVideo = sharedata.getBoolean("FINISH_VIDEO", false);
+		if(!finishVideo){
+			receiveService.WifiDisconnect();
+		}
+        Intent backtoHome = new Intent(Intent.ACTION_MAIN);
+        backtoHome.addCategory(Intent.CATEGORY_HOME);
+        backtoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backtoHome);  
+    }  
+    
+    private void StartReceiveFragment(){
+		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
+		sharedata.putString("LAST_TAB", "receive");
+		sharedata.commit();
+    	
+    	initFragments();
+    	if(receive != null){
+        	receive.onStart();
+        	receive.onResume();
+    	}
+    	if(receive_wifi_switcher_button != null){
+    		receive_wifi_switcher_button.onStart();
+    		receive_wifi_switcher_button.onResume();
+    	}
+    	if(receive_id_switcher_text_on != null){
+        	receive_id_switcher_text_on.onStart();
+        	receive_id_switcher_text_on.onResume();
+    	}
+    	if(receive_id_switcher_text_off != null){
+        	receive_id_switcher_text_off.onStart();
+        	receive_id_switcher_text_off.onResume();
+    	}
+    	if(receive_id_start_scan_button != null){
+        	receive_id_start_scan_button.onStart();
+        	receive_id_start_scan_button.onResume();
+    	}
+    	if(receive_id_start_scan_resultlist != null){
+        	receive_id_start_scan_resultlist.onStart();
+        	receive_id_start_scan_resultlist.onResume();
+    	}
+    	if(receive_id_start_scan_progressbar != null){
+        	receive_id_start_scan_progressbar.onStart();
+        	receive_id_start_scan_progressbar.onResume();
+    	}
+    	if(receive_id_start_connect_progressbar != null){
+        	receive_id_start_connect_progressbar.onStart();
+        	receive_id_start_connect_progressbar.onResume();
+    	}
+    	if(receive_id_start_scan_text_openwifi != null){
+        	receive_id_start_scan_text_openwifi.onStart();
+        	receive_id_start_scan_text_openwifi.onResume();
+    	}
+    	if(receive_id_start_wifi_connected_state != null){
+        	receive_id_start_wifi_connected_state.onStart();
+        	receive_id_start_wifi_connected_state.onResume();
+    	}
+    }
+    
+    private void StartSendFragment(){
+		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
+		sharedata.putString("LAST_TAB", "send");
+		sharedata.commit();
+		
+    	initFragments();
+       	if(send != null){
+       		send.onStart();
+       		send.onResume();
+    	}
+    	if(send_id_start_share_button != null){
+    		send_id_start_share_button.onStart();
+    		send_id_start_share_button.onResume();
+    	}
+    	if(send_id_progressbar != null){
+    		send_id_progressbar.onStart();
+    		send_id_progressbar.onResume();
+    	}
+    	if(send_id_stop_share_button != null){
+    		send_id_stop_share_button.onStart();
+    		send_id_stop_share_button.onResume();
+    	}
+
+    }
+    
+    private void StartOtherFragment(){
+		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
+		sharedata.putString("LAST_TAB", "other");
+		sharedata.commit();
+		
+    	initFragments();
+       	if(other != null){
+       		other.onStart();
+       		other.onResume();
+       	}
+    }
+    
+    private void StopReceiveFragment(){
+    	initFragments();
+    	if(receive != null){
+    		receive.onPause();
+    		receive.onStop();
+    	}
+    	if(receive_wifi_switcher_button != null){
+    		receive_wifi_switcher_button.onPause();
+    		receive_wifi_switcher_button.onStop();
+    	}
+    	if(receive_id_switcher_text_on != null){
+        	receive_id_switcher_text_on.onPause();
+        	receive_id_switcher_text_on.onStop();
+    	}
+    	if(receive_id_switcher_text_off != null){
+        	receive_id_switcher_text_off.onPause();
+        	receive_id_switcher_text_off.onStop();
+    	}
+    	if(receive_id_start_scan_button != null){
+        	receive_id_start_scan_button.onPause();
+        	receive_id_start_scan_button.onStop();
+    	}
+    	if(receive_id_start_scan_resultlist != null){
+        	receive_id_start_scan_resultlist.onPause();
+        	receive_id_start_scan_resultlist.onStop();
+    	}
+    	if(receive_id_start_scan_progressbar != null){
+        	receive_id_start_scan_progressbar.onPause();
+        	receive_id_start_scan_progressbar.onStop();
+    	}
+    	if(receive_id_start_connect_progressbar != null){
+        	receive_id_start_connect_progressbar.onPause();
+        	receive_id_start_connect_progressbar.onStop();
+    	}
+    	if(receive_id_start_scan_text_openwifi != null){
+        	receive_id_start_scan_text_openwifi.onPause();
+        	receive_id_start_scan_text_openwifi.onStop();
+    	}
+    	if(receive_id_start_wifi_connected_state != null){
+        	receive_id_start_wifi_connected_state.onPause();
+        	receive_id_start_wifi_connected_state.onStop();
+    	}
+    }
+    
+    private void StopSendFragment(){
+    	initFragments();
+    	if(send != null){
+    		send.onPause();
+    		send.onStop();
+    	}
+    	if(send_id_start_share_button != null){
+    		send_id_start_share_button.onPause();
+    		send_id_start_share_button.onStop();
+    	}
+    	if(send_id_progressbar != null){
+    		send_id_progressbar.onPause();
+    		send_id_progressbar.onStop();
+    	}
+    	if(send_id_stop_share_button != null){
+    		send_id_stop_share_button.onPause();
+    		send_id_stop_share_button.onStop();
+    	}
+    }
+    
+    private void StopOtherFragment(){
+    	initFragments();
+       	if(other != null){
+       		other.onPause();
+       		other.onStop();
+       	}
+    }
+    
+    private void initFragments(){
+    	receive_wifi_switcher_button = fragmentManager.findFragmentByTag("receivie_wifi_switcher_button");
+    	receive_id_switcher_text_on = fragmentManager.findFragmentByTag("receive_id_switcher_text_on");
+    	receive_id_switcher_text_off = fragmentManager.findFragmentByTag("receive_id_switcher_text_off");
+    	receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
+    	receive_id_start_scan_resultlist = fragmentManager.findFragmentByTag("receive_id_start_scan_resultlist");
+    	receive_id_start_scan_progressbar = fragmentManager.findFragmentByTag("receive_id_start_scan_progressbar");
+    	receive_id_start_connect_progressbar = fragmentManager.findFragmentByTag("receive_id_start_connect_progressbar");
+    	receive_id_start_scan_text_openwifi = fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
+    	receive_id_start_wifi_connected_state = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_state");
+
+    	send_id_start_share_button = fragmentManager.findFragmentByTag("send_id_start_share_button");
+    	send_id_progressbar = fragmentManager.findFragmentByTag("send_id_progressbar");
+    	send_id_stop_share_button = fragmentManager.findFragmentByTag("send_id_stop_share_button");
+
+    	send = fragmentManager.findFragmentById(R.id.send);
+    	receive = fragmentManager.findFragmentById(R.id.receive);
+    	other = fragmentManager.findFragmentById(R.id.other);
+
+
+    }
+}

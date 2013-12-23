@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">wifi4us</string>
+    <string name="action_settings">refresh</string>
+    <string name="startservice">share 15 mins and 3M</string>
+    <string name="hello">hello world</string>
+    <string name="send">send</string>
+    
+    <string name="receive_string_switcher_text_on">Wifi已打开</string>
+    <string name="receive_string_switcher_text_off">Wifi已关闭</string>
+    <string name="receive_string_switcher_button">Wifi开关</string>
+    <string name="receive_string_start_scan_button">发现周围的分享者</string>
+    <string name="receive_string_start_scan_nothing">没找到任何分享者在周围</string> 
+    <string name="receive_string_start_scan_text_openwifi">请打开wifi开关</string>   
+    <string name="receive_string_ad_sound_button">打开关闭声音</string>   
+    <string name="receive_string_disconnect_wifi">断开连接</string>   
+	
+    <string name="send_button_start_share">分享5M流量和30分钟</string>
+    <string name="send_button_stop_share">立刻停止分享流量</string>
+    
+    
+    
+    
+
+</resources>

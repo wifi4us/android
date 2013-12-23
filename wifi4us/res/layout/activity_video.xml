@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <com.paad.wifi4us.MyVideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    	
+    <TextView android:background="#000000"
+	 	android:textSize="20sp"
+	 	android:textColor="#FAFAFA"
+	    android:layout_margin="-50dp"
+		android:layout_alignParentTop="true"
+	    android:layout_alignParentLeft="true"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:id="@+id/receive_text_ad_timecount"/>
+    
+	<Button android:background="#000000"
+	 		android:textSize="20sp"
+	 		android:textColor="#FAFAFA"
+	    	android:layout_margin="-50dp"
+			android:layout_alignParentTop="true"
+	    	android:layout_alignParentRight="true"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="@string/receive_string_ad_sound_button"
+			android:id="@+id/receive_button_ad_sound_button"/>
+        
+	<Button android:background="#000000"
+	    	android:textSize="20sp"
+	    	android:textColor="#FAFAFA"
+	    	android:layout_marginRight="20dp"
+	  	  	android:layout_toLeftOf="@id/receive_button_ad_sound_button"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/receive_button_ad_interest_button"/>
+	
+</RelativeLayout>
