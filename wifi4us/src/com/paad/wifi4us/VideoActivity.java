@@ -61,6 +61,9 @@ public class VideoActivity extends Activity {
 	
 	
     public void onBackPressed() {  
+    	if(!haveBondService){
+    		return;
+    	}
     	super.onBackPressed();
     	receiveService.WifiDisconnect();
     }  
@@ -111,6 +114,7 @@ public class VideoActivity extends Activity {
         	public void onCompletion(MediaPlayer mp){
         		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
         		sharedata.putBoolean("FINISH_VIDEO", true);
+        		sharedata.putBoolean("STATE_RECEIVE", true);
         		sharedata.commit();
         		currentActivity.finish();
         	}

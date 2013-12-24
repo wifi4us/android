@@ -45,8 +45,7 @@ public class ReceiveScanButton extends Fragment{
         }  
     };  
     
-   
-    
+
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		Intent intent = new Intent(getActivity(), ReceiveService.class);  

@@ -18,15 +18,18 @@ public class ReceiveWifiConnectedState extends Fragment{
 	private TextView time;
 	private TextView traffic;
 	
-	public void onStart(){
-		
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
 		connectedStateReceiver = new ConnectedStateReceiver();
         getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 	}
 	
-	public void onStop(){
+	public void onDestroy(){
+		super.onDestroy();
 		getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
 	}
+	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		View view_res = inflater.inflate(R.layout.fragment_receive_wifi_connected_state, container, false);	
 		time = (TextView)view_res.findViewById(R.id.receive_text_time_left);

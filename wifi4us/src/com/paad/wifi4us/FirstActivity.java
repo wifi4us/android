@@ -1,3 +1,12 @@
+/*
+ * all shared preference 
+ * FINISH_VIDEO
+ * USER_ID
+ * FINISH_VIDEO
+ * LAST_TAB
+ */
+
+
 package com.paad.wifi4us;
 
 import android.app.Activity;

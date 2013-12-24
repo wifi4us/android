@@ -1,7 +1,6 @@
 package com.paad.wifi4us;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -37,16 +36,13 @@ public class ReceiveFragment extends Fragment{
 		UIStart();
 		Context context = getActivity().getApplicationContext();
 		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), context.MODE_PRIVATE); 
-		Boolean finishVideo = sharedata.getBoolean("FINISH_VIDEO", false);
-		if(finishVideo){
+		Boolean startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
+		if(startReceive){
 			UIStartFinishVideo();
 		}
-		System.out.println("start");
 	}
 	
 	public void onStop(){
-		System.out.println("stop");
-
 		super.onStop();
 	}
 	
@@ -73,11 +69,12 @@ public class ReceiveFragment extends Fragment{
 			receive_id_start_scan_text_openwifi = fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
 			if(receive_id_start_scan_text_openwifi != null){
 				transaction.remove(receive_id_start_scan_text_openwifi);
+			}
+			if(receive_id_start_scan_button == null){
 				receive_id_start_scan_button = new ReceiveScanButton();		
-				transaction.add(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
 				
 			}
-	
 		}else{	
 			receive_id_switcher_text_off = new ReceiveSwitcherTextOff();
 			transaction.replace(R.id.receive_container_switcher_text, receive_id_switcher_text_off, "receive_id_switcher_text_off");
@@ -126,8 +123,17 @@ public class ReceiveFragment extends Fragment{
 	
 	private void UIStartFinishVideo(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		receive_id_start_wifi_connected_state = new ReceiveWifiConnectedState();
-		transaction.replace(R.id.receive_container_scan, receive_id_start_wifi_connected_state, "receive_id_start_wifi_connected_state");
+		
+		receive_id_start_connect_progressbar = fragmentManager.findFragmentByTag("receive_id_start_connect_progressbar");
+        if(receive_id_start_connect_progressbar != null){
+			transaction.remove(receive_id_start_connect_progressbar);
+		}
+        receive_id_start_wifi_connected_state = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_state");
+        if(receive_id_start_wifi_connected_state == null){
+        	receive_id_start_wifi_connected_state = new ReceiveWifiConnectedState();
+    		transaction.replace(R.id.receive_container_scan, receive_id_start_wifi_connected_state, "receive_id_start_wifi_connected_state");
+        }
+		transaction.commitAllowingStateLoss();
 	}
 	
 }

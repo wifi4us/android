@@ -55,6 +55,12 @@ public class MainActivity extends FragmentActivity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	
+		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
+		sharedata.putBoolean("STATE_RECEIVE", false);
+		sharedata.commit();
+
+    	
 		fragmentManager = this.getSupportFragmentManager();
 		Intent intent = new Intent(this, ReceiveService.class);  
 		bindService(intent, sc, Context.BIND_AUTO_CREATE); 

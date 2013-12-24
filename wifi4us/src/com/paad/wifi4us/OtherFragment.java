@@ -20,7 +20,7 @@ public class OtherFragment extends Fragment{
 	private TextView other_id_userid_text;
 	private static final int MSG_SUCCESS = 0; 
     private static final int MSG_FAILURE = 1;  
-    private static final String REGISTER_BASE_HTTPURL= "http://testlich119.duapp.com/register.php";
+    private static final String REGISTER_BASE_HTTPURL= "http://wifi4us.duapp.com/register.php";
 	
     private Handler mHandler = new Handler(){  
 		public void handleMessage (Message msg){

@@ -50,7 +50,7 @@ public class ReceiveService extends Service {
     public static final String CONMUNICATION_SETUP_EXTRA_STATE = "com.paad.wifi4us.conmunication.setup.extra.state";
     public static final String CONMUNICATION_SETUP_EXTRA_ADWORD = "com.paad.wifi4us.conmunication.setup.extra.adword";
     public static final String CONMUNICATION_SETUP_EXTRA_ADID = "com.paad.wifi4us.conmunication.setup.extra.adid";
-    public static final String AD_BASE_HTTPURL = "http://testlich119.duapp.com/getadid.php";
+    public static final String AD_BASE_HTTPURL = "http://wifi4us.duapp.com/getadid.php";
     
 	public class MyBinder extends Binder {  
 		ReceiveService getService() {  
@@ -225,11 +225,11 @@ public class ReceiveService extends Service {
 	
 	private String getPassWord(){
 		
-		return "19851123";
+		return "maancoffee";
 	}
 	
 	private String getSSID(){
-		return "111111";
+		return "Maan Coffee";
 	}
 	
 	private WifiConfiguration IsExsits(String SSID)  
