@@ -24,9 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class ReceiveScanResultList extends ListFragment{
-	//ignore first wifi connected broadcast
-	private boolean first_receive;
-	
+	//ignore first wifi connected broadcast	
 	private ArrayList<String> scanresultlist;
 	private ArrayAdapter<String> scanresultlist_adapter;
 	private ClickConnectReceiver clickConnectReceiver;
@@ -97,11 +95,26 @@ public class ReceiveScanResultList extends ListFragment{
 		conmunicationReceiver = new ConmunicationReceiver();
 		
 		receiveService.WifiDisconnect();
-        getActivity().getApplicationContext().registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(ReceiveService.CONMUNICATION_SETUP));
+    	UIToProgressbar();
+
+		
+		while(true){
+			try {
+				Thread.sleep(500);
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+			Context c = getActivity().getApplicationContext();
+			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
+			if(State.DISCONNECTED == state){
+				getActivity().getApplicationContext().registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	        	getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(ReceiveService.CONMUNICATION_SETUP));
+	        	receiveService.WifiConnect(rawssid);
+	        	break;
+			}
+		}
         
-        UIToProgressbar();
-		receiveService.WifiConnect(rawssid);
 
 	}
 
@@ -115,6 +128,7 @@ public class ReceiveScanResultList extends ListFragment{
     		}
     		ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
     		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
+
     		if(State.CONNECTED == state){  
      			c.unregisterReceiver(this);
      	        receiveService.EstablishConmunication();

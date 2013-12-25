@@ -8,7 +8,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
+import android.net.NetworkInfo.State;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -156,6 +158,7 @@ public class ReceiveService extends Service {
 	}
 
 	public void EstablishConmunication(){
+		
 		Runnable clientRunner = new Runnable(){
 			public void run(){
 				Intent intent = new Intent();
@@ -173,12 +176,6 @@ public class ReceiveService extends Service {
 			public void run(){
 				Intent intent = new Intent();
 				intent.setAction(CONMUNICATION_SETUP); 
-				
-				try {
-					Thread.sleep(500);
-		        } catch (InterruptedException e) {
-		            e.printStackTrace();
-		        }
 				
 				if(!getAdvertisement()){
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
@@ -254,7 +251,6 @@ public class ReceiveService extends Service {
 	private boolean getAdvertisement(){
 		//get url to request advertisement meta data
 		
-		
 		try{
 			make = URLEncoder.encode(Build.MANUFACTURER, "UTF-8");
 			model = URLEncoder.encode(Build.MODEL, "UTF-8");
@@ -286,6 +282,8 @@ public class ReceiveService extends Service {
 		
 		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 		HttpXmlParser xpp = new HttpXmlParser();
+
+		
 
 		if(xpp.getResultFromURL(requestURL, result)){
 			adWord = result.get("adword");

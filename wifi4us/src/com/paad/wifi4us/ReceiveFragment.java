@@ -23,6 +23,8 @@ public class ReceiveFragment extends Fragment{
 	private Fragment receive_id_start_scan_text_openwifi;
 	private Fragment receive_id_start_wifi_connected_state;
 	private WifiManager wifiManager;
+	private Boolean startReceive;
+
 
     //The call back functions start here
     
@@ -33,12 +35,13 @@ public class ReceiveFragment extends Fragment{
 	public void onStart(){
 		super.onStart();
 		//The init fragment
-		UIStart();
 		Context context = getActivity().getApplicationContext();
-		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), context.MODE_PRIVATE); 
-		Boolean startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
+		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
+		startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
 		if(startReceive){
 			UIStartFinishVideo();
+		}else{
+			UIStart();
 		}
 	}
 	
@@ -70,7 +73,9 @@ public class ReceiveFragment extends Fragment{
 			if(receive_id_start_scan_text_openwifi != null){
 				transaction.remove(receive_id_start_scan_text_openwifi);
 			}
-			if(receive_id_start_scan_button == null){
+			
+			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
+			if(receive_id_start_scan_button == null && !startReceive){
 				receive_id_start_scan_button = new ReceiveScanButton();		
 				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
 				

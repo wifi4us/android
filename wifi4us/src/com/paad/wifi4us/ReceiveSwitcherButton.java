@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -29,6 +30,7 @@ public class ReceiveSwitcherButton extends Fragment{
     private ClickSwitcherReceiver clickSwitcherReceiver;
 	private FragmentManager fragmentManager;
 	private WifiManager wifiManager;
+	private Boolean startReceive;
 
 	
     //Receive Service 	
@@ -115,14 +117,23 @@ public class ReceiveSwitcherButton extends Fragment{
 	
 	private void UISwitcherInitScanZone(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
-		receive_id_start_scan_button = new ReceiveScanButton();
         receive_id_start_scan_text_openwifi= fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
         if(receive_id_start_scan_text_openwifi != null)
 		{
 			transaction.remove(receive_id_start_scan_text_openwifi);
 		}
-		transaction.add(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+        
+        receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
+		
+        Context context = getActivity().getApplicationContext();
+		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
+		startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
 
+		if(receive_id_start_scan_button == null && !startReceive){
+			receive_id_start_scan_button = new ReceiveScanButton();
+			transaction.add(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+		}
+		
 		transaction.commitAllowingStateLoss(); 
 
 	}
