@@ -9,6 +9,9 @@
 
 package com.paad.wifi4us;
 
+import java.io.File;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

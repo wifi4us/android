@@ -21,7 +21,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		connectedStateReceiver = new ConnectedStateReceiver();
-        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
+        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN));
 	}
 	
 	public void onDestroy(){
@@ -39,8 +39,8 @@ public class ReceiveWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			String timeNow = intent.getExtras().getString("time");
-			String trafficNow = intent.getExtras().getString("traffic");
+			String timeNow = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME);
+			String trafficNow = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
 			time.setText(timeNow);
 			traffic.setText(trafficNow);
 		}

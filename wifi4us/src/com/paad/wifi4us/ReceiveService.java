@@ -3,14 +3,17 @@ package com.paad.wifi4us;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
-import android.net.NetworkInfo.State;
+import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -38,12 +41,16 @@ public class ReceiveService extends Service {
 	private WifiManager wifiManager;
     private ArrayList<String> wifiApList; 
     private String connectinfo;
-    private Context context;
     private String adWord;
     private String adId;
     private String adURL;
     private String adLength;
     private String requestURL;
+    
+    private PendingIntent pendIntent;
+    private static int totalTimeSeconds;
+    private static long totalTrafficBytes;
+
     
     public static final String CLIENT_STATE_CONNECTED_TO_AP = "com.paad.wifi4us.connectedtoap";
     public static final String CLIENT_STATE_LEAVE_FROM_AP = "com.paad.wifi4us.leavefromap";
@@ -53,6 +60,10 @@ public class ReceiveService extends Service {
     public static final String CONMUNICATION_SETUP_EXTRA_ADWORD = "com.paad.wifi4us.conmunication.setup.extra.adword";
     public static final String CONMUNICATION_SETUP_EXTRA_ADID = "com.paad.wifi4us.conmunication.setup.extra.adid";
     public static final String AD_BASE_HTTPURL = "http://wifi4us.duapp.com/getadid.php";
+    public static final String CONMUNICATION_SETUP_HEART_BEATEN = "com.paad.wifi4us.conmunication.setup.heartbeaten";
+    public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME = "com.paad.wifi4us.conmunication.setup.heartbeaten.time";
+    public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC = "com.paad.wifi4us.conmunication.setup.heartbeaten.traffic";
+
     
 	public class MyBinder extends Binder {  
 		ReceiveService getService() {  
@@ -159,94 +170,70 @@ public class ReceiveService extends Service {
 
 	public void EstablishConmunication(){
 		
-		Runnable clientRunner = new Runnable(){
+		Runnable setupConnectionRunner = new Runnable(){
 			public void run(){
 				Intent intent = new Intent();
 				intent.setAction(CONMUNICATION_SETUP); 
-				if(!talkToServer()){
+				if(!openSocketConnection()){
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
 					sendStickyBroadcast(intent);
 					return;
 				}
-			}
-		};
-		
-		
-		Runnable adRunner = new Runnable(){
-			public void run(){
-				Intent intent = new Intent();
-				intent.setAction(CONMUNICATION_SETUP); 
-				
+				if(!setHeartBeat()){
+					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
+					sendStickyBroadcast(intent);
+					return;
+				}
 				if(!getAdvertisement()){
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
 					sendStickyBroadcast(intent);
 					return;
 				}
-				
-				
 
-				
-				
-				
-				
-
-	
-				if(true){
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "ok");
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADWORD, adWord);
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADID, adId);
-					sendStickyBroadcast(intent);
-				}else{ 
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
-					sendStickyBroadcast(intent);
-				}
+				intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "ok");
+				intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADWORD, adWord);
+				intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADID, adId);
+				sendBroadcast(intent);
+					
 
 			}
 		};
 		
-
-		
-		Thread thread1 = new Thread(clientRunner);
-		Thread thread2 = new Thread(adRunner);
-		thread1.start();
-		thread2.start();
+		Thread thread = new Thread(setupConnectionRunner);
+		thread.start();
 	}	
 	
-	public DhcpInfo getAPinfo(){
-		return wifiManager.getDhcpInfo();
+	private boolean openSocketConnection(){
+		return true;
 	}
 	
-	public void PlayVideo(){
+	private boolean setHeartBeat(){
+		//init the time counter total seconds
+		totalTimeSeconds = 0;
+		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
 		
-	}
-	
-	private String getPassWord(){
-		
-		return "maancoffee";
-	}
-	
-	private String getSSID(){
-		return "Maan Coffee";
-	}
-	
-	private WifiConfiguration IsExsits(String SSID)  
-    {  
-        List<WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();  
-           for (WifiConfiguration existingConfig : existingConfigs)   
-           {  
-             if (existingConfig.SSID.equals("\""+SSID+"\""))  
-             {  
-                 return existingConfig;  
-             }  
-           }  
-        return null;   
-    }  
-	
-	private boolean talkToServer(){
-		
+		//start the alarm and send broadcast every 5 seconds
+		Timer timer = new Timer();  
+	    TimerTask task = new TimerTask(){  
+	        public void run() {  
+	        	totalTimeSeconds = totalTimeSeconds + 3;
+				String time = String.valueOf(totalTimeSeconds);
+				long totalTrafficBytesShown = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes() - totalTrafficBytes;
+				String traffic = String.valueOf(totalTrafficBytesShown);
+				
+				Intent heartbeat = new Intent();
+				heartbeat.setAction(CONMUNICATION_SETUP_HEART_BEATEN); 
+				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
+				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
+				getApplicationContext().sendBroadcast(heartbeat);
+	        }  
+	          
+	    };  
+	    timer.schedule(task, 0, 3000);
 		
 		return true;
 	}
+
 	
 	private boolean getAdvertisement(){
 		//get url to request advertisement meta data
@@ -298,5 +285,32 @@ public class ReceiveService extends Service {
 				
 		return true;
 	}
+	
+	public static class AlarmReceiver extends BroadcastReceiver{
+		public void onReceive(Context c, Intent intent){
+			System.out.println("2222222222222");
+			
+			
+		}
+		
+	}
+	
+	public DhcpInfo getAPinfo(){
+		return wifiManager.getDhcpInfo();
+	}
+
+	
+	private String getPassWord(){
+		//return "4001001111";
+		//return "19851123";
+		return "maancoffee";
+	}
+	
+	private String getSSID(){
+		return "Maan Coffee";
+		//return "111111";
+		//return "TP-LINK_3003";
+	}
+
 
 }

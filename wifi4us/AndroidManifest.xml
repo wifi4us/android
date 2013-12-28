@@ -61,6 +61,10 @@
    			android:enabled="true"
    			android:exported="false">
     	</service>
+    	<receiver 
+    	    android:name=".ReceiveService$AlarmReceiver"
+    	    android:exported="false">        
+  		</receiver>
     </application>
 	
 </manifest>
