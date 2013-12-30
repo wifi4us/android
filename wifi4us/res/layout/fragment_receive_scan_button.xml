@@ -11,7 +11,8 @@
 			android:layout_marginBottom="20dp"
 			android:layout_marginTop="20dp"
 			android:text="@string/receive_string_start_scan_button"
-			android:id="@+id/receive_button_start_scan_button">  
+			android:id="@+id/receive_button_start_scan_button"
+            android:background="@drawable/button_shape">  
 		</Button>  
 
 </LinearLayout>

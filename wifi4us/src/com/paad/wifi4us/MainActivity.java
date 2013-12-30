@@ -11,7 +11,11 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 	private FragmentManager fragmentManager;
@@ -52,6 +56,19 @@ public class MainActivity extends FragmentActivity {
         	haveBondService = true;
         }  
     };  
+    private void addTab(String label, int drawableId, int contentId, TabHost tabHost) {
+        TabHost.TabSpec spec = tabHost.newTabSpec(label);
+         
+        View tabIndicator = LayoutInflater.from(this).inflate(R.layout.tab_card, tabHost.getTabWidget(), false);
+        TextView title = (TextView) tabIndicator.findViewById(R.id.tabtitle);
+        title.setText(label);
+        ImageView icon = (ImageView) tabIndicator.findViewById(R.id.tabimage);
+        icon.setImageResource(drawableId);
+         
+        spec.setIndicator(tabIndicator);
+        spec.setContent(contentId);
+        tabHost.addTab(spec);
+        }
 
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +123,9 @@ public class MainActivity extends FragmentActivity {
         }); 
     	
     	tabHost.setup();
-    	tabHost.addTab(tabHost.newTabSpec("receive").setIndicator("使用").setContent(R.id.receive));
-    	tabHost.addTab(tabHost.newTabSpec("send").setIndicator("分享").setContent(R.id.send));
-    	tabHost.addTab(tabHost.newTabSpec("other").setIndicator("其他").setContent(R.id.other));
+    	addTab("浣跨敤", R.drawable.tab_search_selector, R.id.receive, tabHost);
+    	addTab("鍒嗕韩", R.drawable.tab_share_selector, R.id.send, tabHost);
+    	addTab("鍏朵粬", R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
     	
     }
