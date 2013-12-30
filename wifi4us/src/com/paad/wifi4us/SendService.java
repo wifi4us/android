@@ -18,7 +18,10 @@ public class SendService extends Service {
     public int WIFI_AP_STATE_FAILED;
     public static final String AP_STATE_OPEN_ACTION = "com.paad.wifi4us.apopen";
     public static final String AP_STATE_SHUT_ACTION = "com.paad.wifi4us.apshut";
+    public static final String LISTEN_SETUP_HEART_BEATEN = "com.paad.wifi4us.listen.setup.heartbeaten";
+    public static final String LISTEN_SETUP_HEART_BEATEN_EXTRA_TRAFFIC = "com.paad.wifi4us.listen.setup.heartbeaten.traffic";
 
+    
     
 	private final IBinder binder = new MyBinder();
 	private WifiManager wifiManager;
@@ -111,6 +114,7 @@ public class SendService extends Service {
 			            e.printStackTrace();
 			        }
 				}
+
 				if(setWifiApEnabled(true)){
 					int try_count = 0;
 					while(true){

@@ -60,7 +60,6 @@ public class ReceiveSwitcherButton extends Fragment{
 	public void onDestroy(){
 		super.onDestroy();
 		getActivity().unbindService(sc);
-
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){

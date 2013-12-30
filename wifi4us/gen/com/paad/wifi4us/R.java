@@ -28,7 +28,7 @@ public final class R {
         public static final int send_draw_1=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f080016;
+        public static final int action_settings=0x7f08001a;
         public static final int imageView=0x7f080000;
         public static final int main_tab=0x7f080001;
         public static final int other=0x7f080004;
@@ -46,9 +46,13 @@ public final class R {
         public static final int receive_text_traffic_used=0x7f080012;
         public static final int receivie_button_wifi_switcher=0x7f08000f;
         public static final int send=0x7f080002;
-        public static final int send_button_start_share=0x7f080014;
-        public static final int send_button_stop_share=0x7f080015;
+        public static final int send_button_start_share=0x7f080015;
+        public static final int send_button_stop_share=0x7f080016;
         public static final int send_container=0x7f080013;
+        public static final int send_stateinfo_container=0x7f080014;
+        public static final int send_text_client_info=0x7f080019;
+        public static final int send_text_time_left=0x7f080017;
+        public static final int send_text_traffic_used=0x7f080018;
         public static final int userid_text=0x7f08000a;
         public static final int videoview=0x7f080005;
     }
@@ -68,8 +72,10 @@ public final class R {
         public static final int fragment_receive_wifi_connected_state=0x7f03000c;
         public static final int fragment_send=0x7f03000d;
         public static final int fragment_send_start_share_button=0x7f03000e;
-        public static final int fragment_send_stop_share_button=0x7f03000f;
-        public static final int fragment_wifi_progressbar=0x7f030010;
+        public static final int fragment_send_start_share_text=0x7f03000f;
+        public static final int fragment_send_stop_share_button=0x7f030010;
+        public static final int fragment_send_wifi_connected_state=0x7f030011;
+        public static final int fragment_wifi_progressbar=0x7f030012;
     }
     public static final class menu {
         public static final int main=0x7f070000;
@@ -88,7 +94,8 @@ public final class R {
         public static final int receive_string_switcher_text_on=0x7f050005;
         public static final int send=0x7f050004;
         public static final int send_button_start_share=0x7f05000d;
-        public static final int send_button_stop_share=0x7f05000e;
+        public static final int send_button_stop_share=0x7f05000f;
+        public static final int send_text_start_share=0x7f05000e;
         public static final int startservice=0x7f050002;
     }
     public static final class style {

@@ -22,8 +22,9 @@ public class SendStopShareButton extends Fragment{
 	private Fragment send_id_progressbar;
 	private Fragment send_id_start_share_button;
 	private Fragment send_id_stop_share_button;
-
-	
+	private Fragment send_id_progressbar_button;
+	private Fragment send_id_progressbar_text;
+	private Fragment send_id_start_share_text;
 	
 	private ClickStopShareReceiver clickStopShareReceiver;
 	private FragmentManager fragmentManager;
@@ -98,22 +99,19 @@ public class SendStopShareButton extends Fragment{
 
 	private void UIScanFromAPStateToProgress(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		send_id_stop_share_button = fragmentManager.findFragmentByTag("send_id_stop_share_button");
-		if(send_id_stop_share_button != null){
-			transaction.remove(send_id_stop_share_button);
-		}
-		send_id_progressbar = new WifiProgressBar();
-		transaction.add(R.id.send_container, send_id_progressbar, "send_id_progressbar");
+		send_id_progressbar_button = new WifiProgressBar();
+		send_id_progressbar_text = new WifiProgressBar();
+		transaction.replace(R.id.send_container, send_id_progressbar_button, "send_id_progressbar_button");
+		transaction.replace(R.id.send_stateinfo_container, send_id_progressbar_text, "send_id_progressbar_text");
 		transaction.commitAllowingStateLoss();
 	}
 	
 	private void UIScanFromProgressToShare(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		if(send_id_progressbar != null){
-			transaction.remove(send_id_progressbar);
-		}
 		send_id_start_share_button = new SendStartShareButton();
-		transaction.add(R.id.send_container, send_id_start_share_button, "send_id_start_share_button");
+		send_id_start_share_text = new SendStartShareText();
+		transaction.replace(R.id.send_container, send_id_start_share_button, "send_id_start_share_button");
+		transaction.replace(R.id.send_stateinfo_container, send_id_start_share_text, "send_id_start_share_text");
 		transaction.commitAllowingStateLoss();
 	}
 	

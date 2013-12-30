@@ -19,10 +19,12 @@ import android.widget.Button;
 
 public class SendStartShareButton extends Fragment{
 	private Button startshare;
-	private Fragment send_id_progressbar;
+	private Fragment send_id_progressbar_button;
+	private Fragment send_id_progressbar_text;
 	private Fragment send_id_start_share_button;
 	private Fragment send_id_stop_share_button;
-
+	private Fragment send_id_start_share_text;
+	private Fragment send_id_stop_stateinfo;
 	
 	
 	private ClickStartShareReceiver clickStartShareReceiver;
@@ -43,10 +45,7 @@ public class SendStartShareButton extends Fragment{
         	haveBondService = true;
         }  
     };  
-    
-    public void onStart(){
-    	super.onStart();
-    }
+
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		Intent intent = new Intent(getActivity(), SendService.class);  
@@ -99,22 +98,19 @@ public class SendStartShareButton extends Fragment{
 
 	private void UIScanFromShareToProgress(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		send_id_start_share_button = fragmentManager.findFragmentByTag("send_id_start_share_button");
-		if(send_id_start_share_button != null){
-			transaction.remove(send_id_start_share_button);
-		}
-		send_id_progressbar = new WifiProgressBar();
-		transaction.add(R.id.send_container, send_id_progressbar, "send_id_progressbar");
+		send_id_progressbar_button = new WifiProgressBar();
+		send_id_progressbar_text = new WifiProgressBar();
+		transaction.replace(R.id.send_container, send_id_progressbar_button, "send_id_progressbar_button");
+		transaction.replace(R.id.send_stateinfo_container, send_id_progressbar_text, "send_id_progressbar_text");
 		transaction.commitAllowingStateLoss();
- 	}
+	}
 	
 	private void UIScanFromProgressToAPState(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		if(send_id_progressbar != null){
-			transaction.remove(send_id_progressbar);
-		}
 		send_id_stop_share_button = new SendStopShareButton();
-		transaction.add(R.id.send_container, send_id_stop_share_button, "send_id_stop_share_button");
+		send_id_stop_stateinfo = new SendWifiConnectedState();
+		transaction.replace(R.id.send_container, send_id_stop_share_button, "send_id_stop_share_button");
+		transaction.replace(R.id.send_stateinfo_container, send_id_stop_stateinfo, "send_id_stop_stateinfo");
 		transaction.commitAllowingStateLoss();
 	}
 	
