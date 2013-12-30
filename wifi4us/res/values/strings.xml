@@ -20,10 +20,6 @@
     <string name="send_text_start_share">您的流量和分享时间将严格限定在5M和30分钟，先到为准</string>
     
     <string name="send_button_stop_share">立刻停止分享流量</string>
-    <string name="send_text_start_share">立刻停止分享流量</string>
-    
-    
-    
     
 
 </resources>
