@@ -131,7 +131,7 @@ public class ReceiveSwitcherButton extends Fragment{
 
 		if(receive_id_start_scan_button == null && !startReceive){
 			receive_id_start_scan_button = new ReceiveScanButton();
-			transaction.add(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
 		}
 		
 		transaction.commitAllowingStateLoss(); 

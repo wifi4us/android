@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.SimpleArrayMap;
 import android.telephony.TelephonyManager;
@@ -42,8 +43,13 @@ public class OtherFragment extends Fragment{
     	public void run() { 
     		
     			TelephonyManager tm = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-        		String registerUrl = REGISTER_BASE_HTTPURL + "?" + "imei=" + tm.getDeviceId();
-        		
+    			String registerUrl;
+        		if(tm.getDeviceId() == null){
+        			registerUrl = REGISTER_BASE_HTTPURL + "?" + "imei=" + Secure.getString(getActivity().getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        		}else{
+        			registerUrl = REGISTER_BASE_HTTPURL + "?" + "imei=" + tm.getDeviceId();
+        		}
+        		System.out.println(registerUrl);
         		HttpXmlParser xpp = new HttpXmlParser();
         		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 

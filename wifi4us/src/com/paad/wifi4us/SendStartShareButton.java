@@ -106,7 +106,7 @@ public class SendStartShareButton extends Fragment{
 		send_id_progressbar = new WifiProgressBar();
 		transaction.add(R.id.send_container, send_id_progressbar, "send_id_progressbar");
 		transaction.commitAllowingStateLoss();
-	}
+ 	}
 	
 	private void UIScanFromProgressToAPState(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();

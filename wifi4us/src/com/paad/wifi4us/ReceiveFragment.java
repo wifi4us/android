@@ -121,8 +121,16 @@ public class ReceiveFragment extends Fragment{
 
 		transaction.add(R.id.receive_container_switcher_button, receivie_wifi_switcher_button, "receivie_wifi_switcher_button");
 		
-		receive_id_start_scan_button = new ReceiveScanButton();
-		transaction.add(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+		Context context = getActivity().getApplicationContext();
+		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
+		startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
+
+		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
+		if(receive_id_start_scan_button == null && !startReceive){
+			receive_id_start_scan_button = new ReceiveScanButton();		
+			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+			
+		}
 		transaction.commitAllowingStateLoss();
 	}
 	

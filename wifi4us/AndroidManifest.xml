@@ -54,17 +54,12 @@
     		android:name=".ReceiveService"  
    			android:enabled="true"
    			android:exported="false">
-   			<intent-filter android:priority="1000"></intent-filter>  
     	</service>
     	<service  
     		android:name=".SendService"  
    			android:enabled="true"
    			android:exported="false">
     	</service>
-    	<receiver 
-    	    android:name=".ReceiveService$AlarmReceiver"
-    	    android:exported="false">        
-  		</receiver>
     </application>
 	
 </manifest>

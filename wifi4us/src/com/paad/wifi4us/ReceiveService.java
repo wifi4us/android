@@ -1,14 +1,17 @@
 package com.paad.wifi4us;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,7 +50,6 @@ public class ReceiveService extends Service {
     private String adLength;
     private String requestURL;
     
-    private PendingIntent pendIntent;
     private static int totalTimeSeconds;
     private static long totalTrafficBytes;
 
@@ -204,6 +206,27 @@ public class ReceiveService extends Service {
 	}	
 	
 	private boolean openSocketConnection(){
+		try{
+			Socket socket=new Socket(getIpFromInt(wifiManager.getDhcpInfo().gateway), 12580);
+			BufferedReader sin=new BufferedReader(new InputStreamReader(System.in));
+			PrintWriter os=new PrintWriter(socket.getOutputStream());
+			BufferedReader is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			String readline;
+			readline=sin.readLine(); //从系统标准输入读入一字符串
+			while(!readline.equals("bye")){
+				os.println(readline);
+				os.flush();
+				System.out.println("Client:"+readline);
+				System.out.println("Server:"+is.readLine());
+				readline=sin.readLine(); //从系统标准输入读入一字符串
+			}
+
+			os.close(); //关闭Socket输出流
+			is.close(); //关闭Socket输入流
+			socket.close(); //关闭Socket
+		}catch(Exception e) {
+			System.out.println("Error"+e); //出错，则打印出错信息
+		}	
 		return true;
 	}
 	
@@ -214,8 +237,10 @@ public class ReceiveService extends Service {
 		
 		//start the alarm and send broadcast every 5 seconds
 		Timer timer = new Timer();  
+
 	    TimerTask task = new TimerTask(){  
 	        public void run() {  
+
 	        	totalTimeSeconds = totalTimeSeconds + 3;
 				String time = String.valueOf(totalTimeSeconds);
 				long totalTrafficBytesShown = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes() - totalTrafficBytes;
@@ -226,11 +251,13 @@ public class ReceiveService extends Service {
 				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
 				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
 				getApplicationContext().sendBroadcast(heartbeat);
+				
+				//send traffic to ap host through socket
 	        }  
 	          
 	    };  
-	    timer.schedule(task, 0, 3000);
-		
+	    timer.schedule(task, 0, 1000);
+	
 		return true;
 	}
 
@@ -286,15 +313,6 @@ public class ReceiveService extends Service {
 		return true;
 	}
 	
-	public static class AlarmReceiver extends BroadcastReceiver{
-		public void onReceive(Context c, Intent intent){
-			System.out.println("2222222222222");
-			
-			
-		}
-		
-	}
-	
 	public DhcpInfo getAPinfo(){
 		return wifiManager.getDhcpInfo();
 	}
@@ -312,5 +330,18 @@ public class ReceiveService extends Service {
 		//return "TP-LINK_3003";
 	}
 
-
+	private String getIpFromInt(int ip){
+		try{
+			byte[] b = new byte[] {
+				    (byte)((ip      ) & 0xff),
+				    (byte)((ip >>  8) & 0xff),
+				    (byte)((ip >> 16) & 0xff),
+				    (byte)((ip >> 24) & 0xff)
+				  };
+			return InetAddress.getByAddress(b).getHostAddress();
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

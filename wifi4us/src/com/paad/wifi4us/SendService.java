@@ -1,8 +1,6 @@
 package com.paad.wifi4us;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import android.app.Service;
 import android.content.Context;
@@ -65,6 +63,13 @@ public class SendService extends Service {
 	public void WifiApOff(){
 		Runnable myRunnable = new Runnable(){
 			public void run(){
+				while(getWifiApState() == WIFI_AP_STATE_ENABLING){
+					try {
+						Thread.sleep(500);
+			        } catch (InterruptedException e) {
+			            e.printStackTrace();
+			        }
+				}
 				if(setWifiApEnabled(false)){
 					int try_count = 0;
 					while(true){
@@ -78,7 +83,7 @@ public class SendService extends Service {
 							break;
 						}else{
 							try_count++;
-							if(try_count > 10){
+							if(try_count > 20){
 								sendApShutFailBroadcast();
 								break;
 							}
@@ -99,6 +104,13 @@ public class SendService extends Service {
 	public void WifiApOn(){		
 		Runnable myRunnable = new Runnable(){
 			public void run(){
+				while(getWifiApState() == WIFI_AP_STATE_DISABLING){
+					try {
+						Thread.sleep(500);
+			        } catch (InterruptedException e) {
+			            e.printStackTrace();
+			        }
+				}
 				if(setWifiApEnabled(true)){
 					int try_count = 0;
 					while(true){
@@ -113,7 +125,7 @@ public class SendService extends Service {
 							break;
 						}else{
 							try_count++;
-							if(try_count > 10){
+							if(try_count > 20){
 								sendApOpenFailBroadcast();
 								break;
 							}
@@ -181,7 +193,7 @@ public class SendService extends Service {
 	 	}
 	 	
 	 	private void sendApShutFailBroadcast(){
-	 		 Intent intent  = new Intent();  
+	 		Intent intent  = new Intent();  
             intent.setAction(AP_STATE_SHUT_ACTION);  
             intent.putExtra("apstate", "fail");  
             sendStickyBroadcast(intent);  
@@ -195,7 +207,6 @@ public class SendService extends Service {
 	 	}
 	 	
 	 	private void sendApOpenFailBroadcast(){
-
 	 		 Intent intent  = new Intent();  
              intent.setAction(AP_STATE_OPEN_ACTION);  
              intent.putExtra("apstate", "fail");  
