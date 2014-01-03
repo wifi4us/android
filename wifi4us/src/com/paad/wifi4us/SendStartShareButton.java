@@ -21,13 +21,15 @@ public class SendStartShareButton extends Fragment{
 	private Button startshare;
 	private Fragment send_id_progressbar_button;
 	private Fragment send_id_progressbar_text;
-	private Fragment send_id_start_share_button;
 	private Fragment send_id_stop_share_button;
-	private Fragment send_id_start_share_text;
 	private Fragment send_id_stop_stateinfo;
-	
+	private Fragment send_id_stop_share_text;
+
 	
 	private ClickStartShareReceiver clickStartShareReceiver;
+	private ListenStartReceiver listenStartReceiver;
+	private ConnectionStartReceiver connectionStartReceiver;
+
 	private FragmentManager fragmentManager;
 
     //Send Service 	
@@ -68,10 +70,15 @@ public class SendStartShareButton extends Fragment{
 			public void onClick(View view){
 				if(!haveBondService)
 	    			return;
-
+				
+				Context context = getActivity().getApplicationContext();
 				clickStartShareReceiver = new ClickStartShareReceiver();
-		        getActivity().getApplicationContext().registerReceiver(clickStartShareReceiver, new IntentFilter(SendService.AP_STATE_OPEN_ACTION));
-		   
+				listenStartReceiver = new ListenStartReceiver();
+				connectionStartReceiver = new ConnectionStartReceiver();
+				context.registerReceiver(clickStartShareReceiver, new IntentFilter(SendService.AP_STATE_OPEN_ACTION));
+				context.registerReceiver(listenStartReceiver, new IntentFilter(SendService.LISTEN_SETUP));
+				context.registerReceiver(connectionStartReceiver, new IntentFilter(SendService.CONNECTION_SETUP));
+
 				//The progress bar fragment
 				UIScanFromShareToProgress();
 
@@ -90,12 +97,26 @@ public class SendStartShareButton extends Fragment{
     	        c.unregisterReceiver(this);
     			return;
     		}
-    		UIScanFromProgressToAPState();
-    		c.removeStickyBroadcast(intent);
+    		sendService.ListenHeartBeat();
     		c.unregisterReceiver(this);
     	}
     }
 
+	public class ListenStartReceiver extends BroadcastReceiver{
+    	public void onReceive(Context c, Intent intent) {
+    		UIScanFromProgressToReadyState();
+    		c.unregisterReceiver(this);
+    	}
+    }
+	
+	
+	public class ConnectionStartReceiver extends BroadcastReceiver{
+    	public void onReceive(Context c, Intent intent) {
+    		UIScanFromReadyStateToConnectState();
+    		c.unregisterReceiver(this);
+    	}
+    }
+	
 	private void UIScanFromShareToProgress(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		send_id_progressbar_button = new WifiProgressBar();
@@ -105,11 +126,18 @@ public class SendStartShareButton extends Fragment{
 		transaction.commitAllowingStateLoss();
 	}
 	
-	private void UIScanFromProgressToAPState(){
+	private void UIScanFromProgressToReadyState(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		send_id_stop_share_button = new SendStopShareButton();
-		send_id_stop_stateinfo = new SendWifiConnectedState();
+		send_id_stop_share_text = new SendStopShareText();
 		transaction.replace(R.id.send_container, send_id_stop_share_button, "send_id_stop_share_button");
+		transaction.replace(R.id.send_stateinfo_container, send_id_stop_share_text, "send_id_stop_stateinfo");
+		transaction.commitAllowingStateLoss();
+	}
+	
+	private void UIScanFromReadyStateToConnectState(){
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		send_id_stop_stateinfo = new SendWifiConnectedState();
 		transaction.replace(R.id.send_stateinfo_container, send_id_stop_stateinfo, "send_id_stop_stateinfo");
 		transaction.commitAllowingStateLoss();
 	}

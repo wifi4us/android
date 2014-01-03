@@ -52,6 +52,7 @@ public class ReceiveService extends Service {
     
     private static int totalTimeSeconds;
     private static long totalTrafficBytes;
+    private Timer timer; 
 
     
     public static final String CLIENT_STATE_CONNECTED_TO_AP = "com.paad.wifi4us.connectedtoap";
@@ -66,7 +67,11 @@ public class ReceiveService extends Service {
     public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME = "com.paad.wifi4us.conmunication.setup.heartbeaten.time";
     public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC = "com.paad.wifi4us.conmunication.setup.heartbeaten.traffic";
 
-    
+    private Socket socket;
+	private static final int SERVER_PORT = 12345;
+	private PrintWriter out;
+	private BufferedReader in;
+	
 	public class MyBinder extends Binder {  
 		ReceiveService getService() {  
             return ReceiveService.this;  
@@ -181,11 +186,14 @@ public class ReceiveService extends Service {
 					sendStickyBroadcast(intent);
 					return;
 				}
+				
+				
 				if(!setHeartBeat()){
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
 					sendStickyBroadcast(intent);
 					return;
 				}
+
 				if(!getAdvertisement()){
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
 					sendStickyBroadcast(intent);
@@ -207,27 +215,28 @@ public class ReceiveService extends Service {
 	
 	private boolean openSocketConnection(){
 		try{
-			Socket socket=new Socket(getIpFromInt(wifiManager.getDhcpInfo().gateway), 12580);
-			BufferedReader sin=new BufferedReader(new InputStreamReader(System.in));
-			PrintWriter os=new PrintWriter(socket.getOutputStream());
-			BufferedReader is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String readline;
-			readline=sin.readLine(); //从系统标准输入读入一字符串
-			while(!readline.equals("bye")){
-				os.println(readline);
-				os.flush();
-				System.out.println("Client:"+readline);
-				System.out.println("Server:"+is.readLine());
-				readline=sin.readLine(); //从系统标准输入读入一字符串
-			}
+			System.out.println("000000000000");
 
-			os.close(); //关闭Socket输出流
-			is.close(); //关闭Socket输入流
-			socket.close(); //关闭Socket
+			socket=new Socket(getIpFromInt(wifiManager.getDhcpInfo().gateway), SERVER_PORT);
+			out = new PrintWriter(socket.getOutputStream());
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			System.out.println("11111111111");
+
+			out.println("hello_server");
+			out.flush();
+			String firstResponse = in.readLine();
+			System.out.println("222222222222");
+
+			if(firstResponse.equals("hello_client")){
+				return true;
+			}else{
+				return false;
+			}
+			
 		}catch(Exception e) {
-			System.out.println("Error"+e); //出错，则打印出错信息
+			e.printStackTrace();
+			return false;
 		}	
-		return true;
 	}
 	
 	private boolean setHeartBeat(){
@@ -236,7 +245,7 @@ public class ReceiveService extends Service {
 		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
 		
 		//start the alarm and send broadcast every 5 seconds
-		Timer timer = new Timer();  
+		timer = new Timer();  
 
 	    TimerTask task = new TimerTask(){  
 	        public void run() {  
@@ -250,9 +259,13 @@ public class ReceiveService extends Service {
 				heartbeat.setAction(CONMUNICATION_SETUP_HEART_BEATEN); 
 				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
 				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
+				
 				getApplicationContext().sendBroadcast(heartbeat);
 				
+				System.out.println(totalTrafficBytesShown);
 				//send traffic to ap host through socket
+				out.println("T" + totalTrafficBytesShown);
+				out.flush();
 	        }  
 	          
 	    };  
@@ -313,6 +326,17 @@ public class ReceiveService extends Service {
 		return true;
 	}
 	
+	public void closeConnection(){
+		try{
+			timer.cancel();
+			out.close();
+			in.close();
+			socket.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public DhcpInfo getAPinfo(){
 		return wifiManager.getDhcpInfo();
 	}
@@ -320,13 +344,13 @@ public class ReceiveService extends Service {
 	
 	private String getPassWord(){
 		//return "4001001111";
-		//return "19851123";
-		return "maancoffee";
+		return "19851123";
+		//return "maancoffee";
 	}
 	
 	private String getSSID(){
-		return "Maan Coffee";
-		//return "111111";
+		//return "Maan Coffee";
+		return "111111";
 		//return "TP-LINK_3003";
 	}
 

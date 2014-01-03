@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ public class SendWifiConnectedState extends Fragment{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		connectedStateReceiver = new ConnectedStateReceiver();
-        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(SendService.LISTEN_SETUP_HEART_BEATEN));
+        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(SendService.CONNECTION_HEARTBEAT));
 	}
 	
 	public void onDestroy(){
@@ -42,7 +41,7 @@ public class SendWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			String trafficNow = intent.getExtras().getString(SendService.LISTEN_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
+			String trafficNow = intent.getExtras().getString(SendService.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC);
 			traffic.setText(trafficNow);
 		}
 	}

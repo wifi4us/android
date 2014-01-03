@@ -19,9 +19,7 @@ import android.widget.Button;
 
 public class SendStopShareButton extends Fragment{
 	private Button stopshare;
-	private Fragment send_id_progressbar;
 	private Fragment send_id_start_share_button;
-	private Fragment send_id_stop_share_button;
 	private Fragment send_id_progressbar_button;
 	private Fragment send_id_progressbar_text;
 	private Fragment send_id_start_share_text;
