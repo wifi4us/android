@@ -56,19 +56,20 @@ public class MainActivity extends FragmentActivity {
         	haveBondService = true;
         }  
     };  
-    private void addTab(String label, int drawableId, int contentId, TabHost tabHost) {
+    
+    private void addTab(String label, String titleText, int drawableId, int contentId, TabHost tabHost) {
         TabHost.TabSpec spec = tabHost.newTabSpec(label);
          
         View tabIndicator = LayoutInflater.from(this).inflate(R.layout.tab_card, tabHost.getTabWidget(), false);
         TextView title = (TextView) tabIndicator.findViewById(R.id.tabtitle);
-        title.setText(label);
+        title.setText(titleText);
         ImageView icon = (ImageView) tabIndicator.findViewById(R.id.tabimage);
         icon.setImageResource(drawableId);
          
         spec.setIndicator(tabIndicator);
         spec.setContent(contentId);
         tabHost.addTab(spec);
-        }
+    }
 
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +124,11 @@ public class MainActivity extends FragmentActivity {
         }); 
     	
     	tabHost.setup();
-    	addTab("浣跨敤", R.drawable.tab_search_selector, R.id.receive, tabHost);
-    	addTab("鍒嗕韩", R.drawable.tab_share_selector, R.id.send, tabHost);
-    	addTab("鍏朵粬", R.drawable.tab_settings_selector, R.id.other, tabHost);
+    	
+
+    	addTab("receive", "使用",  R.drawable.tab_search_selector, R.id.receive, tabHost);
+    	addTab("send", "分享",  R.drawable.tab_share_selector, R.id.send, tabHost);
+    	addTab("other", "其他",  R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
     	
     }
