@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class ReceiveWifiConnectedState extends Fragment{
@@ -28,6 +29,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 	private TextView traffic;
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_scan_button;
+	private Button receive_button_disconnect_wifi;
 	
     //Receive Service 	
     private ReceiveService receiveService;
@@ -69,6 +71,18 @@ public class ReceiveWifiConnectedState extends Fragment{
 		View view_res = inflater.inflate(R.layout.fragment_receive_wifi_connected_state, container, false);	
 		time = (TextView)view_res.findViewById(R.id.receive_text_time_left);
 		traffic = (TextView)view_res.findViewById(R.id.receive_text_traffic_used);
+		
+		receive_button_disconnect_wifi = (Button) view_res.findViewById(R.id.receive_button_disconnect_wifi);
+		receive_button_disconnect_wifi.setOnClickListener(new OnClickListener(){
+			public void onClick(View view){
+				if(!haveBondService){
+					return;
+				}
+				receiveService.WifiDisconnect();
+			}
+		});
+
+		
 		return view_res;
 	}
 	

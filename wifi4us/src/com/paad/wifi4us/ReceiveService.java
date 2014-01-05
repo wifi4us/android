@@ -215,17 +215,13 @@ public class ReceiveService extends Service {
 	
 	private boolean openSocketConnection(){
 		try{
-			System.out.println("000000000000");
-
 			socket=new Socket(getIpFromInt(wifiManager.getDhcpInfo().gateway), SERVER_PORT);
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			System.out.println("11111111111");
 
 			out.println("hello_server");
 			out.flush();
 			String firstResponse = in.readLine();
-			System.out.println("222222222222");
 
 			if(firstResponse.equals("hello_client")){
 				return true;

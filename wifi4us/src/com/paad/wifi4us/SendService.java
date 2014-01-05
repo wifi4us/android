@@ -168,7 +168,6 @@ public class SendService extends Service {
 			public void run(){
 				socket = null;
 				try{
-					System.out.println("111111111");
 					socket = serverSocket.accept();
 					socket.setSoTimeout(TIME_INTERVAL);
 					sendConnectionSetupBroadcast();
