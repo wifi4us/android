@@ -19,11 +19,13 @@ import android.widget.Button;
 
 public class SendStartShareButton extends Fragment{
 	private Button startshare;
+	private Context context;
 	private Fragment send_id_progressbar_button;
 	private Fragment send_id_progressbar_text;
 	private Fragment send_id_stop_share_button;
 	private Fragment send_id_stop_stateinfo;
 	private Fragment send_id_stop_share_text;
+	private Fragment send_id_start_share_fail;
 
 	
 	private ClickStartShareReceiver clickStartShareReceiver;
@@ -71,13 +73,12 @@ public class SendStartShareButton extends Fragment{
 				if(!haveBondService)
 	    			return;
 				
-				Context context = getActivity().getApplicationContext();
+				context = getActivity().getApplicationContext();
 				clickStartShareReceiver = new ClickStartShareReceiver();
 				listenStartReceiver = new ListenStartReceiver();
 				connectionStartReceiver = new ConnectionStartReceiver();
 				context.registerReceiver(clickStartShareReceiver, new IntentFilter(SendService.AP_STATE_OPEN_ACTION));
-				context.registerReceiver(listenStartReceiver, new IntentFilter(SendService.LISTEN_SETUP));
-				context.registerReceiver(connectionStartReceiver, new IntentFilter(SendService.CONNECTION_SETUP));
+
 
 				//The progress bar fragment
 				UIScanFromShareToProgress();
@@ -93,10 +94,12 @@ public class SendStartShareButton extends Fragment{
     	public void onReceive(Context c, Intent intent) {
     		//The result list fragment or fail result fragment
     		if(!intent.getExtras().get("apstate").equals("ok")){
-    			c.removeStickyBroadcast(intent);
+    			UIScanFromProgressToNotReadyState();
     	        c.unregisterReceiver(this);
     			return;
     		}
+			context.registerReceiver(listenStartReceiver, new IntentFilter(SendService.LISTEN_SETUP));
+			context.registerReceiver(connectionStartReceiver, new IntentFilter(SendService.CONNECTION_SETUP));
     		sendService.ListenHeartBeat();
     		c.unregisterReceiver(this);
     	}
@@ -139,6 +142,14 @@ public class SendStartShareButton extends Fragment{
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		send_id_stop_stateinfo = new SendWifiConnectedState();
 		transaction.replace(R.id.send_stateinfo_container, send_id_stop_stateinfo, "send_id_stop_stateinfo");
+		transaction.commitAllowingStateLoss();
+	}
+	
+	private void UIScanFromProgressToNotReadyState(){
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		send_id_start_share_fail = new SendStartFailText();
+		transaction.replace(R.id.send_container, this, "send_id_start_share_button");
+		transaction.replace(R.id.send_stateinfo_container, send_id_start_share_fail, "send_id_stop_stateinfo");
 		transaction.commitAllowingStateLoss();
 	}
 	

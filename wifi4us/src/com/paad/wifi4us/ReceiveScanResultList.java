@@ -145,15 +145,13 @@ public class ReceiveScanResultList extends ListFragment{
 		public void onReceive(Context c, Intent intent) {
     		if(!haveBondService){
     			c.unregisterReceiver(this);
-          		c.removeStickyBroadcast(intent);
     			return;
     		}
       	
       		if(intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_EXTRA_STATE).equals("ok")){
+          		c.unregisterReceiver(this);
       			String adid = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_EXTRA_ADID);
       			String adword = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_EXTRA_ADWORD);
-          		c.unregisterReceiver(this);
-          		c.removeStickyBroadcast(intent);
 
     			Intent startvideo = new Intent(receive_id_start_connect_progressbar.getActivity(), VideoActivity.class);    
     			startvideo.putExtra("adword", adword);
@@ -161,7 +159,6 @@ public class ReceiveScanResultList extends ListFragment{
     			receive_id_start_connect_progressbar.startActivity(startvideo);			
     		}else{
           		c.unregisterReceiver(this);
-          		c.removeStickyBroadcast(intent);
     		}
 	
       		

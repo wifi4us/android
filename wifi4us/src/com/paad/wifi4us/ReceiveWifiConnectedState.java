@@ -52,7 +52,8 @@ public class ReceiveWifiConnectedState extends Fragment{
 		Intent intent = new Intent(getActivity(), ReceiveService.class);  
         //bind service to get ready for all the clickable element
 		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
-		
+		fragmentManager = getFragmentManager();
+
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
         getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN));
@@ -103,14 +104,14 @@ public class ReceiveWifiConnectedState extends Fragment{
 			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
     		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 
-    		if(State.DISCONNECTED == state){   
+    		if(State.DISCONNECTED == state){  
+    			System.out.println("11111111111111");
      	   		receiveService.closeConnection();
      	   		receiveService.WifiDisconnect();
      			Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
      			sharedata.putBoolean("STATE_RECEIVE", false);
      			sharedata.commit();
      			
-     			fragmentManager = getFragmentManager();
      			FragmentTransaction transaction = fragmentManager.beginTransaction();
      			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
      			if(receive_id_start_scan_button == null){

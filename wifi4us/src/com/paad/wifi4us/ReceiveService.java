@@ -139,7 +139,6 @@ public class ReceiveService extends Service {
 		return wifiApList;
 	}
 	
-	
 	public void WifiConnect(String rawssid){
 		connectinfo = rawssid;
 
@@ -182,21 +181,24 @@ public class ReceiveService extends Service {
 				Intent intent = new Intent();
 				intent.setAction(CONMUNICATION_SETUP); 
 				if(!openSocketConnection()){
+					WifiDisconnect();
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
-					sendStickyBroadcast(intent);
+					sendBroadcast(intent);
 					return;
 				}
 				
 				
 				if(!setHeartBeat()){
+					WifiDisconnect();
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
-					sendStickyBroadcast(intent);
+					sendBroadcast(intent);
 					return;
 				}
 
 				if(!getAdvertisement()){
+					WifiDisconnect();
 					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
-					sendStickyBroadcast(intent);
+					sendBroadcast(intent);
 					return;
 				}
 
@@ -258,14 +260,13 @@ public class ReceiveService extends Service {
 				
 				getApplicationContext().sendBroadcast(heartbeat);
 				
-				System.out.println(totalTrafficBytesShown);
 				//send traffic to ap host through socket
 				out.println("T" + totalTrafficBytesShown);
 				out.flush();
 	        }  
 	          
 	    };  
-	    timer.schedule(task, 0, 1000);
+	    timer.schedule(task, 0, 3000);
 	
 		return true;
 	}
@@ -273,7 +274,6 @@ public class ReceiveService extends Service {
 	
 	private boolean getAdvertisement(){
 		//get url to request advertisement meta data
-		
 		try{
 			make = URLEncoder.encode(Build.MANUFACTURER, "UTF-8");
 			model = URLEncoder.encode(Build.MODEL, "UTF-8");

@@ -1,9 +1,9 @@
 package com.paad.wifi4us;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,6 +30,7 @@ public class SendService extends Service {
     public static final String CONNECTION_SETUP = "com.paad.wifi4us.connection.setup";
     public static final String CONNECTION_HEARTBEAT = "com.paad.wifi4us.connection.heartbeat";
     public static final String CONNECTION_HEARTBEAT_EXTRA_TRAFFIC = "com.paad.wifi4us.connection.heartbeat.extra.traffic";
+    public static final String CONNECTION_FINISH = "com.paad.wifi4us.connection.finish";
 
     
 	private final IBinder binder = new MyBinder();
@@ -101,6 +102,14 @@ public class SendService extends Service {
 				        }
 						if(getWifiApState() == WIFI_AP_STATE_DISABLED){
 							sendApShutSuccessBroadcast();
+							wifiManager.setWifiEnabled(true); 
+							while(wifiManager.getWifiState() != WifiManager.WIFI_STATE_ENABLED){
+								try {
+									Thread.sleep(500);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
 							break;
 						}else{
 							try_count++;
@@ -122,7 +131,16 @@ public class SendService extends Service {
 	
 	
 	
-	public void WifiApOn(){		
+	public void WifiApOn(){			 
+		wifiManager.setWifiEnabled(false); 
+		while(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		Runnable myRunnable = new Runnable(){
 			public void run(){
 				while(getWifiApState() == WIFI_AP_STATE_DISABLING){
@@ -141,7 +159,7 @@ public class SendService extends Service {
 				        } catch (InterruptedException e) {
 				            e.printStackTrace();
 				        }
-
+						
 				 		if(getWifiApState() == WIFI_AP_STATE_ENABLED){
 							sendApOpenSuccessBroadcast();
 							break;
@@ -187,6 +205,12 @@ public class SendService extends Service {
 		            	if(info == null){
 							WifiApOff();
 		            	}
+		            	
+		            	if(info.equals("hello_server")){
+		            		out.println("gotohell_client");
+		            		out.flush();
+		            	}
+		            	
 		            	sendConnectionHeartbeatBroadcast(info);
 		            }
 				}catch(SocketTimeoutException e){
@@ -207,7 +231,8 @@ public class SendService extends Service {
 					try{
 						SystemClock.sleep(1000);
 						if(getWifiApState() == WIFI_AP_STATE_DISABLED){
-					        	out.close(); 
+								sendConnectionFinishBroadcast();	
+								out.close(); 
 					        	in.close();
 					        	socket.close();
 					        	return;
@@ -230,11 +255,15 @@ public class SendService extends Service {
 	}
 		
 	
-	 public boolean setWifiApEnabled(boolean enabled) { 
-
-	        if (enabled) {
-	            wifiManager.setWifiEnabled(false);  
-	        }
+	 public boolean setWifiApEnabled(boolean enabled) {
+		 	boolean isHtc = false;  
+		 	try {  
+		 		isHtc = WifiConfiguration.class  
+                     .getDeclaredField("mWifiApProfile") != null;  
+		 	} catch (java.lang.NoSuchFieldException e) {  
+		 		isHtc = false;  
+		 	}  
+			
 	        try {  
 	        	
 	            apConfig = new WifiConfiguration();  
@@ -248,6 +277,10 @@ public class SendService extends Service {
 	         	apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);  
 	         	apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);  
 	         	
+	         	if (isHtc) {  
+	         		setHtcConfig(apConfig);  
+	            }  
+	         	 
 	            Method method = wifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);  
 	            return (Boolean) method.invoke(wifiManager, apConfig, enabled);  
 
@@ -317,8 +350,52 @@ public class SendService extends Service {
             sendBroadcast(intent);  
 	 	}
 	 	
+	 	private void sendConnectionFinishBroadcast(){
+	 		Intent intent  = new Intent();  
+            intent.setAction(CONNECTION_FINISH);
+            sendBroadcast(intent);  
+	 	}
+	 	
 	 	private String generateSSID(String userid, String time, String traffic, String passwd){
 	 		return "111111";
 	 	}
+	 	
+	 	private void setHtcConfig(WifiConfiguration config) {  
+	        try {  
+	            Field mWifiApProfileField = WifiConfiguration.class  
+	                    .getDeclaredField("mWifiApProfile");  
+	            mWifiApProfileField.setAccessible(true);  
+	            Object hotSpotProfile = mWifiApProfileField.get(config);  
+	            mWifiApProfileField.setAccessible(false);  
+	  
+	  
+	            if (hotSpotProfile != null) {  
+	                Field ssidField = hotSpotProfile.getClass().getDeclaredField("SSID");  
+	                ssidField.setAccessible(true);  
+	                ssidField.set(hotSpotProfile, config.SSID);  
+	                ssidField.setAccessible(false);  
+	  
+	  
+	                Field keyField = hotSpotProfile.getClass().getDeclaredField("key");  
+	                keyField.setAccessible(true);  
+	                keyField.set(hotSpotProfile, config.preSharedKey);  
+	                keyField.setAccessible(false);  
+	  
+	  
+	                Field dhcpField = hotSpotProfile.getClass().getDeclaredField("dhcpEnable");  
+	                dhcpField.setAccessible(true);  
+	                dhcpField.setInt(hotSpotProfile, 1);  
+	                dhcpField.setAccessible(false);  
+	                
+	                Field secureField = hotSpotProfile.getClass().getDeclaredField("secureType");
+	                secureField.setAccessible(true);  
+	                secureField.set(hotSpotProfile, "wpa-psk");  
+	                secureField.setAccessible(false); 
+	            }  
+	        } catch (Exception e) {  
+	            e.printStackTrace();  
+	        }  
+	    }  
+	 	
 	 	
 }

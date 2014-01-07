@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -27,6 +28,7 @@ public class ReceiveSwitcherButton extends Fragment{
 	private Fragment receive_id_start_scan_text_openwifi;
 	private Fragment receive_id_start_scan_button;
 	private Fragment receive_id_start_scan_resultlist;
+	private Fragment receive_id_start_wifi_connected_state;
     private ClickSwitcherReceiver clickSwitcherReceiver;
 	private FragmentManager fragmentManager;
 	private WifiManager wifiManager;
@@ -138,11 +140,15 @@ public class ReceiveSwitcherButton extends Fragment{
 	}
 	
 	private void UISwitcherCleanScanZone(){
+		Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
+		sharedata.putBoolean("STATE_RECEIVE", false);
+		sharedata.commit();
+			
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
 		receive_id_start_scan_resultlist = fragmentManager.findFragmentByTag("receive_id_start_scan_resultlist");
 		receive_id_start_scan_progressbar = fragmentManager.findFragmentByTag("receive_id_start_scan_progressbar_switcher");
-
+		receive_id_start_wifi_connected_state = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_state");
       
         if(receive_id_start_scan_button != null){
 			transaction.remove(receive_id_start_scan_button);
@@ -150,9 +156,11 @@ public class ReceiveSwitcherButton extends Fragment{
         if(receive_id_start_scan_resultlist != null){
 			transaction.remove(receive_id_start_scan_resultlist);
 		}
-
         if(receive_id_start_scan_progressbar != null){
 			transaction.remove(receive_id_start_scan_progressbar);
+		}
+        if(receive_id_start_wifi_connected_state != null){
+			transaction.remove(receive_id_start_wifi_connected_state);
 		}
         
         receive_id_start_scan_text_openwifi = fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
@@ -160,6 +168,7 @@ public class ReceiveSwitcherButton extends Fragment{
         	receive_id_start_scan_text_openwifi = new ReceiveStartScanTextOpenwifi();
 			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_text_openwifi, "receive_id_start_scan_text_openwifi");
         }
+        
 		transaction.commitAllowingStateLoss(); 
 	}
 	

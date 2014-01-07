@@ -125,7 +125,6 @@ public class MainActivity extends FragmentActivity {
     	
     	tabHost.setup();
     	
-System.out.println(tabHost.toString());
     	addTab("receive", "使用",  R.drawable.tab_search_selector, R.id.receive, tabHost);
     	addTab("send", "分享",  R.drawable.tab_share_selector, R.id.send, tabHost);
     	addTab("other", "其他",  R.drawable.tab_settings_selector, R.id.other, tabHost);

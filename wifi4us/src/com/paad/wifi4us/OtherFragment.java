@@ -49,7 +49,6 @@ public class OtherFragment extends Fragment{
         		}else{
         			registerUrl = REGISTER_BASE_HTTPURL + "?" + "imei=" + tm.getDeviceId();
         		}
-        		System.out.println(registerUrl);
         		HttpXmlParser xpp = new HttpXmlParser();
         		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 
@@ -64,18 +63,12 @@ public class OtherFragment extends Fragment{
         }  
     }; 
 	 
-	public void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
-	}
-	
+		
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
-		return inflater.inflate(R.layout.fragment_other, container, false);
-	}
-	
-	public void onStart(){
-		super.onStart();
-		other_id_userid_text = (TextView)getActivity().findViewById(R.id.userid_text);
+		View view_res = inflater.inflate(R.layout.fragment_other, container, false);
+		
+		other_id_userid_text = (TextView)view_res.findViewById(R.id.userid_text);
 		SharedPreferences sharedata = getActivity().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE); 
 		String userid = sharedata.getString("USER_ID", "NULL");
 		other_id_userid_text.setText("ÓÃ»§Ãû£º " + userid);
@@ -83,9 +76,8 @@ public class OtherFragment extends Fragment{
 			Thread mThread = new Thread(getUserIdRunner);  
             mThread.start();
 		}
+		
+		return view_res;
 	}
-	
-
-
 
 }
