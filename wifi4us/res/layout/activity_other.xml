@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <TextView
+            style="@style/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/title_more" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0"
+        android:clipToPadding="true"
+        android:paddingBottom="10.0dip"
+        android:paddingLeft="15.0dip"
+        android:paddingRight="15.0dip"
+        android:paddingTop="10.0dip"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/user_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_alone"
+                android:clickable="true"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/imgV_baidu_head_login"
+                    android:layout_width="60.0dip"
+                    android:layout_height="60.0dip"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="6.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/baidu_head" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="6.0dip"
+                    android:gravity="center"
+                    android:maxLength="8"
+                    android:text="@string/unknow_user"
+                    android:textColor="#ff323232"
+                    android:textSize="16.0sp" />
+
+                <TextView
+                    android:id="@+id/text_baidu_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5sp"
+                    android:textColor="#FF0000"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="@string/no_user_name"
+                    android:textSize="12.0sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_verison"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10.0dip"
+                android:background="@drawable/selector_list_item_top"
+                android:clickable="true" >
+
+                <TextView
+                    android:id="@+id/text_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/version"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_Set_Score"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_center"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/setScore"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_Set_Discuss"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_bottom"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/setDiscuss"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_settings"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10.0dip"
+                android:background="@drawable/selector_list_item_top"
+                android:clickable="true"
+                android:visibility="visible" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/settings"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_agreement"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_center"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/agreement"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_help"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_bottom"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/help"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_check_update"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10.0dip"
+                android:background="@drawable/selector_list_item_top"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/check_update"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_feed_back"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_center"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/feedback"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_about"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_bottom"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/about"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/btn_quit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10.0dip"
+                android:background="@drawable/selector_list_item_alone"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/quit"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
