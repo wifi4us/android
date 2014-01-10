@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">wifi4us</string>
-    <string name="action_settings">refresh</string>
     <string name="startservice">share 15 mins and 3M</string>
     <string name="hello">hello world</string>
     <string name="send">send</string>
