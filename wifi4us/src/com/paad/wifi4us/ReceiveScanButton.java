@@ -26,6 +26,7 @@ public class ReceiveScanButton extends Fragment{
 	private Fragment receive_id_start_scan_progressbar;
 	private Fragment receive_id_start_scan_resultlist;
 	private Fragment receive_id_start_scan_nothing;
+	private Fragment receive_id_start_wifi_connected_fail_text;
     private ClickScanReceiver clickScanReceiver;
 	private FragmentManager fragmentManager;
 
@@ -114,6 +115,7 @@ public class ReceiveScanButton extends Fragment{
 		
 		receive_id_start_scan_resultlist = fragmentManager.findFragmentByTag("receive_id_start_scan_resultlist");
         receive_id_start_scan_nothing = fragmentManager.findFragmentByTag("receive_id_start_scan_nothing");
+        receive_id_start_wifi_connected_fail_text = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_fail_text");
 
 		if(receive_id_start_scan_resultlist != null)
 		{
@@ -123,8 +125,11 @@ public class ReceiveScanButton extends Fragment{
 		{
 			transaction.remove(receive_id_start_scan_nothing);
 		}
-
-
+		if(receive_id_start_wifi_connected_fail_text != null)
+		{
+			transaction.remove(receive_id_start_wifi_connected_fail_text);
+		}
+		
 		
 		transaction.add(R.id.receive_container_scan, receive_id_start_scan_progressbar, "receive_id_start_scan_progressbar_scan");
 		transaction.commitAllowingStateLoss(); 

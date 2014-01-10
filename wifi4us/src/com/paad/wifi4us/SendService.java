@@ -42,7 +42,7 @@ public class SendService extends Service {
 	private InputStreamReader in;
 	private PrintWriter out;
 	private static final int SERVER_PORT = 12345;
-	private static final int TIME_INTERVAL_AD = 10000;
+	private static final int TIME_INTERVAL_AD = 20000;
 	private static final int TIME_INTERVAL = 5000;
 	
 	public class MyBinder extends Binder {  
@@ -190,7 +190,7 @@ public class SendService extends Service {
 				socket = null;
 				try{
 					socket = serverSocket.accept();
-					sendConnectionSetupBroadcast();
+					socket.setSoTimeout(TIME_INTERVAL_AD);
 
 	            	in = new InputStreamReader(socket.getInputStream());
 					out = new PrintWriter(socket.getOutputStream());
@@ -202,11 +202,17 @@ public class SendService extends Service {
 	            		out.println("hello_client");
 	            		out.flush();
 	            	}
+	            	
+	            	boolean connect_setup_done = false;
 		            while(true){
 		            	info = reader.readLine();
 						socket.setSoTimeout(TIME_INTERVAL);
 		            	if(info == null){
 							WifiApOff();
+		            	}
+		            	if(!connect_setup_done){
+							sendConnectionSetupBroadcast();
+							connect_setup_done = true;
 		            	}
 		            	sendConnectionHeartbeatBroadcast(info);
 		            }
@@ -227,6 +233,7 @@ public class SendService extends Service {
 				while(true){
 					try{
 						SystemClock.sleep(1000);
+
 						if(getWifiApState() == WIFI_AP_STATE_DISABLED){
 								sendConnectionFinishBroadcast();	
 								out.close(); 

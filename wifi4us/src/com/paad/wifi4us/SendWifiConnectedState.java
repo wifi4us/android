@@ -60,7 +60,6 @@ public class SendWifiConnectedState extends Fragment{
 	private class ConnectedFinishedReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
 			c.unregisterReceiver(this);
-
 			FragmentTransaction transaction = fragmentManager.beginTransaction();
 			send_id_start_share_button = new SendStartShareButton();
 			send_id_start_share_text = new SendStartShareText();

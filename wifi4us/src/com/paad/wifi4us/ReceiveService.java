@@ -184,21 +184,21 @@ public class ReceiveService extends Service {
 				intent.setAction(CONMUNICATION_SETUP); 
 				if(!openSocketConnection()){
 					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
+					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "已经有人接入这个分享者了");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!getAdvertisement()){
 					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
+					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "分享者关闭的3G或者网速极慢");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!setHeartBeat()){
 					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
+					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "正常连接中断");
 					sendBroadcast(intent);
 					return;
 				}
@@ -225,10 +225,8 @@ public class ReceiveService extends Service {
 
 			out.println("hello_server");
 			out.flush();
-			System.out.println("000000000000000");
 
 			String firstResponse = in.readLine();
-System.out.println("111111111111");
 			if(firstResponse.equals("hello_client")){
 				return true;
 			}else{
