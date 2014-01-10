@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -30,7 +31,9 @@ public class ReceiveScanResultList extends ListFragment{
 	private ClickConnectReceiver clickConnectReceiver;
 	private ConmunicationReceiver conmunicationReceiver;
 	private FragmentManager fragmentManager;
-	private WifiProgressBar receive_id_start_connect_progressbar;
+	private Fragment receive_id_start_connect_progressbar;
+	private Fragment receive_id_start_wifi_connected_fail_text;
+
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -74,7 +77,7 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
-		 
+		fragmentManager = getFragmentManager();
 		ArrayList<String> resultshown = scanresultlist;
 
 		scanresultlist_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, resultshown);
@@ -158,7 +161,9 @@ public class ReceiveScanResultList extends ListFragment{
     			startvideo.putExtra("adid", adid);
     			receive_id_start_connect_progressbar.startActivity(startvideo);			
     		}else{
+    			ProgressbarToFail();
           		c.unregisterReceiver(this);
+          		
     		}
 	
       		
@@ -168,13 +173,24 @@ public class ReceiveScanResultList extends ListFragment{
 	
 
 	
-	private  void UIToProgressbar(){
-		fragmentManager = getFragmentManager();
-		receive_id_start_connect_progressbar = new WifiProgressBar();
+	private void UIToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
+		receive_id_start_connect_progressbar = new WifiProgressBar();
 		transaction.remove(this);
 
 		transaction.add(R.id.receive_container_scan, receive_id_start_connect_progressbar, "receive_id_start_connect_progressbar");
 		transaction.commitAllowingStateLoss(); 
 	}
+	
+	private void ProgressbarToFail(){
+		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
+		receive_id_start_connect_progressbar = fragmentManager.findFragmentByTag("receive_id_start_connect_progressbar");
+		if(receive_id_start_connect_progressbar != null){
+			transaction.remove(receive_id_start_connect_progressbar);
+		}
+		receive_id_start_wifi_connected_fail_text = new ReceiveWifiConnectedFailText();
+		transaction.add(R.id.receive_container_scan, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
+		transaction.commitAllowingStateLoss(); 
+	}
+	
 }

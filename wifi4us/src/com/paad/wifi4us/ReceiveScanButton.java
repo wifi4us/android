@@ -25,6 +25,7 @@ public class ReceiveScanButton extends Fragment{
 	private boolean doubleclickscan;
 	private Fragment receive_id_start_scan_progressbar;
 	private Fragment receive_id_start_scan_resultlist;
+	private Fragment receive_id_start_scan_nothing;
     private ClickScanReceiver clickScanReceiver;
 	private FragmentManager fragmentManager;
 
@@ -94,10 +95,13 @@ public class ReceiveScanButton extends Fragment{
     		}
     		//The result list fragment or fail result fragment
     		ArrayList<String> wifiAPList = receiveService.getWifiScanResult();
-    		UIScanFromProgressToScanresult(wifiAPList);
+    		if(wifiAPList.size() != 0){
+        		UIScanFromProgressToScanresult(wifiAPList);
+    		}else{
+    			UIScanFromProgressToNothing();
+    		}
     		
     		c.unregisterReceiver(this);    			
-
             doubleclickscan = false;
     	}
     }
@@ -109,11 +113,17 @@ public class ReceiveScanButton extends Fragment{
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
 		
 		receive_id_start_scan_resultlist = fragmentManager.findFragmentByTag("receive_id_start_scan_resultlist");
+        receive_id_start_scan_nothing = fragmentManager.findFragmentByTag("receive_id_start_scan_nothing");
 
 		if(receive_id_start_scan_resultlist != null)
 		{
 			transaction.remove(receive_id_start_scan_resultlist);
 		}
+		if(receive_id_start_scan_nothing != null)
+		{
+			transaction.remove(receive_id_start_scan_nothing);
+		}
+
 
 		
 		transaction.add(R.id.receive_container_scan, receive_id_start_scan_progressbar, "receive_id_start_scan_progressbar_scan");
@@ -140,4 +150,24 @@ public class ReceiveScanButton extends Fragment{
         
         transaction.commitAllowingStateLoss();
 	}
+	
+	private void UIScanFromProgressToNothing(){
+        FragmentTransaction transaction = fragmentManager.beginTransaction(); 
+        receive_id_start_scan_progressbar = fragmentManager.findFragmentByTag("receive_id_start_scan_progressbar_scan");
+        if(receive_id_start_scan_progressbar != null)
+		{
+
+			transaction.remove(receive_id_start_scan_progressbar);
+		}
+       
+        receive_id_start_scan_nothing = fragmentManager.findFragmentByTag("receive_id_start_scan_nothing");
+        if(receive_id_start_scan_nothing == null){
+        	receive_id_start_scan_nothing = new ReceiveStartScanNothing();
+        }
+        transaction.add(R.id.receive_container_scan, receive_id_start_scan_nothing, "receive_id_start_scan_nothing");
+        
+        transaction.commitAllowingStateLoss();
+	}
+	
+	
 }

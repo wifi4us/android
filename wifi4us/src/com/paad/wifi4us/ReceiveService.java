@@ -175,7 +175,9 @@ public class ReceiveService extends Service {
 	}
 
 	public void EstablishConmunication(){
-		
+		totalTimeSeconds = 0;
+		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
+	
 		Runnable setupConnectionRunner = new Runnable(){
 			public void run(){
 				Intent intent = new Intent();
@@ -187,6 +189,12 @@ public class ReceiveService extends Service {
 					return;
 				}
 				
+				if(!getAdvertisement()){
+					WifiDisconnect();
+					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
+					sendBroadcast(intent);
+					return;
+				}
 				
 				if(!setHeartBeat()){
 					WifiDisconnect();
@@ -194,13 +202,7 @@ public class ReceiveService extends Service {
 					sendBroadcast(intent);
 					return;
 				}
-
-				if(!getAdvertisement()){
-					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "fail");
-					sendBroadcast(intent);
-					return;
-				}
+				
 
 				intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "ok");
 				intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADWORD, adWord);
@@ -223,8 +225,10 @@ public class ReceiveService extends Service {
 
 			out.println("hello_server");
 			out.flush();
-			String firstResponse = in.readLine();
+			System.out.println("000000000000000");
 
+			String firstResponse = in.readLine();
+System.out.println("111111111111");
 			if(firstResponse.equals("hello_client")){
 				return true;
 			}else{
@@ -239,30 +243,33 @@ public class ReceiveService extends Service {
 	
 	private boolean setHeartBeat(){
 		//init the time counter total seconds
-		totalTimeSeconds = 0;
-		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
-		
+	
 		//start the alarm and send broadcast every 5 seconds
 		timer = new Timer();  
 
 	    TimerTask task = new TimerTask(){  
 	        public void run() {  
+	        	try{
+		        	totalTimeSeconds = totalTimeSeconds + 3;
+					String time = String.valueOf(totalTimeSeconds);
+					long totalTrafficBytesShown = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes() - totalTrafficBytes;
+					String traffic = String.valueOf(totalTrafficBytesShown);
+					
+					Intent heartbeat = new Intent();
+					heartbeat.setAction(CONMUNICATION_SETUP_HEART_BEATEN); 
+					heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
+					heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
+					
+					getApplicationContext().sendBroadcast(heartbeat);
+					
+					//send traffic to ap host through socket
+					out.println("T" + totalTrafficBytesShown);
+					out.flush();
+					
+	        	}catch(Exception e){
+	        		e.printStackTrace();
+	        	}
 
-	        	totalTimeSeconds = totalTimeSeconds + 3;
-				String time = String.valueOf(totalTimeSeconds);
-				long totalTrafficBytesShown = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes() - totalTrafficBytes;
-				String traffic = String.valueOf(totalTrafficBytesShown);
-				
-				Intent heartbeat = new Intent();
-				heartbeat.setAction(CONMUNICATION_SETUP_HEART_BEATEN); 
-				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
-				heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
-				
-				getApplicationContext().sendBroadcast(heartbeat);
-				
-				//send traffic to ap host through socket
-				out.println("T" + totalTrafficBytesShown);
-				out.flush();
 	        }  
 	          
 	    };  

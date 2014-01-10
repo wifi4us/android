@@ -15,7 +15,8 @@
     <string name="receive_string_start_scan_text_openwifi">请打开wifi开关</string>   
     <string name="receive_string_ad_sound_button">打开关闭声音</string>   
     <string name="receive_string_disconnect_wifi">断开连接</string>   
-	
+	<string name="receive_string_connected_fail_text">对方没有开启流量或者网络环境恶劣，到人少的地方试试？</string>   
+    
     <string name="send_button_start_share">分享5M流量和30分钟</string>
     <string name="send_text_start_share">您的流量和分享时间将严格限定在5M和30分钟，先到为准</string>
     <string name="send_text_stop_share">已经创建完成，等待接入中</string>

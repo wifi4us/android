@@ -105,7 +105,6 @@ public class ReceiveWifiConnectedState extends Fragment{
     		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 
     		if(State.DISCONNECTED == state){  
-    			System.out.println("11111111111111");
      	   		receiveService.closeConnection();
      	   		receiveService.WifiDisconnect();
      			Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 

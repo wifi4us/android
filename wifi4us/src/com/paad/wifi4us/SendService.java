@@ -42,6 +42,7 @@ public class SendService extends Service {
 	private InputStreamReader in;
 	private PrintWriter out;
 	private static final int SERVER_PORT = 12345;
+	private static final int TIME_INTERVAL_AD = 10000;
 	private static final int TIME_INTERVAL = 5000;
 	
 	public class MyBinder extends Binder {  
@@ -105,7 +106,7 @@ public class SendService extends Service {
 							wifiManager.setWifiEnabled(true); 
 							while(wifiManager.getWifiState() != WifiManager.WIFI_STATE_ENABLED){
 								try {
-									Thread.sleep(500);
+									Thread.sleep(100);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
@@ -132,17 +133,19 @@ public class SendService extends Service {
 	
 	
 	public void WifiApOn(){			 
-		wifiManager.setWifiEnabled(false); 
-		while(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		
 		
 		Runnable myRunnable = new Runnable(){
 			public void run(){
+				wifiManager.setWifiEnabled(false); 
+				while(wifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED){
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
 				while(getWifiApState() == WIFI_AP_STATE_DISABLING){
 					try {
 						Thread.sleep(500);
@@ -187,9 +190,8 @@ public class SendService extends Service {
 				socket = null;
 				try{
 					socket = serverSocket.accept();
-					socket.setSoTimeout(TIME_INTERVAL);
 					sendConnectionSetupBroadcast();
-	            	
+
 	            	in = new InputStreamReader(socket.getInputStream());
 					out = new PrintWriter(socket.getOutputStream());
 
@@ -202,15 +204,10 @@ public class SendService extends Service {
 	            	}
 		            while(true){
 		            	info = reader.readLine();
+						socket.setSoTimeout(TIME_INTERVAL);
 		            	if(info == null){
 							WifiApOff();
 		            	}
-		            	
-		            	if(info.equals("hello_server")){
-		            		out.println("gotohell_client");
-		            		out.flush();
-		            	}
-		            	
 		            	sendConnectionHeartbeatBroadcast(info);
 		            }
 				}catch(SocketTimeoutException e){
