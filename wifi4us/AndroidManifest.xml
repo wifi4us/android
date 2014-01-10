@@ -60,6 +60,14 @@
    			android:enabled="true"
    			android:exported="false">
     	</service>
+    	<activity
+            android:name="com.paad.wifi4us.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="com.paad.wifi4us.FeedbackActivity"
+            android:label="@string/title_activity_feedback" >
+        </activity>
     </application>
 	
 </manifest>
