@@ -23,5 +23,30 @@
     <string name="send_button_stop_share">立刻停止分享流量</string>
     <string name="send_text_start_fail">分享失败，您的手机运营商网络不是3G，或者android系统版本过低</string>
     
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="text_versioin">版本</string>
+    <string name="help">帮助</string>
+    <string name="check_update">检查更新</string>
+    <string name="feedback">反馈</string>
+    <string name="about">关于我们</string>
+    <string name="quit">退出</string>
+    <string name="agreement">用户协议</string>
+    <string name="settings">用户设置</string>
+    <string name="setDiscuss">分享有奖</string>
+    <string name="setScore">好评有礼</string>
+    <string name="version">当前版本</string>
+    <string name="unknow_user">未知用户</string>
+    <string name="no_user_name">积分</string>
+    <string name="title_more">更多</string>
+    <string name="setting_1">设置1</string>
+    <string name="setting_2">设置2</string>
+    <string name="feekback_type">您的反馈类型：</string>
+    <string name="feedback_propose_title">建议：</string>
+    <string name="feedback_other_title">联系方式：</string>
+    <string name="send_feedback">反馈给我们</string>
+    <string name="webview_back">返回</string>
+    <string name="title_activity_settings">应用设置</string>
+    <string name="title_activity_feedback">意见反馈</string>
 
 </resources>
