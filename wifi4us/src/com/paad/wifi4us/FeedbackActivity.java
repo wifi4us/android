@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
-import com.paad.wifi4us.R;
+import com.paad.wifi4us.utility.Constants;
 
 /**
  *

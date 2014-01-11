@@ -19,7 +19,6 @@ import android.net.DhcpInfo;
 import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -30,6 +29,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.paad.wifi4us.utility.HttpXmlParser;
+import com.paad.wifi4us.utility.MyWifiManager;
 
 public class ReceiveService extends Service {
 	private String make;
@@ -41,7 +41,7 @@ public class ReceiveService extends Service {
 	
 	
 	private final IBinder binder = new MyBinder();
-	private WifiManager wifiManager;
+	private MyWifiManager myWifiManager;
     private ArrayList<String> wifiApList; 
     private String connectinfo;
     private String adWord;
@@ -87,7 +87,7 @@ public class ReceiveService extends Service {
 	  }
 	public void onCreate() {  
         super.onCreate();  
-		wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        myWifiManager = new MyWifiManager(getApplicationContext());
 		wifiApList = new ArrayList<String>();
     }  
 	
@@ -99,11 +99,11 @@ public class ReceiveService extends Service {
 	public void WifiSwitcher(){
 		Runnable myRunnable = new Runnable(){
 			public void run(){
-				if (wifiManager.isWifiEnabled()) { 
-					wifiManager.setWifiEnabled(false); 
+				if (myWifiManager.getWifiManager().isWifiEnabled()) { 
+					myWifiManager.getWifiManager().setWifiEnabled(false); 
 				} 
 				else { 
-					wifiManager.setWifiEnabled(true); 
+					myWifiManager.getWifiManager().setWifiEnabled(true); 
 				} 			
 			}
 		};
@@ -117,7 +117,7 @@ public class ReceiveService extends Service {
 	public void WifiScan(){
 		Runnable myRunnable = new Runnable(){
 			public void run(){
-				wifiManager.startScan();
+				myWifiManager.getWifiManager().startScan();
 			}
 		};
 		Thread thread = new Thread(myRunnable);
@@ -127,7 +127,7 @@ public class ReceiveService extends Service {
 	//get the scan result list
 	public ArrayList<String> getWifiScanResult(){
 		wifiApList.clear();
-		List<ScanResult> scanResultList = wifiManager.getScanResults();
+		List<ScanResult> scanResultList = myWifiManager.getWifiManager().getScanResults();
 		if(scanResultList.size() > 0){
 	        for (int i =0; i < scanResultList.size(); i++) {  
 	        	wifiApList.add(scanResultList.get(i).SSID);       
@@ -162,7 +162,7 @@ public class ReceiveService extends Service {
 				wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);  
 				wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);  
 				
-				wifiManager.enableNetwork(wifiManager.addNetwork(wifiConfig), true);
+				myWifiManager.getWifiManager().enableNetwork(myWifiManager.getWifiManager().addNetwork(wifiConfig), true);
 			}
 		};
 		Thread thread = new Thread(myRunnable);
@@ -170,8 +170,8 @@ public class ReceiveService extends Service {
 	}
 
 	public void WifiDisconnect(){
-		int current_networkid = wifiManager.getConnectionInfo().getNetworkId();
-		wifiManager.removeNetwork(current_networkid);
+		int current_networkid = myWifiManager.getWifiManager().getConnectionInfo().getNetworkId();
+		myWifiManager.getWifiManager().removeNetwork(current_networkid);
 	}
 
 	public void EstablishConmunication(){
@@ -219,7 +219,7 @@ public class ReceiveService extends Service {
 	
 	private boolean openSocketConnection(){
 		try{
-			socket=new Socket(getIpFromInt(wifiManager.getDhcpInfo().gateway), SERVER_PORT);
+			socket=new Socket(getIpFromInt(myWifiManager.getWifiManager().getDhcpInfo().gateway), SERVER_PORT);
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -339,7 +339,7 @@ public class ReceiveService extends Service {
 	}
 	
 	public DhcpInfo getAPinfo(){
-		return wifiManager.getDhcpInfo();
+		return myWifiManager.getWifiManager().getDhcpInfo();
 	}
 
 	

@@ -1,9 +1,5 @@
 package com.paad.wifi4us;
 
-import java.lang.reflect.Method;
-
-import android.content.Context;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,13 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.paad.wifi4us.utility.MyWifiManager;
+
 public class SendFragment extends Fragment{
 	private FragmentManager fragmentManager;
 	private Fragment send_id_start_share_button;
 	private Fragment send_id_start_share_text;
 	private Fragment send_id_stop_share_button;
 	
-	private WifiManager wifiManager;
+	private MyWifiManager myWifiManager;
 	public int WIFI_AP_STATE_DISABLING;  
     public int WIFI_AP_STATE_DISABLED;  
     public int WIFI_AP_STATE_ENABLING;  
@@ -28,16 +26,7 @@ public class SendFragment extends Fragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
-		wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-		try{
-			WIFI_AP_STATE_DISABLING  = (Integer) wifiManager.getClass().getDeclaredField("WIFI_AP_STATE_DISABLING").get(wifiManager);
-			WIFI_AP_STATE_DISABLED  = (Integer) wifiManager.getClass().getDeclaredField("WIFI_AP_STATE_DISABLED").get(wifiManager);
-			WIFI_AP_STATE_ENABLING  = (Integer) wifiManager.getClass().getDeclaredField("WIFI_AP_STATE_ENABLING").get(wifiManager);
-			WIFI_AP_STATE_ENABLED  = (Integer) wifiManager.getClass().getDeclaredField("WIFI_AP_STATE_ENABLED").get(wifiManager);
-			WIFI_AP_STATE_FAILED  = (Integer) wifiManager.getClass().getDeclaredField("WIFI_AP_STATE_FAILED").get(wifiManager);
-		}catch(Exception e){
-        	e.printStackTrace();
-        }
+		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
 		View view_res = inflater.inflate(R.layout.fragment_send, container, false);
 		return view_res;
 	}
@@ -45,7 +34,7 @@ public class SendFragment extends Fragment{
 	
 	public void onStart(){
 		super.onStart();
-		int state = getWifiApState();
+		int state = myWifiManager.getWifiApState();
 		if(state == WIFI_AP_STATE_ENABLING || state == WIFI_AP_STATE_ENABLED){
 			UIStopSend();
 		}else{
@@ -76,13 +65,4 @@ public class SendFragment extends Fragment{
 		transaction.commitAllowingStateLoss();
 	}
 	
-	private int getWifiApState(){
-        try {  
-            Method method = wifiManager.getClass().getMethod("getWifiApState");  
-            int i = (Integer) method.invoke(wifiManager);  
-            return i;  
-        } catch (Exception e) {  
-            return WIFI_AP_STATE_FAILED;  
-        }  
-	}
 }

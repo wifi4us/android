@@ -20,6 +20,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.paad.wifi4us.utility.MyWifiManager;
+
 public class ReceiveSwitcherButton extends Fragment{
 	private Button switcherwifi;
 	private Fragment receive_id_start_scan_progressbar;
@@ -31,7 +33,7 @@ public class ReceiveSwitcherButton extends Fragment{
 	private Fragment receive_id_start_wifi_connected_state;
     private ClickSwitcherReceiver clickSwitcherReceiver;
 	private FragmentManager fragmentManager;
-	private WifiManager wifiManager;
+	private MyWifiManager myWifiManager;
 	private Boolean startReceive;
 
 	
@@ -72,8 +74,8 @@ public class ReceiveSwitcherButton extends Fragment{
 			public void onClick(View view){
 				if(!haveBondService)
 	    			return;
-				wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-				int state = wifiManager.getWifiState();
+				myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
+				int state = myWifiManager.getWifiManager().getWifiState();
 				if(state == WifiManager.WIFI_STATE_DISABLING || state == WifiManager.WIFI_STATE_ENABLING){
 					return;
 				}

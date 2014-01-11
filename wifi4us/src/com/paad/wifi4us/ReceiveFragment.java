@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.paad.wifi4us.utility.MyWifiManager;
+
 public class ReceiveFragment extends Fragment{
 	private FragmentManager fragmentManager;
 	private Fragment receivie_wifi_switcher_button;
@@ -22,7 +24,7 @@ public class ReceiveFragment extends Fragment{
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_scan_text_openwifi;
 	private Fragment receive_id_start_wifi_connected_state;
-	private WifiManager wifiManager;
+	private MyWifiManager myWifiManager;
 	private Boolean startReceive;
 
     //The call back functions start here
@@ -53,7 +55,7 @@ public class ReceiveFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		//initial the activity variable
 		fragmentManager = getFragmentManager();
-		wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
 
 		//start to render the fragment
 		View view_res = inflater.inflate(R.layout.fragment_receive, container, false);	
@@ -65,7 +67,7 @@ public class ReceiveFragment extends Fragment{
 	private void UIStart(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-		if(wifiManager.getWifiState() == WifiManager.WIFI_STATE_ENABLED){
+		if(myWifiManager.getWifiManager().getWifiState() == WifiManager.WIFI_STATE_ENABLED){
 			receive_id_switcher_text_on = new ReceiveSwitcherTextOn();
 			transaction.replace(R.id.receive_container_switcher_text, receive_id_switcher_text_on, "receive_id_switcher_text_on");
 			

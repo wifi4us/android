@@ -86,6 +86,7 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
+    	UIToProgressbar();
    		Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
 		sharedata.putBoolean("FINISH_VIDEO", false);
 		sharedata.commit();
@@ -98,7 +99,6 @@ public class ReceiveScanResultList extends ListFragment{
 		conmunicationReceiver = new ConmunicationReceiver();
 		
 		receiveService.WifiDisconnect();
-    	UIToProgressbar();
 
 		/*
 		 * process the next step until the wifi has been disconnected completely, 
