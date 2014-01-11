@@ -47,6 +47,23 @@ public class MyWifiManager {
         }  
     }  
  	
+ 	public void WifiSetupConnect(String ssid, String passwd){
+        apConfig = new WifiConfiguration();  
+        apConfig.SSID="\"" + ssid + "\"";  
+        apConfig.preSharedKey="\"" + passwd + "\"";  
+        apConfig.hiddenSSID = true;  
+        apConfig.status = WifiConfiguration.Status.ENABLED;  
+        apConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);  
+        apConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);  
+        apConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);  
+        apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);  
+        apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);  
+        apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);  
+        apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);  
+        apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);  
+		
+        wifiManager.enableNetwork(wifiManager.addNetwork(apConfig), true);
+ 	}
  	
 	public boolean setWifiApEnabled(boolean enabled, String ssid, String passwd) {
 	 	boolean isHtc = false;  

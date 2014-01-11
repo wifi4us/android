@@ -10,21 +10,20 @@
 package com.paad.wifi4us;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class FirstActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-   		Editor sharedata = getApplicationContext().getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putBoolean("FINISH_VIDEO", true);
-		sharedata.commit();
+        SharedPreferenceHelper sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+        sharedPreference.putBoolean("FINISH_VIDEO", true);
         setContentView(R.layout.activity_first);
     }
 

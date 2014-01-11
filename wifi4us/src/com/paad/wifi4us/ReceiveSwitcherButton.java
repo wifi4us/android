@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveSwitcherButton extends Fragment{
 	private Button switcherwifi;
@@ -35,6 +34,7 @@ public class ReceiveSwitcherButton extends Fragment{
 	private FragmentManager fragmentManager;
 	private MyWifiManager myWifiManager;
 	private Boolean startReceive;
+	private SharedPreferenceHelper sharedPreference;
 
 	
     //Receive Service 	
@@ -68,6 +68,7 @@ public class ReceiveSwitcherButton extends Fragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
+    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 		View view_res = inflater.inflate(R.layout.fragment_receive_switcher_button, container, false);
 		switcherwifi = (Button) view_res.findViewById(R.id.receivie_button_wifi_switcher);
 		switcherwifi.setOnClickListener(new OnClickListener(){
@@ -128,9 +129,7 @@ public class ReceiveSwitcherButton extends Fragment{
         
         receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
 		
-        Context context = getActivity().getApplicationContext();
-		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
-		startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
+		startReceive = sharedPreference.getBoolean("STATE_RECEIVE");
 
 		if(receive_id_start_scan_button == null && !startReceive){
 			receive_id_start_scan_button = new ReceiveScanButton();
@@ -142,9 +141,7 @@ public class ReceiveSwitcherButton extends Fragment{
 	}
 	
 	private void UISwitcherCleanScanZone(){
-		Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putBoolean("STATE_RECEIVE", false);
-		sharedata.commit();
+		sharedPreference.putBoolean("STATE_RECEIVE", false);
 			
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");

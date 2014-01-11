@@ -1,7 +1,5 @@
 package com.paad.wifi4us;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveFragment extends Fragment{
 	private FragmentManager fragmentManager;
@@ -26,6 +25,7 @@ public class ReceiveFragment extends Fragment{
 	private Fragment receive_id_start_wifi_connected_state;
 	private MyWifiManager myWifiManager;
 	private Boolean startReceive;
+	private SharedPreferenceHelper sharedPreference;
 
     //The call back functions start here
     
@@ -37,9 +37,7 @@ public class ReceiveFragment extends Fragment{
 	public void onStart(){
 		super.onStart();
 		//The init fragment
-		Context context = getActivity().getApplicationContext();
-		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
-		startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
+		startReceive = sharedPreference.getBoolean("STATE_RECEIVE");
 		if(startReceive){
 			UIStartFinishVideo();
 		}else{
@@ -56,6 +54,7 @@ public class ReceiveFragment extends Fragment{
 		//initial the activity variable
 		fragmentManager = getFragmentManager();
 		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
+    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		//start to render the fragment
 		View view_res = inflater.inflate(R.layout.fragment_receive, container, false);	
@@ -123,10 +122,7 @@ public class ReceiveFragment extends Fragment{
 
 		transaction.add(R.id.receive_container_switcher_button, receivie_wifi_switcher_button, "receivie_wifi_switcher_button");
 		
-		Context context = getActivity().getApplicationContext();
-		SharedPreferences sharedata = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
-		startReceive = sharedata.getBoolean("STATE_RECEIVE", false);
-
+		startReceive = sharedPreference.getBoolean("STATE_RECEIVE");
 		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
 		if(receive_id_start_scan_button == null && !startReceive){
 			receive_id_start_scan_button = new ReceiveScanButton();		

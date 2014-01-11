@@ -14,18 +14,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
 
 public class SendService extends Service {
-    public static final String AP_STATE_OPEN_ACTION = "com.paad.wifi4us.apopen";
-    public static final String AP_STATE_SHUT_ACTION = "com.paad.wifi4us.apshut";
-    public static final String LISTEN_SETUP = "com.paad.wifi4us.listen.setup";
-    public static final String CONNECTION_SETUP = "com.paad.wifi4us.connection.setup";
-    public static final String CONNECTION_HEARTBEAT = "com.paad.wifi4us.connection.heartbeat";
-    public static final String CONNECTION_HEARTBEAT_EXTRA_TRAFFIC = "com.paad.wifi4us.connection.heartbeat.extra.traffic";
-    public static final String CONNECTION_FINISH = "com.paad.wifi4us.connection.finish";
 
-    
 	private final IBinder binder = new MyBinder();
 	private MyWifiManager myWifiManager;
 
@@ -33,9 +26,7 @@ public class SendService extends Service {
 	private ServerSocket serverSocket;
 	private InputStreamReader in;
 	private PrintWriter out;
-	private static final int SERVER_PORT = 12345;
-	private static final int TIME_INTERVAL_AD = 20000;
-	private static final int TIME_INTERVAL = 5000;
+
 	
 	public class MyBinder extends Binder {  
 		SendService getService() {  
@@ -54,7 +45,7 @@ public class SendService extends Service {
         super.onCreate();  
 		myWifiManager = new MyWifiManager(getApplicationContext());        
 		try{
-			serverSocket = new ServerSocket(SERVER_PORT);	
+			serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
 		}catch(Exception e){
         	e.printStackTrace();
         }
@@ -168,7 +159,7 @@ public class SendService extends Service {
 				socket = null;
 				try{
 					socket = serverSocket.accept();
-					socket.setSoTimeout(TIME_INTERVAL_AD);
+					socket.setSoTimeout(Constant.Networks.TIME_INTERVAL_AD);
 
 	            	in = new InputStreamReader(socket.getInputStream());
 					out = new PrintWriter(socket.getOutputStream());
@@ -184,7 +175,7 @@ public class SendService extends Service {
 	            	boolean connect_setup_done = false;
 		            while(true){
 		            	info = reader.readLine();
-						socket.setSoTimeout(TIME_INTERVAL);
+						socket.setSoTimeout(Constant.Networks.TIME_INTERVAL);
 		            	if(info == null){
 							WifiApOff();
 		            	}
@@ -239,54 +230,54 @@ public class SendService extends Service {
 
 	 	private void sendApShutSuccessBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(AP_STATE_SHUT_ACTION);  
+            intent.setAction(Constant.BroadcastSend.AP_STATE_SHUT_ACTION);  
             intent.putExtra("apstate", "ok");  
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendApShutFailBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(AP_STATE_SHUT_ACTION);  
+            intent.setAction(Constant.BroadcastSend.AP_STATE_SHUT_ACTION);  
             intent.putExtra("apstate", "fail");  
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendApOpenSuccessBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(AP_STATE_OPEN_ACTION);  
+            intent.setAction(Constant.BroadcastSend.AP_STATE_OPEN_ACTION);  
             intent.putExtra("apstate", "ok");  
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendApOpenFailBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(AP_STATE_OPEN_ACTION);  
+            intent.setAction(Constant.BroadcastSend.AP_STATE_OPEN_ACTION);  
             intent.putExtra("apstate", "fail");  
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendListenSetupBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(LISTEN_SETUP);  
+            intent.setAction(Constant.BroadcastSend.LISTEN_SETUP);  
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendConnectionSetupBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(CONNECTION_SETUP);  
+            intent.setAction(Constant.BroadcastSend.CONNECTION_SETUP);  
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendConnectionHeartbeatBroadcast(String info){
 	 		Intent intent  = new Intent();  
-            intent.setAction(CONNECTION_HEARTBEAT);
-            intent.putExtra(CONNECTION_HEARTBEAT_EXTRA_TRAFFIC, info);
+            intent.setAction(Constant.BroadcastSend.CONNECTION_HEARTBEAT);
+            intent.putExtra(Constant.BroadcastSend.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC, info);
             sendBroadcast(intent);  
 	 	}
 	 	
 	 	private void sendConnectionFinishBroadcast(){
 	 		Intent intent  = new Intent();  
-            intent.setAction(CONNECTION_FINISH);
+            intent.setAction(Constant.BroadcastSend.CONNECTION_FINISH);
             sendBroadcast(intent);  
 	 	}
 	 		 	

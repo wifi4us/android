@@ -1,5 +1,7 @@
 package com.paad.wifi4us;
 
+import com.paad.wifi4us.utility.Constant;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -77,7 +79,7 @@ public class SendStartShareButton extends Fragment{
 				clickStartShareReceiver = new ClickStartShareReceiver();
 				listenStartReceiver = new ListenStartReceiver();
 				connectionStartReceiver = new ConnectionStartReceiver();
-				context.registerReceiver(clickStartShareReceiver, new IntentFilter(SendService.AP_STATE_OPEN_ACTION));
+				context.registerReceiver(clickStartShareReceiver, new IntentFilter(Constant.BroadcastSend.AP_STATE_OPEN_ACTION));
 
 
 				//The progress bar fragment
@@ -98,8 +100,8 @@ public class SendStartShareButton extends Fragment{
     	        c.unregisterReceiver(this);
     			return;
     		}
-			context.registerReceiver(listenStartReceiver, new IntentFilter(SendService.LISTEN_SETUP));
-			context.registerReceiver(connectionStartReceiver, new IntentFilter(SendService.CONNECTION_SETUP));
+			context.registerReceiver(listenStartReceiver, new IntentFilter(Constant.BroadcastSend.LISTEN_SETUP));
+			context.registerReceiver(connectionStartReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_SETUP));
     		sendService.ListenHeartBeat();
     		c.unregisterReceiver(this);
     	}

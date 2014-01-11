@@ -1,5 +1,7 @@
 package com.paad.wifi4us;
 
+import com.paad.wifi4us.utility.Constant;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,8 +33,8 @@ public class SendWifiConnectedState extends Fragment{
 		fragmentManager = getFragmentManager();
 		connectedStateReceiver = new ConnectedStateReceiver();
 		connectedFinishedReceiver = new ConnectedFinishedReceiver();
-        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(SendService.CONNECTION_HEARTBEAT));
-        getActivity().getApplicationContext().registerReceiver(connectedFinishedReceiver, new IntentFilter(SendService.CONNECTION_FINISH));
+        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_HEARTBEAT));
+        getActivity().getApplicationContext().registerReceiver(connectedFinishedReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_FINISH));
 	}
 	
 	public void onDestroy(){
@@ -52,7 +54,7 @@ public class SendWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			String trafficNow = intent.getExtras().getString(SendService.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC);
+			String trafficNow = intent.getExtras().getString(Constant.BroadcastSend.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC);
 			traffic.setText(trafficNow);
 		}
 	}

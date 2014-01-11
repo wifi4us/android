@@ -8,8 +8,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +24,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.paad.wifi4us.utility.HttpXmlParser;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class OtherFragment extends Fragment implements OnClickListener {
     private TextView other_id_userid_text;
@@ -36,21 +35,19 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
     private static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
 
-    private Handler mHandler = new Handler() {
+	private SharedPreferenceHelper sharedPreference;
+
+	private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_SUCCESS:
-                    other_id_userid_text.setText("ï¿½Ã»ï¿½ï¿½ï¿½ " + (String) msg.obj);
-                    Editor sharedata = getActivity().getSharedPreferences(
-                            getActivity().getApplicationContext()
-                                    .getPackageName(), Context.MODE_PRIVATE)
-                            .edit();
-                    sharedata.putString("USER_ID", (String) msg.obj);
-                    sharedata.commit();
+                    other_id_userid_text.setText("ÓÃ»§idÎª " + (String) msg.obj);
+       
+                    sharedPreference.putString("USER_ID", (String) msg.obj);
                     break;
                 case MSG_FAILURE:
                     other_id_userid_text
-                            .setText("ï¿½ï¿½È¡idÊ§ï¿½Ü£ï¿½ï¿½Þ·ï¿½Ê¹ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½");
+                            .setText("ÇëÁªÍøºóÖØÐÂ´ò¿ªÈí¼þ£¬ÖØÐÂ»ñÈ¡id");
                     break;
             }
         }
@@ -93,11 +90,11 @@ public class OtherFragment extends Fragment implements OnClickListener {
         super.onCreateView(inflater, container, savedInstanceState);
         View view_res = inflater.inflate(R.layout.fragment_other, container,
                 false);
+        
+    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
-        SharedPreferences sharedata = getActivity().getSharedPreferences(
-                getActivity().getApplicationContext().getPackageName(),
-                Context.MODE_PRIVATE);
-        userid = sharedata.getString("USER_ID", "NULL");
+        userid = sharedPreference.getString("USER_ID");
+        
         view_res.findViewById(R.id.btn_quit).setOnClickListener(this);
         view_res.findViewById(R.id.btn_about).setOnClickListener(this);
         view_res.findViewById(R.id.btn_check_update).setOnClickListener(this);

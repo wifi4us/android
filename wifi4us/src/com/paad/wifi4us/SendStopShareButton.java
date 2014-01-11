@@ -1,5 +1,7 @@
 package com.paad.wifi4us;
 
+import com.paad.wifi4us.utility.Constant;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -67,7 +69,7 @@ public class SendStopShareButton extends Fragment{
 	    			return;
 
 				clickStopShareReceiver = new ClickStopShareReceiver();
-		        getActivity().getApplicationContext().registerReceiver(clickStopShareReceiver, new IntentFilter(SendService.AP_STATE_SHUT_ACTION));
+		        getActivity().getApplicationContext().registerReceiver(clickStopShareReceiver, new IntentFilter(Constant.BroadcastSend.AP_STATE_SHUT_ACTION));
 		   
 				//The progress bar fragment
 				UIScanFromAPStateToProgress();

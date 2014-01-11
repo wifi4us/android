@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
-import com.paad.wifi4us.utility.Constants;
+import com.paad.wifi4us.utility.Constant;
 
 /**
  *
@@ -52,7 +52,7 @@ public class FeedbackActivity  extends Activity implements OnClickListener{
     
     public boolean postFeedback(String feedback, String contact) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpPost post = new HttpPost(Constants.SERVER_PREFIX);
+        HttpPost post = new HttpPost(Constant.SERVER_PREFIX);
         List<BasicNameValuePair> postData = new ArrayList<BasicNameValuePair>();
         postData.add(new BasicNameValuePair("msg", feedback));
         postData.add(new BasicNameValuePair("contact", contact));

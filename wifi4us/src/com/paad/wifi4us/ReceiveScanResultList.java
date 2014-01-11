@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
@@ -24,6 +23,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
+
 public class ReceiveScanResultList extends ListFragment{
 	//ignore first wifi connected broadcast	
 	private ArrayList<String> scanresultlist;
@@ -33,6 +35,7 @@ public class ReceiveScanResultList extends ListFragment{
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_wifi_connected_fail_text;
+	private SharedPreferenceHelper sharedPreference;
 
     //Receive Service 	
     private ReceiveService receiveService;
@@ -79,6 +82,7 @@ public class ReceiveScanResultList extends ListFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
 		ArrayList<String> resultshown = scanresultlist;
+    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		scanresultlist_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, resultshown);
 		setListAdapter(scanresultlist_adapter);
@@ -87,9 +91,7 @@ public class ReceiveScanResultList extends ListFragment{
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
     	UIToProgressbar();
-   		Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putBoolean("FINISH_VIDEO", false);
-		sharedata.commit();
+    	sharedPreference.putBoolean("FINISH_VIDEO", false);
 		
 		String rawssid = scanresultlist.get(pos);
 		if(!haveBondService)
@@ -116,7 +118,7 @@ public class ReceiveScanResultList extends ListFragment{
 			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 			if(State.DISCONNECTED == state){
 				getActivity().getApplicationContext().registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-	        	getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(ReceiveService.CONMUNICATION_SETUP));
+	        	getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
 	        	receiveService.WifiConnect(rawssid);
 	        	break;
 			}
@@ -151,10 +153,10 @@ public class ReceiveScanResultList extends ListFragment{
     			return;
     		}
       	
-      		if(intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_EXTRA_STATE).equals("ok")){
+      		if(intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE).equals("ok")){
           		c.unregisterReceiver(this);
-      			String adid = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_EXTRA_ADID);
-      			String adword = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_EXTRA_ADWORD);
+      			String adid = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID);
+      			String adword = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD);
 
     			Intent startvideo = new Intent(receive_id_start_connect_progressbar.getActivity(), VideoActivity.class);    
     			startvideo.putExtra("adword", adword);

@@ -9,7 +9,6 @@ package com.paad.wifi4us;
 import android.content.Context;
 import android.support.v4.view.ActionProvider;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;

@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -20,6 +19,8 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
+
 public class VideoActivity extends Activity {
 	
 	private Button button_sound;
@@ -30,7 +31,8 @@ public class VideoActivity extends Activity {
 	private Activity currentActivity;
 	private String adid;
 	private String adword;
-	
+	private SharedPreferenceHelper sharedPreference;
+
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -65,7 +67,7 @@ public class VideoActivity extends Activity {
     		return;
     	}
     	super.onBackPressed();
-    	receiveService.WifiDisconnect();
+    	receiveService.WifiDisconnectCompletely();
     }  
     
     
@@ -75,6 +77,7 @@ public class VideoActivity extends Activity {
         currentActivity = this;
         adid = getIntent().getStringExtra("adid");
         adword = getIntent().getStringExtra("adword");
+    	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
 
         
         
@@ -112,10 +115,8 @@ public class VideoActivity extends Activity {
         
         video.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
         	public void onCompletion(MediaPlayer mp){
-        		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-        		sharedata.putBoolean("FINISH_VIDEO", true);
-        		sharedata.putBoolean("STATE_RECEIVE", true);
-        		sharedata.commit();
+        		sharedPreference.putBoolean("FINISH_VIDEO", true);
+        		sharedPreference.putBoolean("STATE_RECEIVE", true);
         		currentActivity.finish();
         	}
         });

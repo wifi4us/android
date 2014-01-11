@@ -14,11 +14,8 @@ import java.util.TimerTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.DhcpInfo;
 import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -28,8 +25,10 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveService extends Service {
 	private String make;
@@ -54,23 +53,13 @@ public class ReceiveService extends Service {
     private static long totalTrafficBytes;
     private Timer timer; 
 
-    
-    public static final String CLIENT_STATE_CONNECTED_TO_AP = "com.paad.wifi4us.connectedtoap";
-    public static final String CLIENT_STATE_LEAVE_FROM_AP = "com.paad.wifi4us.leavefromap";
-    public static final String CLIENT_STATE_CONNECTED_TO_AP_EXTRA = "com.paad.wifi4us.connectedtoap.extra";
-	public static final String CONMUNICATION_SETUP = "com.paad.wifi4us.conmunication.setup";
-    public static final String CONMUNICATION_SETUP_EXTRA_STATE = "com.paad.wifi4us.conmunication.setup.extra.state";
-    public static final String CONMUNICATION_SETUP_EXTRA_ADWORD = "com.paad.wifi4us.conmunication.setup.extra.adword";
-    public static final String CONMUNICATION_SETUP_EXTRA_ADID = "com.paad.wifi4us.conmunication.setup.extra.adid";
-    public static final String AD_BASE_HTTPURL = "http://wifi4us.duapp.com/getadid.php";
-    public static final String CONMUNICATION_SETUP_HEART_BEATEN = "com.paad.wifi4us.conmunication.setup.heartbeaten";
-    public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME = "com.paad.wifi4us.conmunication.setup.heartbeaten.time";
-    public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC = "com.paad.wifi4us.conmunication.setup.heartbeaten.traffic";
-
+ 
     private Socket socket;
-	private static final int SERVER_PORT = 12345;
 	private PrintWriter out;
 	private BufferedReader in;
+
+	private SharedPreferenceHelper sharedPreference;
+
 	
 	public class MyBinder extends Binder {  
 		ReceiveService getService() {  
@@ -89,6 +78,7 @@ public class ReceiveService extends Service {
         super.onCreate();  
         myWifiManager = new MyWifiManager(getApplicationContext());
 		wifiApList = new ArrayList<String>();
+    	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
     }  
 	
 	public void onDestroy() {  
@@ -144,36 +134,24 @@ public class ReceiveService extends Service {
 
 		Runnable myRunnable = new Runnable(){
 			public void run(){
-
-	
 				String passwd = getPassWord();
 				String ssid = getSSID();
-				WifiConfiguration wifiConfig=new WifiConfiguration();  
-				wifiConfig.SSID="\"" + ssid + "\"";  
-				wifiConfig.preSharedKey="\"" + passwd + "\"";  
-				wifiConfig.hiddenSSID = true;  
-				wifiConfig.status = WifiConfiguration.Status.ENABLED;  
-				wifiConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);  
-				wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);  
-				wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);  
-				wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);  
-				wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);  
-				wifiConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);  
-				wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);  
-				wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);  
-				
-				myWifiManager.getWifiManager().enableNetwork(myWifiManager.getWifiManager().addNetwork(wifiConfig), true);
-			}
+				myWifiManager.WifiSetupConnect(ssid, passwd);
+				}
 		};
 		Thread thread = new Thread(myRunnable);
 		thread.start();
 	}
 
-	public void WifiDisconnect(){
+	public void WifiDisconnectCompletely(){
 		int current_networkid = myWifiManager.getWifiManager().getConnectionInfo().getNetworkId();
 		myWifiManager.getWifiManager().removeNetwork(current_networkid);
 	}
 
+	public void WifiDisconnect(){
+		myWifiManager.getWifiManager().disconnect();
+	}
+	
 	public void EstablishConmunication(){
 		totalTimeSeconds = 0;
 		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
@@ -181,35 +159,32 @@ public class ReceiveService extends Service {
 		Runnable setupConnectionRunner = new Runnable(){
 			public void run(){
 				Intent intent = new Intent();
-				intent.setAction(CONMUNICATION_SETUP); 
+				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP); 
 				if(!openSocketConnection()){
-					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "已经有人接入这个分享者了");
+					WifiDisconnectCompletely();
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "已经有人接入这个分享者了");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!getAdvertisement()){
-					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "分享者关闭的3G或者网速极慢");
+					WifiDisconnectCompletely();
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "分享者关闭的3G或者网速极慢");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!setHeartBeat()){
-					WifiDisconnect();
-					intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "正常连接中断");
+					WifiDisconnectCompletely();
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "正常连接中断");
 					sendBroadcast(intent);
 					return;
 				}
 				
-
-				intent.putExtra(CONMUNICATION_SETUP_EXTRA_STATE, "ok");
-				intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADWORD, adWord);
-				intent.putExtra(CONMUNICATION_SETUP_EXTRA_ADID, adId);
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ok");
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD, adWord);
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID, adId);
 				sendBroadcast(intent);
-					
-
 			}
 		};
 		
@@ -219,7 +194,7 @@ public class ReceiveService extends Service {
 	
 	private boolean openSocketConnection(){
 		try{
-			socket=new Socket(getIpFromInt(myWifiManager.getWifiManager().getDhcpInfo().gateway), SERVER_PORT);
+			socket=new Socket(getIpFromInt(myWifiManager.getWifiManager().getDhcpInfo().gateway), Constant.Networks.SERVER_PORT);
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -254,9 +229,9 @@ public class ReceiveService extends Service {
 					String traffic = String.valueOf(totalTrafficBytesShown);
 					
 					Intent heartbeat = new Intent();
-					heartbeat.setAction(CONMUNICATION_SETUP_HEART_BEATEN); 
-					heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
-					heartbeat.putExtra(CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
+					heartbeat.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN); 
+					heartbeat.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
+					heartbeat.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
 					
 					getApplicationContext().sendBroadcast(heartbeat);
 					
@@ -294,8 +269,7 @@ public class ReceiveService extends Service {
 			Integer h = Integer.valueOf(metrics.heightPixels);
 			resolution = URLEncoder.encode(h.toString() + "x" + w.toString(), "UTF-8");
 		
-			SharedPreferences sharedata = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE); 
-			userid = URLEncoder.encode(sharedata.getString("USER_ID", "NULL"), "UTF-8");
+			userid = URLEncoder.encode(sharedPreference.getString("USER_ID"), "UTF-8");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -306,7 +280,7 @@ public class ReceiveService extends Service {
 									+ "resolution" + "=" + resolution + "&"
 									+ "carrier" + "=" + carrier + "&"
 									+ "androidversion" + "=" + androidversion;
-		requestURL = AD_BASE_HTTPURL + parameters;
+		requestURL = Constant.Networks.AD_BASE_HTTPURL + parameters;
 		
 		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 		HttpXmlParser xpp = new HttpXmlParser();
@@ -338,21 +312,13 @@ public class ReceiveService extends Service {
 		}
 	}
 	
-	public DhcpInfo getAPinfo(){
-		return myWifiManager.getWifiManager().getDhcpInfo();
-	}
-
 	
 	private String getPassWord(){
-		//return "4001001111";
 		return "19851123";
-		//return "maancoffee";
 	}
 	
 	private String getSSID(){
-		//return "Maan Coffee";
 		return "111111";
-		//return "TP-LINK_3003";
 	}
 
 	private String getIpFromInt(int ip){

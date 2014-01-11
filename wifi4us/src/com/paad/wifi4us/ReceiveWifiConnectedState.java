@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
@@ -21,6 +20,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
+
 public class ReceiveWifiConnectedState extends Fragment{
 	
 	private ConnectedStateReceiver connectedStateReceiver;
@@ -30,7 +32,8 @@ public class ReceiveWifiConnectedState extends Fragment{
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_scan_button;
 	private Button receive_button_disconnect_wifi;
-	
+	private SharedPreferenceHelper sharedPreference;
+
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -53,10 +56,11 @@ public class ReceiveWifiConnectedState extends Fragment{
         //bind service to get ready for all the clickable element
 		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 		fragmentManager = getFragmentManager();
+    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
-        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN));
+        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
 		getActivity().getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
 	
@@ -79,7 +83,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 				if(!haveBondService){
 					return;
 				}
-				receiveService.WifiDisconnect();
+				receiveService.WifiDisconnectCompletely();
 			}
 		});
 
@@ -89,8 +93,8 @@ public class ReceiveWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			String timeNow = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME);
-			String trafficNow = intent.getExtras().getString(ReceiveService.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
+			String timeNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME);
+			String trafficNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
 			time.setText(timeNow);
 			traffic.setText(trafficNow);
 		}
@@ -106,10 +110,8 @@ public class ReceiveWifiConnectedState extends Fragment{
 
     		if(State.DISCONNECTED == state){  
      	   		receiveService.closeConnection();
-     	   		receiveService.WifiDisconnect();
-     			Editor sharedata = getActivity().getApplicationContext().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-     			sharedata.putBoolean("STATE_RECEIVE", false);
-     			sharedata.commit();
+     	   		receiveService.WifiDisconnectCompletely();
+     	   		sharedPreference.putBoolean("STATE_RECEIVE", false);
      			
      			FragmentTransaction transaction = fragmentManager.beginTransaction();
      			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");

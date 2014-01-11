@@ -4,8 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -16,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class MainActivity extends FragmentActivity {
 	private FragmentManager fragmentManager;
@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity {
 	private Fragment receive;
 	private Fragment other;
 	
-	
+	private SharedPreferenceHelper sharedPreference;
 	
 	//Receive Service 	
     private ReceiveService receiveService;
@@ -74,10 +74,9 @@ public class MainActivity extends FragmentActivity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	
-		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putBoolean("STATE_RECEIVE", false);
-		sharedata.commit();
+        
+    	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+    	sharedPreference.putBoolean("STATE_RECEIVE", false);
 
     	
 		fragmentManager = this.getSupportFragmentManager();
@@ -95,8 +94,7 @@ public class MainActivity extends FragmentActivity {
     	
     	tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {    
             public void onTabChanged(String tabId) {  
-            	SharedPreferences sharedata = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE); 
-            	String lastTabId = sharedata.getString("LAST_TAB", "NULL");
+            	String lastTabId = sharedPreference.getString("LAST_TAB");
 
             	if(tabId.equals("receive")){
             		if(lastTabId.equals("send")){
@@ -140,10 +138,9 @@ public class MainActivity extends FragmentActivity {
     	if(!haveBondService){
     		return;
     	}
-    	SharedPreferences sharedata = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE); 
-		Boolean finishVideo = sharedata.getBoolean("FINISH_VIDEO", false);
+		Boolean finishVideo = sharedPreference.getBoolean("FINISH_VIDEO");
 		if(!finishVideo){
-			receiveService.WifiDisconnect();
+			receiveService.WifiDisconnectCompletely();
 		}
         Intent backtoHome = new Intent(Intent.ACTION_MAIN);
         backtoHome.addCategory(Intent.CATEGORY_HOME);
@@ -152,9 +149,7 @@ public class MainActivity extends FragmentActivity {
     }  
     
     private void StartReceiveFragment(){
-		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putString("LAST_TAB", "receive");
-		sharedata.commit();
+    	sharedPreference.putString("LAST_TAB", "receive");
     	
     	initFragments();
     	if(receive != null){
@@ -200,9 +195,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     private void StartSendFragment(){
-		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putString("LAST_TAB", "send");
-		sharedata.commit();
+    	sharedPreference.putString("LAST_TAB", "send");
 		
     	initFragments();
        	if(send != null){
@@ -229,9 +222,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     private void StartOtherFragment(){
-		Editor sharedata = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit(); 
-		sharedata.putString("LAST_TAB", "other");
-		sharedata.commit();
+    	sharedPreference.putString("LAST_TAB", "other");
 		
     	initFragments();
        	if(other != null){
