@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
@@ -30,10 +31,8 @@ public class OtherFragment extends Fragment implements OnClickListener {
     private TextView other_id_userid_text;
 
     private static final int MSG_SUCCESS = 0;
-
     private static final int MSG_FAILURE = 1;
 
-    private static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
 
 	private SharedPreferenceHelper sharedPreference;
 
@@ -60,14 +59,14 @@ public class OtherFragment extends Fragment implements OnClickListener {
                     .getSystemService(Context.TELEPHONY_SERVICE);
             String registerUrl;
             if (tm.getDeviceId() == null) {
-                registerUrl = REGISTER_BASE_HTTPURL
+                registerUrl = Constant.Networks.REGISTER_BASE_HTTPURL
                         + "?"
                         + "imei="
                         + Secure.getString(getActivity()
                                 .getApplicationContext().getContentResolver(),
                                 Secure.ANDROID_ID);
             } else {
-                registerUrl = REGISTER_BASE_HTTPURL + "?" + "imei="
+                registerUrl = Constant.Networks.REGISTER_BASE_HTTPURL + "?" + "imei="
                         + tm.getDeviceId();
             }
             HttpXmlParser xpp = new HttpXmlParser();

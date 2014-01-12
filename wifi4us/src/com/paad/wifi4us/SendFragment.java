@@ -17,11 +17,7 @@ public class SendFragment extends Fragment{
 	private Fragment send_id_stop_share_button;
 	
 	private MyWifiManager myWifiManager;
-	public int WIFI_AP_STATE_DISABLING;  
-    public int WIFI_AP_STATE_DISABLED;  
-    public int WIFI_AP_STATE_ENABLING;  
-    public int WIFI_AP_STATE_ENABLED;  
-    public int WIFI_AP_STATE_FAILED;
+
     
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
@@ -35,7 +31,7 @@ public class SendFragment extends Fragment{
 	public void onStart(){
 		super.onStart();
 		int state = myWifiManager.getWifiApState();
-		if(state == WIFI_AP_STATE_ENABLING || state == WIFI_AP_STATE_ENABLED){
+		if(state == myWifiManager.WIFI_AP_STATE_ENABLING || state == myWifiManager.WIFI_AP_STATE_ENABLED){
 			UIStopSend();
 		}else{
 			UIStartSend();

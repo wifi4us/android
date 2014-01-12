@@ -28,31 +28,12 @@ public class HttpXmlParser {
 			
 			int status = urlConnection.getResponseCode();
 			if(status == HttpURLConnection.HTTP_OK){
-				InputStream in = urlConnection.getInputStream();
-/*
-				BufferedInputStream bis = new BufferedInputStream(in);
-			    ByteArrayBuffer baf = new ByteArrayBuffer(50);
-			    int read = 0;
-			    int bufSize = 512;
-			    byte[] buffer = new byte[bufSize];
-			    while(true){
-			    	read = bis.read(buffer);
-			    	if(read==-1){
-			    		break;
-			        }
-			        baf.append(buffer, 0, read);
-			    }
-			     
-			    String queryResult = new String(baf.toByteArray());  */  				
+				InputStream in = urlConnection.getInputStream();			
 				
 				XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 				factory.setNamespaceAware(true);
 				XmlPullParser xpp = factory.newPullParser();
 				xpp.setInput(in, null);
-			
-				
-				//HACK for the first blank line of the xml writer result, need to be fixed
-		//		xpp.setInput(new StringReader(queryResult.substring(42)));
 
 				int eventType = xpp.getEventType();
 		        while (eventType != XmlPullParser.END_DOCUMENT) {

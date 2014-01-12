@@ -2,6 +2,7 @@ package com.paad.wifi4us;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -54,6 +55,13 @@ public class ReceiveScanResultList extends ListFragment{
     };  
     
     public void setView(ArrayList<String> arr){
+    	Iterator<String> sListIterator = arr.iterator();  
+    	while(sListIterator.hasNext()){  
+    	    String e = sListIterator.next();  
+    	    if(e.equals("MaanCoffeeTP")){  
+    	    	sListIterator.remove();  
+    	    }  
+    	}  
     	scanresultlist = arr;
     }
     
@@ -172,8 +180,6 @@ public class ReceiveScanResultList extends ListFragment{
 
 		}   		
 	}
-	
-
 	
 	private void UIToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 

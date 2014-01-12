@@ -102,7 +102,6 @@ public class VideoActivity extends Activity {
         counttime = (TextView)findViewById(R.id.receive_text_ad_timecount);  
         MyCount mc = new MyCount(30000, 1000);  
         mc.start();  
-    
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         video = (MyVideoView)findViewById(R.id.videoview);
@@ -110,14 +109,14 @@ public class VideoActivity extends Activity {
         controller = new MediaController(this);
         controller.setVisibility(View.INVISIBLE); 
         video.setMediaController(controller);
-        video.setVideoPath(Environment.getExternalStorageDirectory().toString() + "/wifi4us/ad_" + adid + ".3gp");
+        video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + adid + ".3gp");
         video.start();
         
         video.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
         	public void onCompletion(MediaPlayer mp){
         		sharedPreference.putBoolean("FINISH_VIDEO", true);
-        		sharedPreference.putBoolean("STATE_RECEIVE", true);
-        		currentActivity.finish();
+            	sharedPreference.putBoolean("STATE_RECEIVE", true);
+            	currentActivity.finish();
         	}
         });
     }

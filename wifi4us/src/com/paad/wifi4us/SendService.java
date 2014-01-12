@@ -127,7 +127,7 @@ public class SendService extends Service {
 					int try_count = 0;
 					while(true){
 						try {
-							Thread.sleep(500);
+							Thread.sleep(300);
 				        } catch (InterruptedException e) {
 				            e.printStackTrace();
 				        }

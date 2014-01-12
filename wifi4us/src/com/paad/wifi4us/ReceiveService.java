@@ -1,6 +1,7 @@
 package com.paad.wifi4us;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -26,6 +27,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.HttpDownLoader;
 import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.MyWifiManager;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
@@ -284,17 +286,33 @@ public class ReceiveService extends Service {
 		
 		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 		HttpXmlParser xpp = new HttpXmlParser();
-
-		
-
 		if(xpp.getResultFromURL(requestURL, result)){
 			adWord = result.get("adword");
-    		adURL = result.get("url");
     		adLength = result.get("length");
     		adId = result.get("adid");
+        	adURL = result.get("url");
+    		
 		}else{
 			return false;	
 		}
+		
+		
+		String adDir = getApplicationContext().getCacheDir().toString() + "/ad_" + adId + ".3gp";
+		File adFile = new File(adDir);
+		HttpDownLoader dld = new HttpDownLoader(adURL, adDir);
+		boolean downloadResult = true;
+		if(adFile.exists()){
+			if(adFile.length() < Long.parseLong(adLength)){
+				downloadResult = dld.downLoad(adFile.length(), Long.parseLong(adLength) - 1);
+			}
+		}else{
+			downloadResult = dld.downLoad(0, Long.parseLong(adLength) - 1);
+		}
+		
+		if(!downloadResult){
+			return false;
+		}
+		
 		
 		//check local and download
 				
