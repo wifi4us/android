@@ -2,23 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
-   	android:padding="10dp"
-    android:orientation="vertical"
-    android:background="@drawable/send_draw_1"
-    android:id="@+id/other_container" > 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/title_bg" >
-
-        <TextView
-            style="@style/title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/title_more" />
-    </RelativeLayout>
+    android:orientation="vertical" > 
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -54,6 +38,7 @@
                     android:src="@drawable/baidu_head" />
 
                 <TextView
+                    android:id="@+id/other_id_userid"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -65,7 +50,7 @@
                     android:textSize="16.0sp" />
 
                 <TextView
-                    android:id="@+id/text_baidu_login"
+                    android:id="@+id/other_id_credits"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="5sp"
