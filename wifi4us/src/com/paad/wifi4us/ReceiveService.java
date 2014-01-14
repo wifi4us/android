@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.HttpDownLoader;
 import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.PasswdUtil;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveService extends Service {
@@ -109,6 +111,10 @@ public class ReceiveService extends Service {
 	public void WifiScan(){
 		Runnable myRunnable = new Runnable(){
 			public void run(){
+				//the temporary solution for the old scan result
+				myWifiManager.getWifiManager().setWifiEnabled(false);
+				myWifiManager.getWifiManager().setWifiEnabled(true);
+				
 				myWifiManager.getWifiManager().startScan();
 			}
 		};
@@ -197,6 +203,7 @@ public class ReceiveService extends Service {
 	private boolean openSocketConnection(){
 		try{
 			socket=new Socket(getIpFromInt(myWifiManager.getWifiManager().getDhcpInfo().gateway), Constant.Networks.SERVER_PORT);
+			socket.setSoTimeout(Constant.Networks.TIME_INTERVAL);
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -210,6 +217,10 @@ public class ReceiveService extends Service {
 				return false;
 			}
 			
+		}catch(SocketTimeoutException e){
+			e.printStackTrace();
+			return false;
+			//heartbeat stop 
 		}catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -332,11 +343,17 @@ public class ReceiveService extends Service {
 	
 	
 	private String getPassWord(){
-		return "19851123";
+		String passwd = null;
+		try{
+			passwd = PasswdUtil.decryptDES(connectinfo.substring(8, 24), Constant.Security.DES_KEY);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return passwd + "1";
 	}
 	
 	private String getSSID(){
-		return "111111";
+		return connectinfo;
 	}
 
 	private String getIpFromInt(int ip){

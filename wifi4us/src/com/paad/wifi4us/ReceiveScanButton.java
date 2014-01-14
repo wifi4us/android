@@ -1,6 +1,9 @@
 package com.paad.wifi4us;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import com.paad.wifi4us.utility.PasswdUtil;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -89,20 +92,21 @@ public class ReceiveScanButton extends Fragment{
 	
 	public class ClickScanReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-
     		if(!haveBondService){
         		c.unregisterReceiver(this);    			
     			return;
     		}
     		//The result list fragment or fail result fragment
     		ArrayList<String> wifiAPList = receiveService.getWifiScanResult();
+    		removeOtherHotpot(wifiAPList);
     		if(wifiAPList.size() != 0){
         		UIScanFromProgressToScanresult(wifiAPList);
     		}else{
     			UIScanFromProgressToNothing();
     		}
     		
-    		c.unregisterReceiver(this);    			
+    		c.unregisterReceiver(this); 
+    		c.removeStickyBroadcast(intent);
             doubleclickscan = false;
     	}
     }
@@ -174,5 +178,30 @@ public class ReceiveScanButton extends Fragment{
         transaction.commitAllowingStateLoss();
 	}
 	
-	
+	private void removeOtherHotpot(ArrayList<String> arr){
+    	Iterator<String> sListIterator = arr.iterator();  
+    	while(sListIterator.hasNext()){  
+    	    String ssidname = sListIterator.next();  
+    	    if(ssidname.length() != 32){  
+    	    	sListIterator.remove(); 
+    	    	continue;
+    	    }
+    	    
+    	    String namepart = ssidname.substring(0, 8);
+    	    String passwdpart = ssidname.substring(8, 24);
+    	    String modepart = ssidname.substring(24, 28);
+    	    String signpart = ssidname.substring(28,32);
+    	    String computesign = null;
+    	    
+    	    try{
+    	    	computesign = PasswdUtil.getMD5Sign(namepart + passwdpart + modepart);
+    	    }catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+
+    	    if(!computesign.equals(signpart)){
+    	    	sListIterator.remove();  
+    	    }
+    	}      	
+	}
 }

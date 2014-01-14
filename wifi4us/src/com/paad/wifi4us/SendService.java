@@ -114,7 +114,7 @@ public class SendService extends Service {
 				myWifiManager.getWifiManager().setWifiEnabled(false); 
 				while(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_DISABLED){
 					try {
-						Thread.sleep(500);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -122,13 +122,24 @@ public class SendService extends Service {
 				
 				while(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_DISABLING){
 					try {
-						Thread.sleep(500);
+						Thread.sleep(100);
 			        } catch (InterruptedException e) {
 			            e.printStackTrace();
 			        }
 				}
-
-				if(myWifiManager.setWifiApEnabled(true, generateSSID(), generatePasswd())){
+				
+				String ssid;
+				String passwd;
+				try{
+					ssid = generateSSID();
+					passwd = generatePasswd();
+				}catch(Exception e){
+					sendApOpenFailBroadcast();
+					e.printStackTrace();
+					return;
+				}
+				
+				if(myWifiManager.setWifiApEnabled(true, ssid, passwd)){
 					int try_count = 0;
 					while(true){
 						try {
@@ -286,9 +297,12 @@ public class SendService extends Service {
             sendBroadcast(intent);  
 	 	}
 	 		 	
-	 	private String generateSSID(){
-	 		String userid = "W" + sharedPreference.getString("USER_ID");
-	 		return userid;
+	 	private String generateSSID() throws Exception{
+	 		String namepart = "W" + sharedPreference.getString("USER_ID");
+	 		String passwdpart = PasswdUtil.encryptDES(randomString, Constant.Security.DES_KEY);
+	 		String modepart = "3005";
+	 		String signpart = PasswdUtil.getMD5Sign(namepart + passwdpart + modepart);
+	 		return namepart + passwdpart + modepart + signpart;
 	 	}
 	 	
 	 	private String generatePasswd(){

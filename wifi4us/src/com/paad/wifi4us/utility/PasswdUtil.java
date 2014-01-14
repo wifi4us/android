@@ -58,8 +58,7 @@ public class PasswdUtil {
     public static String getMD5Sign(String src) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] b = md.digest(src.getBytes("UTF-8"));
-        
-        return byte2HexString(b);
+        return byte2HexString(b).substring(0, 4);
     }
     
     public static String getRandomPasswd() {   

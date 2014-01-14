@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.PasswdUtil;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveScanResultList extends ListFragment{
@@ -55,13 +56,6 @@ public class ReceiveScanResultList extends ListFragment{
     };  
     
     public void setView(ArrayList<String> arr){
-    	Iterator<String> sListIterator = arr.iterator();  
-    	while(sListIterator.hasNext()){  
-    	    String e = sListIterator.next();  
-    	    if(e.equals("MaanCoffeeTP")){  
-    	    	sListIterator.remove();  
-    	    }  
-    	}  
     	scanresultlist = arr;
     }
     
@@ -89,7 +83,7 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
-		ArrayList<String> resultshown = scanresultlist;
+		ArrayList<String> resultshown = getShownName(scanresultlist);
     	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		scanresultlist_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, resultshown);
@@ -199,6 +193,15 @@ public class ReceiveScanResultList extends ListFragment{
 		receive_id_start_wifi_connected_fail_text = new ReceiveWifiConnectedFailText();
 		transaction.add(R.id.receive_container_scan, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
 		transaction.commitAllowingStateLoss(); 
+	}
+	
+	private ArrayList<String> getShownName(ArrayList<String> arr){
+		ArrayList<String> temp_arr = new ArrayList<String>(arr);
+		for(int i = 0; i < temp_arr.size(); i++){
+			temp_arr.set(i, temp_arr.get(i).substring(1, 8));
+		}
+		
+		return temp_arr;
 	}
 	
 }
