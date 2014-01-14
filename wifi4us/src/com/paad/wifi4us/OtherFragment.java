@@ -30,6 +30,8 @@ import com.paad.wifi4us.utility.SharedPreferenceHelper;
 public class OtherFragment extends Fragment implements OnClickListener {
     private TextView other_id_userid_text;
 
+    private TextView other_id_credit_text;
+
     private static final int MSG_SUCCESS = 0;
     private static final int MSG_FAILURE = 1;
 
@@ -94,6 +96,11 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
         userid = sharedPreference.getString("USER_ID");
         
+        other_id_userid_text = (TextView) view_res
+                .findViewById(R.id.other_id_userid);
+        other_id_credit_text = (TextView) view_res
+                .findViewById(R.id.other_id_credits);
+        other_id_credit_text.setText("10000");
         view_res.findViewById(R.id.btn_quit).setOnClickListener(this);
         view_res.findViewById(R.id.btn_about).setOnClickListener(this);
         view_res.findViewById(R.id.btn_check_update).setOnClickListener(this);
@@ -135,7 +142,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
     public void quit() {
         getActivity().finish();
-        Process.killProcess(Process.myPid());
     }
 
     @Override
@@ -169,6 +175,15 @@ public class OtherFragment extends Fragment implements OnClickListener {
                 break;
         }
 
+    }
+
+    /* (non-Javadoc)
+     * @see android.support.v4.app.Fragment#onDestroy()
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Process.killProcess(android.os.Process.myPid());
     }
 
 }
