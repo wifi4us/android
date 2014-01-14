@@ -32,6 +32,8 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
     private TextView other_id_credit_text;
 
+    private String userid;
+
     private static final int MSG_SUCCESS = 0;
     private static final int MSG_FAILURE = 1;
 
@@ -42,9 +44,10 @@ public class OtherFragment extends Fragment implements OnClickListener {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_SUCCESS:
-                    other_id_userid_text.setText("用户id为 " + (String) msg.obj);
-       
-                    sharedPreference.putString("USER_ID", (String) msg.obj);
+                	String tempid = (String) msg.obj;
+                    userid = String.format("%07d", Integer.parseInt(tempid));
+                    other_id_userid_text.setText("用户id为 " + userid);
+                    sharedPreference.putString("USER_ID", userid);
                     break;
                 case MSG_FAILURE:
                     other_id_userid_text
@@ -84,7 +87,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
         }
     };
 
-    String userid;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -95,7 +97,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
     	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
         userid = sharedPreference.getString("USER_ID");
-        
         other_id_userid_text = (TextView) view_res
                 .findViewById(R.id.other_id_userid);
         other_id_credit_text = (TextView) view_res

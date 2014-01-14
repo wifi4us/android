@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.paad.wifi4us.utility.PasswdUtil;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class FirstActivity extends Activity {
@@ -37,9 +38,11 @@ public class FirstActivity extends Activity {
     
     public void StartMainActivity(View view)
     {
+
     	Intent intent = new Intent();
     	intent.setClass(this, MainActivity.class);
     	startActivity(intent);
     }
     
+ 
 }

@@ -16,16 +16,21 @@ import android.os.SystemClock;
 
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.PasswdUtil;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class SendService extends Service {
 
 	private final IBinder binder = new MyBinder();
 	private MyWifiManager myWifiManager;
+    private String randomString;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
 	private InputStreamReader in;
 	private PrintWriter out;
+	
+	private SharedPreferenceHelper sharedPreference;
 
 	
 	public class MyBinder extends Binder {  
@@ -43,7 +48,8 @@ public class SendService extends Service {
 	  }
 	public void onCreate() { 
         super.onCreate();  
-		myWifiManager = new MyWifiManager(getApplicationContext());        
+		myWifiManager = new MyWifiManager(getApplicationContext());   
+    	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
 		try{
 			serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
 		}catch(Exception e){
@@ -102,8 +108,7 @@ public class SendService extends Service {
 	
 	
 	public void WifiApOn(){			 
-		
-		
+		randomString = PasswdUtil.getRandomPasswd();
 		Runnable myRunnable = new Runnable(){
 			public void run(){
 				myWifiManager.getWifiManager().setWifiEnabled(false); 
@@ -123,7 +128,7 @@ public class SendService extends Service {
 			        }
 				}
 
-				if(myWifiManager.setWifiApEnabled(true, "111111", "19851123")){
+				if(myWifiManager.setWifiApEnabled(true, generateSSID(), generatePasswd())){
 					int try_count = 0;
 					while(true){
 						try {
@@ -281,4 +286,12 @@ public class SendService extends Service {
             sendBroadcast(intent);  
 	 	}
 	 		 	
+	 	private String generateSSID(){
+	 		String userid = "W" + sharedPreference.getString("USER_ID");
+	 		return userid;
+	 	}
+	 	
+	 	private String generatePasswd(){
+	 		return randomString + "1";
+	 	}
 }
