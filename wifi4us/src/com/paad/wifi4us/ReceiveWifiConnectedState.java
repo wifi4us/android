@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo.State;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -61,7 +61,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
         getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
-		getActivity().getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		getActivity().getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 	}
 	
 	public void onDestroy(){
@@ -105,10 +105,9 @@ public class ReceiveWifiConnectedState extends Fragment{
 		public void onReceive(Context c, Intent intent) {
 			if(!haveBondService)
 				return;
-			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-    		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 
-    		if(State.DISCONNECTED == state){  
+			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+			if(state.equals(SupplicantState.DISCONNECTED)){  
      	   		receiveService.closeConnection();
      	   		receiveService.WifiDisconnectCompletely();
      	   		sharedPreference.putBoolean("STATE_RECEIVE", false);

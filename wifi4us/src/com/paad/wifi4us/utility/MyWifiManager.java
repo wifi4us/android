@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 public class MyWifiManager {
 	private WifiManager wifiManager;
 	private WifiConfiguration apConfig;
+	private int networkId;
 	
 	public int WIFI_AP_STATE_DISABLING;  
     public int WIFI_AP_STATE_DISABLED;  
@@ -34,6 +35,10 @@ public class MyWifiManager {
 	
 	public WifiManager getWifiManager(){
 		return wifiManager;
+	}
+	
+	public int getNetworkId(){
+		return networkId;
 	}
 	
  	public int getWifiApState() {  
@@ -61,8 +66,8 @@ public class MyWifiManager {
         apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);  
         apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);  
         apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);  
-		
-        wifiManager.enableNetwork(wifiManager.addNetwork(apConfig), true);
+        networkId = wifiManager.addNetwork(apConfig);
+        wifiManager.enableNetwork(networkId, true);
  	}
  	
 	public boolean setWifiApEnabled(boolean enabled, String ssid, String passwd) {

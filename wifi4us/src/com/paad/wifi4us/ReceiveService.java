@@ -142,9 +142,9 @@ public class ReceiveService extends Service {
 
 		Runnable myRunnable = new Runnable(){
 			public void run(){
-				String passwd = getPassWord();
-				String ssid = getSSID();
-				myWifiManager.WifiSetupConnect(ssid, passwd);
+					String passwd = getPassWord();
+					String ssid = getSSID();
+					myWifiManager.WifiSetupConnect(ssid, passwd);
 				}
 		};
 		Thread thread = new Thread(myRunnable);
@@ -152,18 +152,19 @@ public class ReceiveService extends Service {
 	}
 
 	public void WifiDisconnectCompletely(){
-		int current_networkid = myWifiManager.getWifiManager().getConnectionInfo().getNetworkId();
-		myWifiManager.getWifiManager().removeNetwork(current_networkid);
+		myWifiManager.getWifiManager().removeNetwork(myWifiManager.getNetworkId());
 	}
 
 	public void WifiDisconnect(){
+		int current_networkid = myWifiManager.getWifiManager().getConnectionInfo().getNetworkId();
+		myWifiManager.getWifiManager().disableNetwork(current_networkid);
 		myWifiManager.getWifiManager().disconnect();
 	}
 	
 	public void EstablishConmunication(){
 		totalTimeSeconds = 0;
 		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
-	
+
 		Runnable setupConnectionRunner = new Runnable(){
 			public void run(){
 				Intent intent = new Intent();

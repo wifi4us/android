@@ -139,7 +139,6 @@ public class ReceiveScanResultList extends ListFragment{
     		}
     		ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
     		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
-
     		if(State.CONNECTED == state){  
      			c.unregisterReceiver(this);
      	        receiveService.EstablishConmunication();
@@ -154,8 +153,9 @@ public class ReceiveScanResultList extends ListFragment{
     			c.unregisterReceiver(this);
     			return;
     		}
-      	
-      		if(intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE).equals("ok")){
+    		
+    		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
+      		if(state.equals("ok")){
           		c.unregisterReceiver(this);
       			String adid = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID);
       			String adword = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD);
@@ -165,7 +165,7 @@ public class ReceiveScanResultList extends ListFragment{
     			startvideo.putExtra("adid", adid);
     			receive_id_start_connect_progressbar.startActivity(startvideo);			
     		}else{
-    			ProgressbarToFail();
+    			ProgressbarToFail(state);
           		c.unregisterReceiver(this);
           		
     		}
@@ -184,13 +184,14 @@ public class ReceiveScanResultList extends ListFragment{
 		transaction.commitAllowingStateLoss(); 
 	}
 	
-	private void ProgressbarToFail(){
+	private void ProgressbarToFail(String state){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
 		receive_id_start_connect_progressbar = fragmentManager.findFragmentByTag("receive_id_start_connect_progressbar");
 		if(receive_id_start_connect_progressbar != null){
 			transaction.remove(receive_id_start_connect_progressbar);
 		}
 		receive_id_start_wifi_connected_fail_text = new ReceiveWifiConnectedFailText();
+		((ReceiveWifiConnectedFailText)receive_id_start_wifi_connected_fail_text).setTextWord(state);
 		transaction.add(R.id.receive_container_scan, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
 		transaction.commitAllowingStateLoss(); 
 	}
