@@ -25,6 +25,7 @@ public class FirstActivity extends Activity {
         super.onCreate(savedInstanceState);
         SharedPreferenceHelper sharedPreference = new SharedPreferenceHelper(getApplicationContext());
         sharedPreference.putBoolean("FINISH_VIDEO", true);
+		sharedPreference.putBoolean("FINISH_PRECONNNECT", true);
         setContentView(R.layout.activity_first);
     }
 

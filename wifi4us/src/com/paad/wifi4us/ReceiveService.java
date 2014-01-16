@@ -111,10 +111,6 @@ public class ReceiveService extends Service {
 	public void WifiScan(){
 		Runnable myRunnable = new Runnable(){
 			public void run(){
-				//the temporary solution for the old scan result
-				myWifiManager.getWifiManager().setWifiEnabled(false);
-				myWifiManager.getWifiManager().setWifiEnabled(true);
-				
 				myWifiManager.getWifiManager().startScan();
 			}
 		};
@@ -156,8 +152,6 @@ public class ReceiveService extends Service {
 	}
 
 	public void WifiDisconnect(){
-		int current_networkid = myWifiManager.getWifiManager().getConnectionInfo().getNetworkId();
-		myWifiManager.getWifiManager().disableNetwork(current_networkid);
 		myWifiManager.getWifiManager().disconnect();
 	}
 	
@@ -205,6 +199,7 @@ public class ReceiveService extends Service {
 		try{
 			socket=new Socket(getIpFromInt(myWifiManager.getWifiManager().getDhcpInfo().gateway), Constant.Networks.SERVER_PORT);
 			socket.setSoTimeout(Constant.Networks.TIME_INTERVAL);
+
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 

@@ -134,15 +134,20 @@ public class MainActivity extends FragmentActivity {
 		super.onDestroy();
 		unbindService(sc);
 	}
-    public void onBackPressed() {  
+	
+	public void onPause(){
+		super.onPause();
     	if(!haveBondService){
     		return;
     	}
-		Boolean finishVideo = sharedPreference.getBoolean("FINISH_VIDEO");
-		if(!finishVideo){
+		Boolean finishPreconnect = sharedPreference.getBoolean("FINISH_PRECONNNECT");
+		if(!finishPreconnect){
 			receiveService.WifiDisconnectCompletely();
 		}
-        Intent backtoHome = new Intent(Intent.ACTION_MAIN);
+	}
+    
+    public void onBackPressed() {  
+    	Intent backtoHome = new Intent(Intent.ACTION_MAIN);
         backtoHome.addCategory(Intent.CATEGORY_HOME);
         backtoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(backtoHome);  
@@ -326,7 +331,5 @@ public class MainActivity extends FragmentActivity {
     	send = fragmentManager.findFragmentById(R.id.send);
     	receive = fragmentManager.findFragmentById(R.id.receive);
     	other = fragmentManager.findFragmentById(R.id.other);
-
-
     }
 }

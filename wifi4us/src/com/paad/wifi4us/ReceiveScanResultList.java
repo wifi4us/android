@@ -2,7 +2,6 @@ package com.paad.wifi4us;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -25,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.paad.wifi4us.utility.Constant;
-import com.paad.wifi4us.utility.PasswdUtil;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveScanResultList extends ListFragment{
@@ -94,7 +92,8 @@ public class ReceiveScanResultList extends ListFragment{
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
     	UIToProgressbar();
     	sharedPreference.putBoolean("FINISH_VIDEO", false);
-		
+		sharedPreference.putBoolean("FINISH_PRECONNNECT", false);
+
 		String rawssid = scanresultlist.get(pos);
 		if(!haveBondService)
 			return;
@@ -163,6 +162,7 @@ public class ReceiveScanResultList extends ListFragment{
     			Intent startvideo = new Intent(receive_id_start_connect_progressbar.getActivity(), VideoActivity.class);    
     			startvideo.putExtra("adword", adword);
     			startvideo.putExtra("adid", adid);
+    			sharedPreference.putBoolean("FINISH_PRECONNNECT", true);
     			receive_id_start_connect_progressbar.startActivity(startvideo);			
     		}else{
     			ProgressbarToFail(state);
@@ -177,9 +177,8 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	private void UIToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
-		receive_id_start_connect_progressbar = new WifiProgressBar();
 		transaction.remove(this);
-
+		receive_id_start_connect_progressbar = new WifiProgressBar();
 		transaction.add(R.id.receive_container_scan, receive_id_start_connect_progressbar, "receive_id_start_connect_progressbar");
 		transaction.commitAllowingStateLoss(); 
 	}
@@ -204,5 +203,4 @@ public class ReceiveScanResultList extends ListFragment{
 		
 		return temp_arr;
 	}
-	
 }

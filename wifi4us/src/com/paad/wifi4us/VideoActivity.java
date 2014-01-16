@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -28,7 +27,6 @@ public class VideoActivity extends Activity {
 	private TextView counttime;
 	private MyVideoView video;
 	private MediaController controller;
-	private Activity currentActivity;
 	private String adid;
 	private String adword;
 	private SharedPreferenceHelper sharedPreference;
@@ -48,33 +46,34 @@ public class VideoActivity extends Activity {
         	haveBondService = true;
         }  
     };  
-
-	public void onStart(){
-		super.onStart();
-		Intent intent = new Intent(this, ReceiveService.class);  
-        //bind service to get ready for all the clickable element
-		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
-	}
 	
-	public void onStop(){
-		super.onStop();
+	public void onDestroy(){
+		super.onDestroy();
 		unbindService(sc);
 	}
 	
 	
-    public void onBackPressed() {  
+    public void onPause() {  
+    	super.onPause();
     	if(!haveBondService){
     		return;
     	}
-    	super.onBackPressed();
-    	receiveService.WifiDisconnectCompletely();
+		Boolean finishVideo = sharedPreference.getBoolean("FINISH_VIDEO");
+		if(!finishVideo){
+        	System.out.println("0000000000");
+
+			finish();
+			receiveService.WifiDisconnectCompletely();
+		}
     }  
     
     
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
+		Intent intent = new Intent(this, ReceiveService.class);  
+        //bind service to get ready for all the clickable element
+		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
         setContentView(R.layout.activity_video);
-        currentActivity = this;
         adid = getIntent().getStringExtra("adid");
         adword = getIntent().getStringExtra("adword");
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
@@ -116,7 +115,8 @@ public class VideoActivity extends Activity {
         	public void onCompletion(MediaPlayer mp){
         		sharedPreference.putBoolean("FINISH_VIDEO", true);
             	sharedPreference.putBoolean("STATE_RECEIVE", true);
-            	currentActivity.finish();
+            	System.out.println("11111111111");
+            	finish();
         	}
         });
     }
