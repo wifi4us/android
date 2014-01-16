@@ -32,6 +32,7 @@ public class ReceiveScanResultList extends ListFragment{
 	private ArrayAdapter<String> scanresultlist_adapter;
 	private ClickConnectReceiver clickConnectReceiver;
 	private ConmunicationReceiver conmunicationReceiver;
+	private ConnectFailReceiver connectFailReceiver;
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_wifi_connected_fail_text;
@@ -90,6 +91,7 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
+		receiveService.WifiDisconnect();
     	UIToProgressbar();
     	sharedPreference.putBoolean("FINISH_VIDEO", false);
 		sharedPreference.putBoolean("FINISH_PRECONNNECT", false);
@@ -100,8 +102,7 @@ public class ReceiveScanResultList extends ListFragment{
  
 		clickConnectReceiver = new ClickConnectReceiver();
 		conmunicationReceiver = new ConmunicationReceiver();
-		
-		receiveService.WifiDisconnect();
+		connectFailReceiver = new ConnectFailReceiver();
 
 		/*
 		 * process the next step until the wifi has been disconnected completely, 
@@ -118,6 +119,7 @@ public class ReceiveScanResultList extends ListFragment{
 			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
 			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 			if(State.DISCONNECTED == state){
+				getActivity().getApplicationContext().registerReceiver(connectFailReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT));
 				getActivity().getApplicationContext().registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	        	getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
 	        	receiveService.WifiConnect(rawssid);
@@ -173,6 +175,13 @@ public class ReceiveScanResultList extends ListFragment{
       		
 
 		}   		
+	}
+	
+	public class ConnectFailReceiver extends BroadcastReceiver{
+		public void onReceive(Context c, Intent intent) {
+			ProgressbarToFail("连接过程被打断，网络连接失败");
+			c.unregisterReceiver(this);
+		}
 	}
 	
 	private void UIToProgressbar(){

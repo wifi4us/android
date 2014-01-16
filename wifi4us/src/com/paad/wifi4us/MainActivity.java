@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class MainActivity extends FragmentActivity {
@@ -142,6 +143,9 @@ public class MainActivity extends FragmentActivity {
     	}
 		Boolean finishPreconnect = sharedPreference.getBoolean("FINISH_PRECONNNECT");
 		if(!finishPreconnect){
+			Intent intent = new Intent();
+			intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
+			sendBroadcast(intent);
 			receiveService.WifiDisconnectCompletely();
 		}
 	}
@@ -332,4 +336,6 @@ public class MainActivity extends FragmentActivity {
     	receive = fragmentManager.findFragmentById(R.id.receive);
     	other = fragmentManager.findFragmentById(R.id.other);
     }
+    
+    
 }

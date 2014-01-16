@@ -55,7 +55,8 @@ public class MyWifiManager {
  	public void WifiSetupConnect(String ssid, String passwd){
         apConfig = new WifiConfiguration();  
         apConfig.SSID="\"" + ssid + "\"";  
-        apConfig.preSharedKey="\"" + passwd + "\"";  
+        apConfig.preSharedKey="\"" + passwd + "\""; 
+        //apConfig.preSharedKey="\"" + "111111111111" + "\""; 
         apConfig.hiddenSSID = true;  
         apConfig.status = WifiConfiguration.Status.ENABLED;  
         apConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);  
@@ -66,6 +67,7 @@ public class MyWifiManager {
         apConfig.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);  
         apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);  
         apConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);  
+        apConfig.priority = 100;
         networkId = wifiManager.addNetwork(apConfig);
         wifiManager.enableNetwork(networkId, true);
  	}

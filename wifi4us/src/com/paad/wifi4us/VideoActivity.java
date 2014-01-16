@@ -18,6 +18,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class VideoActivity extends Activity {
@@ -60,8 +61,9 @@ public class VideoActivity extends Activity {
     	}
 		Boolean finishVideo = sharedPreference.getBoolean("FINISH_VIDEO");
 		if(!finishVideo){
-        	System.out.println("0000000000");
-
+			Intent intent = new Intent();
+			intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
+			sendBroadcast(intent);
 			finish();
 			receiveService.WifiDisconnectCompletely();
 		}
