@@ -44,6 +44,12 @@ public class FirstActivity extends Activity {
     	intent.setClass(this, MainActivity.class);
     	startActivity(intent);
     }
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        finish();
+    }
     
  
 }

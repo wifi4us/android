@@ -46,12 +46,12 @@ public class OtherFragment extends Fragment implements OnClickListener {
                 case MSG_SUCCESS:
                 	String tempid = (String) msg.obj;
                     userid = String.format("%07d", Integer.parseInt(tempid));
-                    other_id_userid_text.setText("ÓÃ»§idÎª " + userid);
+                    other_id_userid_text.setText("ï¿½Ã»ï¿½idÎª " + userid);
                     sharedPreference.putString("USER_ID", userid);
                     break;
                 case MSG_FAILURE:
                     other_id_userid_text
-                            .setText("ÇëÁªÍøºóÖØÐÂ´ò¿ªÈí¼þ£¬ÖØÐÂ»ñÈ¡id");
+                            .setText("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½È¡id");
                     break;
             }
         }
@@ -111,6 +111,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
         view_res.findViewById(R.id.btn_Set_Score).setOnClickListener(this);
         view_res.findViewById(R.id.btn_settings).setOnClickListener(this);
         view_res.findViewById(R.id.btn_agreement).setOnClickListener(this);
+        view_res.findViewById(R.id.btn_exchange).setOnClickListener(this);
         if (userid.equals("NULL")) {
             Thread mThread = new Thread(getUserIdRunner);
             mThread.start();
@@ -159,6 +160,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
             case R.id.btn_agreement:
                 try {
                     showWebViewDialog("agreement.html");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_exchange:
+                try {
+                    startActivity(new Intent(getActivity(), DltActivity.class));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
