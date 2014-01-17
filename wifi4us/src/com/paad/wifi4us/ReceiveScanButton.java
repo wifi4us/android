@@ -3,8 +3,6 @@ package com.paad.wifi4us;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.paad.wifi4us.utility.PasswdUtil;
-
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -22,6 +20,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.PasswdUtil;
 
 public class ReceiveScanButton extends Fragment{
 	private Button scanwifi;
@@ -99,6 +100,7 @@ public class ReceiveScanButton extends Fragment{
     		//The result list fragment or fail result fragment
     		ArrayList<String> wifiAPList = receiveService.getWifiScanResult();
     		removeOtherHotpot(wifiAPList);
+    		removeOutdatedHotpot(wifiAPList);
     		if(wifiAPList.size() != 0){
         		UIScanFromProgressToScanresult(wifiAPList);
     		}else{
@@ -203,5 +205,35 @@ public class ReceiveScanButton extends Fragment{
     	    	sListIterator.remove();  
     	    }
     	}      	
+	}
+	
+	private void removeOutdatedHotpot(ArrayList<String> arr){
+		ArrayList<String> tempArr = arr;
+		Iterator<String> sListIterator = arr.iterator();  
+    	while(sListIterator.hasNext()){  
+    	    String ssidname = sListIterator.next();
+    	    for (int i = 0; i < tempArr.size(); i++){
+    	    	String namepart = ssidname.substring(0, 8);
+         	    String passwdpart = ssidname.substring(8, 24);
+    	    	
+         	    String ssidnametemp = tempArr.get(i);
+        	    String nameparttemp = ssidnametemp.substring(0, 8);
+        	    String passwdparttemp = ssidnametemp.substring(8, 24);
+
+    	    	if(namepart.equals(nameparttemp)){
+    	    	    try{
+    	    	    	String passwd = PasswdUtil.decryptDES(passwdpart, Constant.Security.DES_KEY);
+    	    	    	String passwdtemp = PasswdUtil.decryptDES(passwdparttemp, Constant.Security.DES_KEY);
+    	    	    	long passwdlong = Long.parseLong(passwd);
+    	    	    	long passwdtemplong = Long.parseLong(passwdtemp);
+    	    	    	if(passwdlong < passwdtemplong){
+    	        	    	sListIterator.remove();  
+    	    	    	}
+    	    	    }catch(Exception e){
+    	    	    	e.printStackTrace();
+    	    	    }
+    	    	}
+    	    }
+    	}
 	}
 }

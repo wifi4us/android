@@ -61,14 +61,8 @@ public class PasswdUtil {
         return byte2HexString(b).substring(0, 4);
     }
     
-    public static String getRandomPasswd() {   
-        String base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";   
-        Random random = new Random();   
-        StringBuffer sb = new StringBuffer();   
-        for (int i = 0; i < 7; i++) {   
-            int number = random.nextInt(base.length());   
-            sb.append(base.charAt(number));   
-        }   
-        return sb.toString();   
+    public static String getRandomPasswd() {  
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		return timeStamp.substring(6);
     }   
 }

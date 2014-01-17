@@ -62,15 +62,15 @@
    			android:exported="false">
     	</service>
     	<activity
-            android:name="com.paad.wifi4us.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="com.paad.wifi4us.FeedbackActivity"
+            android:name=".FeedbackActivity"
             android:label="@string/title_activity_feedback" >
         </activity>
         <activity
-            android:name="com.paad.wifi4us.DltActivity"
+            android:name=".DltActivity"
             android:label="@string/title_activity_feedback" >
         </activity>
     </application>
