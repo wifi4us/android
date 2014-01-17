@@ -5,7 +5,7 @@
     android:orientation="vertical" > 
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0.0dip"
         android:layout_weight="1.0"
         android:clipToPadding="true"
@@ -16,13 +16,13 @@
         android:scrollbars="none" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:id="@+id/user_info"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_alone"
                 android:clickable="true"
@@ -36,34 +36,37 @@
                     android:layout_margin="6.0dip"
                     android:contentDescription="@null"
                     android:src="@drawable/baidu_head" />
+				<LinearLayout
+                	android:layout_width="match_parent"
+                	android:layout_height="match_parent"
+                	android:orientation="vertical" >
+                	<TextView
+                    	android:id="@+id/other_id_userid"
+                    	android:layout_width="wrap_content"
+                    	android:layout_height="wrap_content"
+                    	android:layout_gravity="center_horizontal"
+                    	android:layout_marginLeft="6.0dip"
+                   		android:gravity="center"
+                    	android:text="@string/unknow_user"
+                    	android:textColor="#ff323232"
+                    	android:textSize="16.0sp" />
 
-                <TextView
-                    android:id="@+id/other_id_userid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="6.0dip"
-                    android:gravity="center"
-                    android:maxLength="8"
-                    android:text="@string/unknow_user"
-                    android:textColor="#ff323232"
-                    android:textSize="16.0sp" />
-
-                <TextView
-                    android:id="@+id/other_id_credits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5sp"
-                    android:textColor="#FF0000"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center"
-                    android:text="@string/no_user_name"
-                    android:textSize="12.0sp" />
-            </LinearLayout>
-
+                		<TextView
+                    		android:id="@+id/other_id_credits"
+                    		android:layout_width="wrap_content"
+                    		android:layout_height="wrap_content"
+                    		android:layout_marginLeft="5sp"
+                    		android:textColor="#FF0000"
+                    		android:layout_gravity="center_horizontal"
+                    		android:gravity="center"
+                    		android:text="@string/no_user_name"
+                    		android:textSize="12.0sp" />
+            	</LinearLayout>
+			</LinearLayout>
+			
             <RelativeLayout
                 android:id="@+id/btn_verison"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10.0dip"
                 android:background="@drawable/selector_list_item_top"
@@ -82,7 +85,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_exchange"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_center"
                 android:clickable="true" >
@@ -107,7 +110,7 @@
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/btn_Set_Score"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_center"
                 android:clickable="true" >
@@ -133,7 +136,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_Set_Discuss"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_bottom"
                 android:clickable="true" >
@@ -159,7 +162,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_settings"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10.0dip"
                 android:background="@drawable/selector_list_item_top"
@@ -187,7 +190,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_agreement"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_center"
                 android:clickable="true" >
@@ -213,7 +216,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_help"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_bottom"
                 android:clickable="true" >
@@ -239,7 +242,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_check_update"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10.0dip"
                 android:background="@drawable/selector_list_item_top"
@@ -266,7 +269,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_feed_back"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_center"
                 android:clickable="true" >
@@ -292,7 +295,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_about"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_list_item_bottom"
                 android:clickable="true" >
@@ -318,7 +321,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_quit"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10.0dip"
                 android:background="@drawable/selector_list_item_alone"

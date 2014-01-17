@@ -1,7 +1,5 @@
 package com.paad.wifi4us;
 
-import com.paad.wifi4us.utility.Constant;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.paad.wifi4us.utility.Constant;
 
 public class SendWifiConnectedState extends Fragment{
 	

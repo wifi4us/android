@@ -169,7 +169,6 @@ public class ReceiveScanResultList extends ListFragment{
     		}else{
     			ProgressbarToFail(state);
           		c.unregisterReceiver(this);
-          		
     		}
 	
       		
@@ -207,7 +206,12 @@ public class ReceiveScanResultList extends ListFragment{
 	private ArrayList<String> getShownName(ArrayList<String> arr){
 		ArrayList<String> temp_arr = new ArrayList<String>(arr);
 		for(int i = 0; i < temp_arr.size(); i++){
-			temp_arr.set(i, temp_arr.get(i).substring(1, 8));
+			String shownname = "伟大无私的分享者" + temp_arr.get(i).substring(1, 8);
+			String modepart = temp_arr.get(i).substring(24, 28);
+			if(modepart.equals("3005")){
+				shownname = shownname + "分享了流量，最多使用30分钟或5M哦";
+			}
+			temp_arr.set(i, shownname);
 		}
 		
 		return temp_arr;

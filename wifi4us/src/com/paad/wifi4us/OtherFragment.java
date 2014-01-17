@@ -36,28 +36,48 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
     private static final int MSG_SUCCESS = 0;
     private static final int MSG_FAILURE = 1;
+    private static final int CREDIT_INIT = 2;
 
 
 	private SharedPreferenceHelper sharedPreference;
 
-	private Handler mHandler = new Handler() {
+	private Handler useridHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_SUCCESS:
                 	String tempid = (String) msg.obj;
                     userid = String.format("%07d", Integer.parseInt(tempid));
-                    other_id_userid_text.setText("锟矫伙拷id为 " + userid);
+                    other_id_userid_text.setText("用户号：" + userid);
                     sharedPreference.putString("USER_ID", userid);
                     break;
                 case MSG_FAILURE:
                     other_id_userid_text
-                            .setText("锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷麓锟斤拷锟斤拷锟斤拷锟斤拷锟铰伙拷取id");
+                            .setText("请退出软件，在联网状态下重新获取id");
                     break;
             }
         }
     };
 
-    Runnable getUserIdRunner = new Runnable() {
+	private Handler creditHandler = new Handler() {
+		public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_SUCCESS:
+                	String tempcredit = (String) msg.obj;
+                	other_id_credit_text.setText("积分：" + tempcredit);
+                    break;
+                case MSG_FAILURE:
+                	other_id_credit_text
+                            .setText("请退出软件，在联网状态下重新获取积分");
+                    break;
+                case CREDIT_INIT:
+                    other_id_userid_text
+                            .setText("积分：0");
+                    break;
+            }
+        }
+    };
+    
+    private Runnable getUserIdRunner = new Runnable() {
         public void run() {
 
             TelephonyManager tm = (TelephonyManager) getActivity()
@@ -79,15 +99,46 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
             if (xpp.getResultFromURL(registerUrl, result)) {
                 String userid = result.get("userid");
-                mHandler.obtainMessage(MSG_SUCCESS, userid).sendToTarget();
+                useridHandler.obtainMessage(MSG_SUCCESS, userid).sendToTarget();
             } else {
-                mHandler.obtainMessage(MSG_FAILURE).sendToTarget();
+            	useridHandler.obtainMessage(MSG_FAILURE).sendToTarget();
             }
 
         }
     };
 
+    private Runnable getCreditRunner = new Runnable() {
+        public void run() {
+        	if(userid.equals("NULL")){
+            	creditHandler.obtainMessage(CREDIT_INIT).sendToTarget();
+            	return;
+        	}
+            TelephonyManager tm = (TelephonyManager) getActivity()
+                    .getSystemService(Context.TELEPHONY_SERVICE);
+            String registerUrl = Constant.Networks.GET_BASE_HTTPURL + "?userid=" + userid;
+            if (tm.getDeviceId() == null) {
+                registerUrl = registerUrl
+                        + "&"
+                        + "imei="
+                        + Secure.getString(getActivity()
+                                .getApplicationContext().getContentResolver(),
+                                Secure.ANDROID_ID);
+            } else {
+                registerUrl = registerUrl + "&" + "imei="
+                        + tm.getDeviceId();
+            }
+            HttpXmlParser xpp = new HttpXmlParser();
+            SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 
+            if (xpp.getResultFromURL(registerUrl, result)) {
+                String account = result.get("account");
+                creditHandler.obtainMessage(MSG_SUCCESS, account).sendToTarget();
+            } else {
+            	creditHandler.obtainMessage(MSG_FAILURE).sendToTarget();
+            }
+
+        }
+    };
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -95,13 +146,23 @@ public class OtherFragment extends Fragment implements OnClickListener {
                 false);
         
     	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
-
-        userid = sharedPreference.getString("USER_ID");
-        other_id_userid_text = (TextView) view_res
+        
+    	other_id_userid_text = (TextView) view_res
                 .findViewById(R.id.other_id_userid);
+        userid = sharedPreference.getString("USER_ID");
+        if (userid.equals("NULL")) {
+            Thread mThread = new Thread(getUserIdRunner);
+            mThread.start();
+        }else{
+            other_id_userid_text.setText("用户号：" + userid);
+        }
+
         other_id_credit_text = (TextView) view_res
                 .findViewById(R.id.other_id_credits);
-        other_id_credit_text.setText("10000");
+        other_id_credit_text.setText("积分：NULL，请退出软件保持网络畅通后重新进入");
+        Thread mThread = new Thread(getCreditRunner);
+        mThread.start();
+        
         view_res.findViewById(R.id.btn_quit).setOnClickListener(this);
         view_res.findViewById(R.id.btn_about).setOnClickListener(this);
         view_res.findViewById(R.id.btn_check_update).setOnClickListener(this);
@@ -112,10 +173,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
         view_res.findViewById(R.id.btn_settings).setOnClickListener(this);
         view_res.findViewById(R.id.btn_agreement).setOnClickListener(this);
         view_res.findViewById(R.id.btn_exchange).setOnClickListener(this);
-        if (userid.equals("NULL")) {
-            Thread mThread = new Thread(getUserIdRunner);
-            mThread.start();
-        }
+
 
         return view_res;
     }
