@@ -69,6 +69,10 @@
             android:name="com.paad.wifi4us.FeedbackActivity"
             android:label="@string/title_activity_feedback" >
         </activity>
+        <activity
+            android:name="com.paad.wifi4us.DltActivity"
+            android:label="@string/title_activity_feedback" >
+        </activity>
     </application>
 	
 </manifest>

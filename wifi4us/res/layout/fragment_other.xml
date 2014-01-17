@@ -81,6 +81,31 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/btn_exchange"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_center"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/exchange"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:id="@+id/btn_Set_Score"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
