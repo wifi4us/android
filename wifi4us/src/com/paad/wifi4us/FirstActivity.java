@@ -9,24 +9,38 @@
 
 package com.paad.wifi4us;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.paad.wifi4us.utility.PasswdUtil;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class FirstActivity extends Activity {
-
+	private boolean startFlag;
+	private Activity currentActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    	currentActivity = this;
+    	startFlag = true;
         super.onCreate(savedInstanceState);
         SharedPreferenceHelper sharedPreference = new SharedPreferenceHelper(getApplicationContext());
         sharedPreference.putBoolean("FINISH_VIDEO", true);
 		sharedPreference.putBoolean("FINISH_PRECONNNECT", true);
         setContentView(R.layout.activity_first);
+        
+        Timer timer = new Timer();  
+        TimerTask task = new TimerTask(){  
+	        public void run() {  
+	        	((FirstActivity)currentActivity).StartMainActivity(null);
+	        }      
+	    };
+	    timer.schedule(task, 3000);
+
     }
 
 
@@ -39,10 +53,12 @@ public class FirstActivity extends Activity {
     
     public void StartMainActivity(View view)
     {
-
-    	Intent intent = new Intent();
-    	intent.setClass(this, MainActivity.class);
-    	startActivity(intent);
+    	if(startFlag){
+    		startFlag = false;
+    		Intent intent = new Intent();
+        	intent.setClass(this, MainActivity.class);
+        	startActivity(intent);
+    	}
     }
     
  

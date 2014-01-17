@@ -117,7 +117,6 @@ public class VideoActivity extends Activity {
         	public void onCompletion(MediaPlayer mp){
         		sharedPreference.putBoolean("FINISH_VIDEO", true);
             	sharedPreference.putBoolean("STATE_RECEIVE", true);
-            	System.out.println("11111111111");
             	finish();
         	}
         });
