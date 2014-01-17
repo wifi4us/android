@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/dlt_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:textSize="20sp"
+        android:textColor="#3D7878"
+        android:gravity="center"
+        android:layout_margin="5dp">
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/dlt_red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"         
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip" >
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:contentDescription="@null"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip"
+        android:background="@drawable/gray_line" />
+
+    <LinearLayout
+        android:id="@+id/dlt_blue"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/dlt_confirm_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#66B3FF"
+        android:text="@string/exchange"
+        android:textSize="30sp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="2dp"
+        android:layout_margin="3dp" />
+
+</LinearLayout>
