@@ -3,6 +3,7 @@ package com.paad.wifi4us;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +12,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -24,7 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.paad.wifi4us.utility.Constant;
-import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveScanResultList extends ListFragment{
 	//ignore first wifi connected broadcast	
@@ -33,11 +35,11 @@ public class ReceiveScanResultList extends ListFragment{
 	private ClickConnectReceiver clickConnectReceiver;
 	private ConmunicationReceiver conmunicationReceiver;
 	private ConnectFailReceiver connectFailReceiver;
+	private WifiAuthReceiver wifiAuthReceiver;
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_wifi_connected_fail_text;
-	private SharedPreferenceHelper sharedPreference;
-
+	private Activity currentActivity;
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -69,6 +71,7 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	public void onCreate(Bundle savedInstanceState) {
 		Intent intent = new Intent(getActivity(), ReceiveService.class);  
+		currentActivity = getActivity();
         //bind service to get ready for all the clickable element
 		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
         super.onCreate(savedInstanceState);
@@ -83,7 +86,6 @@ public class ReceiveScanResultList extends ListFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
 		ArrayList<String> resultshown = getShownName(scanresultlist);
-    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		scanresultlist_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, resultshown);
 		setListAdapter(scanresultlist_adapter);
@@ -93,9 +95,8 @@ public class ReceiveScanResultList extends ListFragment{
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
 		receiveService.WifiDisconnect();
     	UIToProgressbar();
-    	sharedPreference.putBoolean("FINISH_VIDEO", false);
-		sharedPreference.putBoolean("FINISH_PRECONNNECT", false);
-
+		Constant.FLAG.FINISH_VIDEO = false;
+		Constant.FLAG.FINISH_PRECONNNECT = false;
 		String rawssid = scanresultlist.get(pos);
 		if(!haveBondService)
 			return;
@@ -103,7 +104,7 @@ public class ReceiveScanResultList extends ListFragment{
 		clickConnectReceiver = new ClickConnectReceiver();
 		conmunicationReceiver = new ConmunicationReceiver();
 		connectFailReceiver = new ConnectFailReceiver();
-
+		wifiAuthReceiver = new WifiAuthReceiver();
 		/*
 		 * process the next step until the wifi has been disconnected completely, 
 		 * in case the broadcast receiver gets the wrong state which the last wifi 
@@ -122,6 +123,8 @@ public class ReceiveScanResultList extends ListFragment{
 				getActivity().getApplicationContext().registerReceiver(connectFailReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT));
 				getActivity().getApplicationContext().registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	        	getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
+				getActivity().getApplicationContext().registerReceiver(wifiAuthReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
+
 	        	receiveService.WifiConnect(rawssid);
 	        	break;
 			}
@@ -161,18 +164,22 @@ public class ReceiveScanResultList extends ListFragment{
       			String adid = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID);
       			String adword = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD);
 
-    			Intent startvideo = new Intent(receive_id_start_connect_progressbar.getActivity(), VideoActivity.class);    
+    			Intent startvideo = new Intent(currentActivity, VideoActivity.class);    
     			startvideo.putExtra("adword", adword);
     			startvideo.putExtra("adid", adid);
-    			sharedPreference.putBoolean("FINISH_PRECONNNECT", true);
-    			receive_id_start_connect_progressbar.startActivity(startvideo);			
+    			Constant.FLAG.FINISH_PRECONNNECT = true;
+    			currentActivity.startActivity(startvideo);			
     		}else{
     			ProgressbarToFail(state);
           		c.unregisterReceiver(this);
     		}
+		}   		
+	}
 	
-      		
-
+	public class WifiAuthReceiver extends BroadcastReceiver{
+		public void onReceive(Context c, Intent intent) {
+			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+			System.out.println(state.toString());
 		}   		
 	}
 	

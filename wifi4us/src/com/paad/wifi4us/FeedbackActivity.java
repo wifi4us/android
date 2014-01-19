@@ -52,7 +52,7 @@ public class FeedbackActivity  extends Activity implements OnClickListener{
     
     public boolean postFeedback(String feedback, String contact) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpPost post = new HttpPost(Constant.SERVER_PREFIX);
+        HttpPost post = new HttpPost(Constant.Networks.SERVER_PREFIX);
         List<BasicNameValuePair> postData = new ArrayList<BasicNameValuePair>();
         postData.add(new BasicNameValuePair("msg", feedback));
         postData.add(new BasicNameValuePair("contact", contact));

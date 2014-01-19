@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
-import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveFragment extends Fragment{
 	private FragmentManager fragmentManager;
@@ -24,8 +24,6 @@ public class ReceiveFragment extends Fragment{
 	private Fragment receive_id_start_scan_text_openwifi;
 	private Fragment receive_id_start_wifi_connected_state;
 	private MyWifiManager myWifiManager;
-	private Boolean startReceive;
-	private SharedPreferenceHelper sharedPreference;
 
     //The call back functions start here
     
@@ -37,8 +35,7 @@ public class ReceiveFragment extends Fragment{
 	public void onStart(){
 		super.onStart();
 		//The init fragment
-		startReceive = sharedPreference.getBoolean("STATE_RECEIVE");
-		if(startReceive){
+		if(Constant.FLAG.STATE_RECEIVE){
 			UIStartFinishVideo();
 		}else{
 			UIStart();
@@ -54,7 +51,6 @@ public class ReceiveFragment extends Fragment{
 		//initial the activity variable
 		fragmentManager = getFragmentManager();
 		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
-    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		//start to render the fragment
 		View view_res = inflater.inflate(R.layout.fragment_receive, container, false);	
@@ -76,7 +72,7 @@ public class ReceiveFragment extends Fragment{
 			}
 			
 			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-			if(receive_id_start_scan_button == null && !startReceive){
+			if(receive_id_start_scan_button == null && !Constant.FLAG.STATE_RECEIVE){
 				receive_id_start_scan_button = new ReceiveScanButton();		
 				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
 				
@@ -122,9 +118,8 @@ public class ReceiveFragment extends Fragment{
 
 		transaction.add(R.id.receive_container_switcher_button, receivie_wifi_switcher_button, "receivie_wifi_switcher_button");
 		
-		startReceive = sharedPreference.getBoolean("STATE_RECEIVE");
 		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-		if(receive_id_start_scan_button == null && !startReceive){
+		if(receive_id_start_scan_button == null && !Constant.FLAG.STATE_RECEIVE){
 			receive_id_start_scan_button = new ReceiveScanButton();		
 			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
 			

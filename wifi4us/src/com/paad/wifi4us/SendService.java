@@ -292,6 +292,8 @@ public class SendService extends Service {
 	 	}
 	 	
 	 	private void sendConnectionFinishBroadcast(){
+	 		//get reward for sending
+	 		System.out.println("11111111111");
 	 		Intent intent  = new Intent();  
             intent.setAction(Constant.BroadcastSend.CONNECTION_FINISH);
             sendBroadcast(intent);  

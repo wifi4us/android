@@ -94,9 +94,11 @@ public class ReceiveService extends Service {
 		Runnable myRunnable = new Runnable(){
 			public void run(){
 				if (myWifiManager.getWifiManager().isWifiEnabled()) { 
+					WifiDisconnectCompletely();
 					myWifiManager.getWifiManager().setWifiEnabled(false); 
 				} 
 				else { 
+					WifiDisconnectCompletely();
 					myWifiManager.getWifiManager().setWifiEnabled(true); 
 				} 			
 			}

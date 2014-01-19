@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import org.apache.http.util.EncodingUtils;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -27,6 +28,7 @@ import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
+@SuppressLint("HandlerLeak")
 public class OtherFragment extends Fragment implements OnClickListener {
     private TextView other_id_userid_text;
 
@@ -58,16 +60,16 @@ public class OtherFragment extends Fragment implements OnClickListener {
         }
     };
 
+	@SuppressLint("HandlerLeak")
 	private Handler creditHandler = new Handler() {
 		public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_SUCCESS:
                 	String tempcredit = (String) msg.obj;
                 	other_id_credit_text.setText("积分：" + tempcredit);
+                    sharedPreference.putString("CREDIT", tempcredit);
                     break;
                 case MSG_FAILURE:
-                	other_id_credit_text
-                            .setText("请退出软件，在联网状态下重新获取积分");
                     break;
                 case CREDIT_INIT:
                     other_id_userid_text
@@ -139,6 +141,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
         }
     };
+    
+    
+    
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -159,7 +164,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
         other_id_credit_text = (TextView) view_res
                 .findViewById(R.id.other_id_credits);
-        other_id_credit_text.setText("积分：NULL，请退出软件保持网络畅通后重新进入");
         Thread mThread = new Thread(getCreditRunner);
         mThread.start();
         
@@ -251,6 +255,14 @@ public class OtherFragment extends Fragment implements OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         Process.killProcess(android.os.Process.myPid());
+    }
+    
+    public void onStart(){
+    	super.onStart();
+    	other_id_credit_text = (TextView) getActivity()
+                .findViewById(R.id.other_id_credits);
+    	String creditText = sharedPreference.getString("CREDIT");
+    	other_id_credit_text.setText(creditText);
     }
 
 }

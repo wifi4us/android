@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.paad.wifi4us.utility.Constant;
 
 public class FirstActivity extends Activity {
 	private boolean startFlag;
@@ -28,10 +28,9 @@ public class FirstActivity extends Activity {
     	currentActivity = this;
     	startFlag = true;
         super.onCreate(savedInstanceState);
-        SharedPreferenceHelper sharedPreference = new SharedPreferenceHelper(getApplicationContext());
-        sharedPreference.putBoolean("FINISH_VIDEO", true);
-		sharedPreference.putBoolean("FINISH_PRECONNNECT", true);
-        setContentView(R.layout.activity_first);
+        Constant.FLAG.FINISH_PRECONNNECT = true;
+		Constant.FLAG.FINISH_VIDEO = true;
+		setContentView(R.layout.activity_first);
         
         Timer timer = new Timer();  
         TimerTask task = new TimerTask(){  

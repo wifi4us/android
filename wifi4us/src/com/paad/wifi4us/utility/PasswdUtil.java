@@ -1,7 +1,6 @@
 package com.paad.wifi4us.utility;
 
 import java.security.MessageDigest;
-import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

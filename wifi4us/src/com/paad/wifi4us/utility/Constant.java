@@ -12,13 +12,20 @@ package com.paad.wifi4us.utility;
  *
  */
 public class Constant {
-    public static final String SERVER_PREFIX = "";
     
+	public static class FLAG {
+		public static boolean FINISH_VIDEO;
+		public static boolean FINISH_PRECONNNECT;
+		public static boolean STATE_RECEIVE;
+		public static String  LAST_TAB = "NULL";
+	}
+	
     public static final class Security {
     	public static final String DES_KEY = "12345678";
     }
     
     public static final class Networks {
+        public static final String SERVER_PREFIX = "";
     	public static final int SERVER_PORT = 12345;
     	public static final String AD_BASE_HTTPURL = "http://wifi4us.duapp.com/getadid.php";
     	public static final int TIME_INTERVAL_AD = 20000;

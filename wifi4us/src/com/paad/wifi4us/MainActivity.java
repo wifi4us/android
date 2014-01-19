@@ -16,7 +16,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.paad.wifi4us.utility.Constant;
-import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class MainActivity extends FragmentActivity {
 	private FragmentManager fragmentManager;
@@ -40,7 +39,6 @@ public class MainActivity extends FragmentActivity {
 	private Fragment receive;
 	private Fragment other;
 	
-	private SharedPreferenceHelper sharedPreference;
 	
 	//Receive Service 	
     private ReceiveService receiveService;
@@ -76,8 +74,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         
-    	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
-    	sharedPreference.putBoolean("STATE_RECEIVE", false);
+    	Constant.FLAG.STATE_RECEIVE = false;
 
     	
 		fragmentManager = this.getSupportFragmentManager();
@@ -95,24 +92,23 @@ public class MainActivity extends FragmentActivity {
     	
     	tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {    
             public void onTabChanged(String tabId) {  
-            	String lastTabId = sharedPreference.getString("LAST_TAB");
 
             	if(tabId.equals("receive")){
-            		if(lastTabId.equals("send")){
+            		if(Constant.FLAG.LAST_TAB.equals("send")){
                 		StopSendFragment();
             		}else{
                 		StopOtherFragment();
             		}
             		StartReceiveFragment();
             	}else if(tabId.equals("send")){
-            		if(lastTabId.equals("other")){
+            		if(Constant.FLAG.LAST_TAB.equals("other")){
                 		StopOtherFragment();
             		}else{
                 		StopReceiveFragment();
             		}
             		StartSendFragment();
             	}else{
-            		if(lastTabId.equals("receive")){
+            		if(Constant.FLAG.LAST_TAB.equals("receive")){
                 		StopReceiveFragment();
             		}else{
                 		StopSendFragment();
@@ -141,8 +137,7 @@ public class MainActivity extends FragmentActivity {
     	if(!haveBondService){
     		return;
     	}
-		Boolean finishPreconnect = sharedPreference.getBoolean("FINISH_PRECONNNECT");
-		if(!finishPreconnect){
+		if(!Constant.FLAG.FINISH_PRECONNNECT){
 			Intent intent = new Intent();
 			intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
 			sendBroadcast(intent);
@@ -158,8 +153,7 @@ public class MainActivity extends FragmentActivity {
     }  
     
     private void StartReceiveFragment(){
-    	sharedPreference.putString("LAST_TAB", "receive");
-    	
+    	Constant.FLAG.LAST_TAB = "receive";
     	initFragments();
     	if(receive != null){
         	receive.onStart();
@@ -204,8 +198,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     private void StartSendFragment(){
-    	sharedPreference.putString("LAST_TAB", "send");
-		
+    	Constant.FLAG.LAST_TAB = "send";
     	initFragments();
        	if(send != null){
        		send.onStart();
@@ -231,8 +224,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     private void StartOtherFragment(){
-    	sharedPreference.putString("LAST_TAB", "other");
-		
+    	Constant.FLAG.LAST_TAB = "other";
     	initFragments();
        	if(other != null){
        		other.onStart();

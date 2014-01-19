@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.paad.wifi4us.utility.Constant;
-import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class ReceiveWifiConnectedState extends Fragment{
 	
@@ -32,7 +31,6 @@ public class ReceiveWifiConnectedState extends Fragment{
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_scan_button;
 	private Button receive_button_disconnect_wifi;
-	private SharedPreferenceHelper sharedPreference;
 
     //Receive Service 	
     private ReceiveService receiveService;
@@ -56,7 +54,6 @@ public class ReceiveWifiConnectedState extends Fragment{
         //bind service to get ready for all the clickable element
 		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 		fragmentManager = getFragmentManager();
-    	sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
 
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
@@ -105,12 +102,12 @@ public class ReceiveWifiConnectedState extends Fragment{
 		public void onReceive(Context c, Intent intent) {
 			if(!haveBondService)
 				return;
-
+			//get reward for receiving
 			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
 			if(state.equals(SupplicantState.DISCONNECTED)){  
      	   		receiveService.closeConnection();
      	   		receiveService.WifiDisconnectCompletely();
-     	   		sharedPreference.putBoolean("STATE_RECEIVE", false);
+     	   		Constant.FLAG.STATE_RECEIVE = false;
      			
      			FragmentTransaction transaction = fragmentManager.beginTransaction();
      			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");

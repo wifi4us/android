@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
-import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class VideoActivity extends Activity {
 	
@@ -30,7 +29,6 @@ public class VideoActivity extends Activity {
 	private MediaController controller;
 	private String adid;
 	private String adword;
-	private SharedPreferenceHelper sharedPreference;
 
     //Receive Service 	
     private ReceiveService receiveService;
@@ -59,8 +57,7 @@ public class VideoActivity extends Activity {
     	if(!haveBondService){
     		return;
     	}
-		Boolean finishVideo = sharedPreference.getBoolean("FINISH_VIDEO");
-		if(!finishVideo){
+		if(!Constant.FLAG.FINISH_VIDEO){
 			Intent intent = new Intent();
 			intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
 			sendBroadcast(intent);
@@ -78,7 +75,6 @@ public class VideoActivity extends Activity {
         setContentView(R.layout.activity_video);
         adid = getIntent().getStringExtra("adid");
         adword = getIntent().getStringExtra("adword");
-    	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
 
         
         
@@ -115,9 +111,9 @@ public class VideoActivity extends Activity {
         
         video.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
         	public void onCompletion(MediaPlayer mp){
-        		sharedPreference.putBoolean("FINISH_VIDEO", true);
-            	sharedPreference.putBoolean("STATE_RECEIVE", true);
-            	finish();
+        		Constant.FLAG.FINISH_VIDEO = true;
+        		Constant.FLAG.STATE_RECEIVE = true;
+        		finish();
         	}
         });
     }
