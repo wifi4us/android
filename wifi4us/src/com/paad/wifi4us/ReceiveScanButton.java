@@ -15,13 +15,16 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.MyWifiManager;
 import com.paad.wifi4us.utility.PasswdUtil;
 
 public class ReceiveScanButton extends Fragment{
@@ -33,7 +36,7 @@ public class ReceiveScanButton extends Fragment{
 	private Fragment receive_id_start_wifi_connected_fail_text;
     private ClickScanReceiver clickScanReceiver;
 	private FragmentManager fragmentManager;
-
+	private MyWifiManager myWifiManager;
 	
     //Receive Service 	
     private ReceiveService receiveService;
@@ -69,6 +72,7 @@ public class ReceiveScanButton extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		doubleclickscan = false;
 		fragmentManager = getFragmentManager();
+		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
 		View view_res = inflater.inflate(R.layout.fragment_receive_scan_button, container, false);
 		scanwifi = (Button) view_res.findViewById(R.id.receive_button_start_scan_button);
 		scanwifi.setOnClickListener(new OnClickListener(){
@@ -78,6 +82,14 @@ public class ReceiveScanButton extends Fragment{
 				if(doubleclickscan == true)
 					return;
 				doubleclickscan = true;
+				
+				if(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_ENABLED){
+					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "ÇëÏÈ´ò¿ªwifi", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+		            doubleclickscan = false;
+					return;
+				}
 				clickScanReceiver = new ClickScanReceiver();
 		        getActivity().getApplicationContext().registerReceiver(clickScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 		   

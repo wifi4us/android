@@ -18,10 +18,7 @@ public class ReceiveFragment extends Fragment{
 	private Fragment receive_id_switcher_text_on;
 	private Fragment receive_id_switcher_text_off;
 	private Fragment receive_id_start_scan_button;
-	private Fragment receive_id_start_scan_resultlist;
-	private Fragment receive_id_start_scan_progressbar;
 	private Fragment receive_id_start_connect_progressbar;
-	private Fragment receive_id_start_scan_text_openwifi;
 	private Fragment receive_id_start_wifi_connected_state;
 	private MyWifiManager myWifiManager;
 
@@ -65,47 +62,9 @@ public class ReceiveFragment extends Fragment{
 		if(myWifiManager.getWifiManager().getWifiState() == WifiManager.WIFI_STATE_ENABLED){
 			receive_id_switcher_text_on = new ReceiveSwitcherTextOn();
 			transaction.replace(R.id.receive_container_switcher_text, receive_id_switcher_text_on, "receive_id_switcher_text_on");
-			
-			receive_id_start_scan_text_openwifi = fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
-			if(receive_id_start_scan_text_openwifi != null){
-				transaction.remove(receive_id_start_scan_text_openwifi);
-			}
-			
-			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-			if(receive_id_start_scan_button == null && !Constant.FLAG.STATE_RECEIVE){
-				receive_id_start_scan_button = new ReceiveScanButton();		
-				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
-				
-			}
 		}else{	
 			receive_id_switcher_text_off = new ReceiveSwitcherTextOff();
 			transaction.replace(R.id.receive_container_switcher_text, receive_id_switcher_text_off, "receive_id_switcher_text_off");
-			
-			//clean scan zone
-			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-			receive_id_start_scan_resultlist = fragmentManager.findFragmentByTag("receive_id_start_scan_resultlist");
-			receive_id_start_scan_progressbar = fragmentManager.findFragmentByTag("receive_id_start_scan_progressbar_switcher");
-			receive_id_start_connect_progressbar = fragmentManager.findFragmentByTag("receive_id_start_connect_progressbar");
-			
-		
-	        if(receive_id_start_scan_button != null){
-				transaction.remove(receive_id_start_scan_button);
-			}
-	        if(receive_id_start_scan_resultlist != null){
-				transaction.remove(receive_id_start_scan_resultlist);
-			}
-
-	        if(receive_id_start_scan_progressbar != null){
-				transaction.remove(receive_id_start_scan_progressbar);
-			}
-	        
-	        if(receive_id_start_connect_progressbar != null){
-				transaction.remove(receive_id_start_connect_progressbar);
-			}
-	        
-			receive_id_start_scan_text_openwifi = new ReceiveStartScanTextOpenwifi();
-			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_text_openwifi, "receive_id_start_scan_text_openwifi");
-		
 		}
 		transaction.commitAllowingStateLoss();
 

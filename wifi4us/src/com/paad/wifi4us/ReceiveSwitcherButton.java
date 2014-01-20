@@ -12,11 +12,13 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
@@ -28,8 +30,6 @@ public class ReceiveSwitcherButton extends Fragment{
 	private Fragment receive_id_switcher_text_off;
 	private Fragment receive_id_start_scan_text_openwifi;
 	private Fragment receive_id_start_scan_button;
-	private Fragment receive_id_start_scan_resultlist;
-	private Fragment receive_id_start_wifi_connected_state;
     private ClickSwitcherReceiver clickSwitcherReceiver;
 	private FragmentManager fragmentManager;
 	private MyWifiManager myWifiManager;
@@ -73,6 +73,13 @@ public class ReceiveSwitcherButton extends Fragment{
 				if(!haveBondService)
 	    			return;
 				myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
+				if(myWifiManager.getWifiApState() != myWifiManager.WIFI_AP_STATE_DISABLED){
+					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "分享的时候无法打开wifi", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+					return;
+				}
+				
 				int state = myWifiManager.getWifiManager().getWifiState();
 				if(state == WifiManager.WIFI_STATE_DISABLING || state == WifiManager.WIFI_STATE_ENABLING){
 					return;
@@ -100,7 +107,6 @@ public class ReceiveSwitcherButton extends Fragment{
 
     		if(state == WifiManager.WIFI_STATE_DISABLING){
     			UISwitcherFromProgressToTextOff();
-		        UISwitcherCleanScanZone();
 	    		c.unregisterReceiver(this);
 
     		} 
@@ -135,35 +141,6 @@ public class ReceiveSwitcherButton extends Fragment{
 
 	}
 	
-	private void UISwitcherCleanScanZone(){
-		Constant.FLAG.STATE_RECEIVE = false;			
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-		receive_id_start_scan_resultlist = fragmentManager.findFragmentByTag("receive_id_start_scan_resultlist");
-		receive_id_start_scan_progressbar = fragmentManager.findFragmentByTag("receive_id_start_scan_progressbar_switcher");
-		receive_id_start_wifi_connected_state = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_state");
-      
-        if(receive_id_start_scan_button != null){
-			transaction.remove(receive_id_start_scan_button);
-		}
-        if(receive_id_start_scan_resultlist != null){
-			transaction.remove(receive_id_start_scan_resultlist);
-		}
-        if(receive_id_start_scan_progressbar != null){
-			transaction.remove(receive_id_start_scan_progressbar);
-		}
-        if(receive_id_start_wifi_connected_state != null){
-			transaction.remove(receive_id_start_wifi_connected_state);
-		}
-        
-        receive_id_start_scan_text_openwifi = fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
-        if(receive_id_start_scan_text_openwifi == null){
-        	receive_id_start_scan_text_openwifi = new ReceiveStartScanTextOpenwifi();
-			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_text_openwifi, "receive_id_start_scan_text_openwifi");
-        }
-        
-		transaction.commitAllowingStateLoss(); 
-	}
 	
 	private void UISwitcherFromTextToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 

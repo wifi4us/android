@@ -20,13 +20,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.MyWifiManager;
 
 public class ReceiveScanResultList extends ListFragment{
 	//ignore first wifi connected broadcast	
@@ -40,6 +43,8 @@ public class ReceiveScanResultList extends ListFragment{
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_wifi_connected_fail_text;
 	private Activity currentActivity;
+	private MyWifiManager myWifiManager;
+
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -85,6 +90,7 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
+		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
 		ArrayList<String> resultshown = getShownName(scanresultlist);
 
 		scanresultlist_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, resultshown);
@@ -93,13 +99,23 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
+		if(!haveBondService)
+			return;
+		if(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_ENABLED){
+			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "ÇëÏÈ´ò¿ªwifi", Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			return;
+		}
+		
 		receiveService.WifiDisconnect();
     	UIToProgressbar();
 		Constant.FLAG.FINISH_VIDEO = false;
 		Constant.FLAG.FINISH_PRECONNNECT = false;
 		String rawssid = scanresultlist.get(pos);
-		if(!haveBondService)
-			return;
+
+		
+	
  
 		clickConnectReceiver = new ClickConnectReceiver();
 		conmunicationReceiver = new ConmunicationReceiver();
