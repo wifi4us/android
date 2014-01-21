@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,20 +17,15 @@ import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.SimpleArrayMap;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.baidu.frontia.Frontia;
-import com.baidu.frontia.api.FrontiaAuthorization.MediaType;
 import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
-import com.baidu.frontia.api.FrontiaSocialShareListener;
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
@@ -222,50 +216,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	boolean initShare = false;
 
-	public void startShare() {
-		if (!initShare) {
-			boolean isInit = Frontia.init(
-					getActivity().getApplicationContext(),
-					"gxLMGxsKv6q3WRAKxBZwuidD");
-			if (!isInit) {// Frontia is successfully initialized.
-				// Use Frontia
-				Toast.makeText(context, "init frontia fail", Toast.LENGTH_SHORT)
-						.show();
-			}
-			mSocialShare = Frontia.getSocialShare();
-			mSocialShare.setContext(context);
-			mImageContent.setTitle(getResources()
-					.getString(R.string.setDiscuss));
-			mImageContent.setContent("文案");
-			mImageContent.setLinkUrl("http://wifi4us.paad.com/");
-			mImageContent.setImageData(BitmapFactory.decodeResource(
-					getResources(), R.drawable.ic_launcher));
-			initShare = true;
-		}
-		mSocialShare.share(mImageContent, MediaType.BATCHSHARE.toString(),
-				new FrontiaSocialShareListener() {
-
-					@Override
-					public void onCancel() {
-						Log.d("Test", "share cancel");
-
-					}
-
-					@Override
-					public void onFailure(int arg0, String arg1) {
-						// TODO Auto-generated method stub
-						Log.d("Test", "share fail");
-					}
-
-					@Override
-					public void onSuccess() {
-						// TODO Auto-generated method stub
-						Log.d("Test", "share success");
-					}
-
-				}, true);
-	}
-
 	boolean initUpdate = false;
 
 	public void startUpdate() {
@@ -284,7 +234,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			agent.sync();
 			initFeedback = true;
 		}
-		agent.startFeedbackActivity();
+		agent.startFeedbackActivity(); 
 	}
 
 	@Override
@@ -322,7 +272,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			startActivity(new Intent(getActivity(), SettingsActivity.class));
 			break;
 		case R.id.btn_Set_Discuss:
-			startShare();
+			MainActivity.startShare(getActivity());
 		case R.id.btn_check_update:
 			startUpdate();
 		default:

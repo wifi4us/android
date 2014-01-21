@@ -1,0 +1,16 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wifi4us="http://schemas.android.com/apk/res/com.paad.wifi4us" >
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_more"
+        android:title="@string/settings"
+        wifi4us:showAsAction="always"/>
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ball_blue"
+        android:title="@string/setDiscuss"
+        wifi4us:showAsAction="always"/>
+
+</menu>

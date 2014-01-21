@@ -4,20 +4,31 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.frontia.Frontia;
+import com.baidu.frontia.api.FrontiaSocialShare;
+import com.baidu.frontia.api.FrontiaSocialShareContent;
+import com.baidu.frontia.api.FrontiaSocialShareListener;
+import com.baidu.frontia.api.FrontiaAuthorization.MediaType;
 import com.paad.wifi4us.utility.Constant;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends ActionBarActivity {
 	private FragmentManager fragmentManager;
     
 	private Fragment receive_wifi_switcher_button;
@@ -55,6 +66,29 @@ public class MainActivity extends FragmentActivity {
         	haveBondService = true;
         }  
     };  
+    
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actiongbar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                startShare(this);
+                return true;
+            case R.id.action_settings:
+            	startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
     
     private void addTab(String label, String titleText, int drawableId, int contentId, TabHost tabHost) {
         TabHost.TabSpec spec = tabHost.newTabSpec(label);
@@ -120,9 +154,9 @@ public class MainActivity extends FragmentActivity {
     	
     	tabHost.setup();
     	
-    	addTab("receive", " π”√",  R.drawable.tab_search_selector, R.id.receive, tabHost);
-    	addTab("send", "∑÷œÌ",  R.drawable.tab_share_selector, R.id.send, tabHost);
-    	addTab("other", "∆‰À˚",  R.drawable.tab_settings_selector, R.id.other, tabHost);
+    	addTab("receive", "‰ΩøÁî®ÊµÅÈáè",  R.drawable.tab_search_selector, R.id.receive, tabHost);
+    	addTab("send", "ÂàÜ‰∫´ÊµÅÈáè",  R.drawable.tab_share_selector, R.id.send, tabHost);
+    	addTab("other", "ÂÖ∂‰ªñ",  R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
     	
     }
@@ -328,6 +362,54 @@ public class MainActivity extends FragmentActivity {
     	receive = fragmentManager.findFragmentById(R.id.receive);
     	other = fragmentManager.findFragmentById(R.id.other);
     }
+    
+    static boolean initShare = false;
+    static FrontiaSocialShareContent mImageContent;
+    static FrontiaSocialShare mSocialShare;
+	public static void startShare(Context context) {
+		if (!initShare) {
+			mImageContent = new FrontiaSocialShareContent();
+			boolean isInit = Frontia.init(
+					context,
+					"gxLMGxsKv6q3WRAKxBZwuidD");
+			if (!isInit) {// Frontia is successfully initialized.
+				// Use Frontia
+				Toast.makeText(context, "init frontia fail", Toast.LENGTH_SHORT)
+						.show();
+			}
+			mSocialShare = Frontia.getSocialShare();
+			mSocialShare.setContext(context);
+			mImageContent.setTitle(context.getResources()
+					.getString(R.string.setDiscuss));
+			mImageContent.setContent("ÈèÇÂõ®Óîç");
+			mImageContent.setLinkUrl("http://wifi4us.paad.com/");
+			mImageContent.setImageData(BitmapFactory.decodeResource(
+					context.getResources(), R.drawable.ic_launcher));
+			initShare = true;
+		}
+		mSocialShare.share(mImageContent, MediaType.BATCHSHARE.toString(),
+				new FrontiaSocialShareListener() {
+
+					@Override
+					public void onCancel() {
+						Log.d("Test", "share cancel");
+
+					}
+
+					@Override
+					public void onFailure(int arg0, String arg1) {
+						// TODO Auto-generated method stub
+						Log.d("Test", "share fail");
+					}
+
+					@Override
+					public void onSuccess() {
+						// TODO Auto-generated method stub
+						Log.d("Test", "share success");
+					}
+
+				}, true);
+	}
     
     
 }
