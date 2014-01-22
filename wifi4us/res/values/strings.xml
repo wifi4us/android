@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">wifi4us</string>
     <string name="startservice">share 15 mins and 3M</string>
     <string name="hello">hello world</string>
@@ -48,4 +47,11 @@
     <string name="title_activity_feedback">意见反馈</string>
     <string name="exchange">兑换</string>
 
+    <string name="main_activity_tabwidget_sendtext">分享</string>
+	<string name="main_activity_tabwidget_receivetext">使用</string>
+	<string name="main_activity_tabwidget_othertext">其他</string>
+	<string name="main_activity_otherfragment_useridtext">你的id为：</string>
+	<string name="main_activity_otherfragment_useridtext_initfail">请保持网络畅通，关闭软件再打开，不然无法使用服务</string>
+	<string name="main_activity_otherfragment_credittext">你的积分为：</string>
+		
 </resources>

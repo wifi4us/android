@@ -50,11 +50,7 @@ public class SendService extends Service {
         super.onCreate();  
 		myWifiManager = new MyWifiManager(getApplicationContext());   
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
-		try{
-			serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
-		}catch(Exception e){
-        	e.printStackTrace();
-        }
+
 		
     }  
 	
@@ -173,7 +169,10 @@ public class SendService extends Service {
 		Runnable heartBeat = new Runnable(){
 			public void run(){
 				socket = null;
+				serverSocket = null;
 				try{
+					serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
+			        
 					socket = serverSocket.accept();
 					socket.setSoTimeout(Constant.Networks.TIME_INTERVAL_AD);
 
@@ -224,6 +223,7 @@ public class SendService extends Service {
 								out.close(); 
 					        	in.close();
 					        	socket.close();
+					        	serverSocket.close();
 					        	return;
 						}
 					}catch(Exception e){
@@ -293,7 +293,6 @@ public class SendService extends Service {
 	 	
 	 	private void sendConnectionFinishBroadcast(){
 	 		//get reward for sending
-	 		System.out.println("11111111111");
 	 		Intent intent  = new Intent();  
             intent.setAction(Constant.BroadcastSend.CONNECTION_FINISH);
             sendBroadcast(intent);  

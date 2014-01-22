@@ -38,9 +38,25 @@
    			android:layout_weight="5"
    			android:layout_margin="10dp"
    			android:orientation="vertical"
-   			android:id="@+id/receive_container_scan"
    			android:background="@drawable/receive_draw_2">
-
+    		
+    		<LinearLayout 
+    	    	android:layout_width="match_parent"
+   				android:layout_height="0dp"
+   				android:layout_weight="2"
+   				android:layout_margin="10dp"
+   				android:orientation="vertical"
+   				android:id="@+id/receive_container_scan">
+    		</LinearLayout>
+    		
+    		<LinearLayout 
+    	    	android:layout_width="match_parent"
+   				android:layout_height="0dp"
+   				android:layout_weight="5"
+   				android:layout_margin="10dp"
+   				android:orientation="vertical"
+   				android:id="@+id/receive_container_scan_result">
+    		</LinearLayout> 
     		
     	</LinearLayout>
 </LinearLayout>

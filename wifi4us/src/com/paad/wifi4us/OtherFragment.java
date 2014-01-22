@@ -58,11 +58,11 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			case MSG_SUCCESS:
 				String tempid = (String) msg.obj;
 				userid = String.format("%07d", Integer.parseInt(tempid));
-				other_id_userid_text.setText("�û��ţ�" + userid);
+				other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext) + userid);
 				sharedPreference.putString("USER_ID", userid);
 				break;
 			case MSG_FAILURE:
-				other_id_userid_text.setText("���˳������������״̬�����»�ȡid");
+				other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext_initfail));
 				break;
 			}
 		}
@@ -74,13 +74,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			switch (msg.what) {
 			case MSG_SUCCESS:
 				String tempcredit = (String) msg.obj;
-				other_id_credit_text.setText("��֣�" + tempcredit);
+				other_id_credit_text.setText(context.getString(R.string.main_activity_otherfragment_credittext) + tempcredit);
 				sharedPreference.putString("CREDIT", tempcredit);
 				break;
 			case MSG_FAILURE:
 				break;
 			case CREDIT_INIT:
-				other_id_userid_text.setText("��֣�0");
+				other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_credittext) + "0");
 				break;
 			}
 		}
@@ -166,7 +166,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			Thread mThread = new Thread(getUserIdRunner);
 			mThread.start();
 		} else {
-			other_id_userid_text.setText("�û��ţ�" + userid);
+			other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext) + userid);
 		}
 
 		other_id_credit_text = (TextView) view_res
@@ -297,7 +297,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		other_id_credit_text = (TextView) getActivity().findViewById(
 				R.id.other_id_credits);
 		String creditText = sharedPreference.getString("CREDIT");
-		other_id_credit_text.setText(creditText);
+		other_id_credit_text.setText(context.getString(R.string.main_activity_otherfragment_credittext) + creditText);
 	}
 
 }

@@ -15,9 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.paad.wifi4us.utility.Constant;
@@ -28,10 +26,11 @@ public class ReceiveWifiConnectedState extends Fragment{
 	private WifiDisconnectReceiver wifiDisconnectReceiver;
 	private TextView time;
 	private TextView traffic;
+	
+	private Fragment currentFragment;
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_scan_button;
-	private Button receive_button_disconnect_wifi;
-
+	
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -54,7 +53,8 @@ public class ReceiveWifiConnectedState extends Fragment{
         //bind service to get ready for all the clickable element
 		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 		fragmentManager = getFragmentManager();
-
+		currentFragment = this;
+		
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
         getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
@@ -74,15 +74,6 @@ public class ReceiveWifiConnectedState extends Fragment{
 		time = (TextView)view_res.findViewById(R.id.receive_text_time_left);
 		traffic = (TextView)view_res.findViewById(R.id.receive_text_traffic_used);
 		
-		receive_button_disconnect_wifi = (Button) view_res.findViewById(R.id.receive_button_disconnect_wifi);
-		receive_button_disconnect_wifi.setOnClickListener(new OnClickListener(){
-			public void onClick(View view){
-				if(!haveBondService){
-					return;
-				}
-				receiveService.WifiDisconnectCompletely();
-			}
-		});
 
 		
 		return view_res;
@@ -110,12 +101,13 @@ public class ReceiveWifiConnectedState extends Fragment{
      	   		Constant.FLAG.STATE_RECEIVE = false;
      			
      			FragmentTransaction transaction = fragmentManager.beginTransaction();
+     			transaction.remove(currentFragment);
      			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
      			if(receive_id_start_scan_button == null){
      				receive_id_start_scan_button = new ReceiveScanButton();		
      				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
-     				
      			}
+     			
      			transaction.commitAllowingStateLoss();    		
     		
     		}  

@@ -20,6 +20,8 @@ public class ReceiveFragment extends Fragment{
 	private Fragment receive_id_start_scan_button;
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_wifi_connected_state;
+	private Fragment receive_id_start_wifi_connected_break_button;
+
 	private MyWifiManager myWifiManager;
 
     //The call back functions start here
@@ -96,8 +98,15 @@ public class ReceiveFragment extends Fragment{
         receive_id_start_wifi_connected_state = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_state");
         if(receive_id_start_wifi_connected_state == null){
         	receive_id_start_wifi_connected_state = new ReceiveWifiConnectedState();
-    		transaction.replace(R.id.receive_container_scan, receive_id_start_wifi_connected_state, "receive_id_start_wifi_connected_state");
+    		transaction.replace(R.id.receive_container_scan_result, receive_id_start_wifi_connected_state, "receive_id_start_wifi_connected_state");
         }
+        
+        receive_id_start_wifi_connected_break_button = fragmentManager.findFragmentByTag("receive_id_start_wifi_connected_break_button");
+        if(receive_id_start_wifi_connected_break_button == null){
+            receive_id_start_wifi_connected_break_button = new ReceiveWifiConnectedBreakButton();
+    		transaction.replace(R.id.receive_container_scan, receive_id_start_wifi_connected_break_button, "receive_id_start_wifi_connected_break_button");
+        }
+        
 		transaction.commitAllowingStateLoss();
 	}
 	

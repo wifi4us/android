@@ -92,7 +92,6 @@ public class SendStopShareButton extends Fragment{
     		}
     		
     		UIScanFromProgressToShare();
-			c.removeStickyBroadcast(intent);
     		c.unregisterReceiver(this);
     	}
     }

@@ -16,11 +16,14 @@ import java.util.TimerTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo.State;
 import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.util.SimpleArrayMap;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -138,15 +141,48 @@ public class ReceiveService extends Service {
 	public void WifiConnect(String rawssid){
 		connectinfo = rawssid;
 
-		Runnable myRunnable = new Runnable(){
+		Runnable wifiConnectRunner = new Runnable(){
 			public void run(){
 					String passwd = getPassWord();
 					String ssid = getSSID();
 					myWifiManager.WifiSetupConnect(ssid, passwd);
 				}
 		};
-		Thread thread = new Thread(myRunnable);
-		thread.start();
+		
+		Runnable wifiStateCheckRunner = new Runnable(){
+			public void run(){
+				int trial = 20;
+				Intent intent = new Intent();
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifi连接认证超时");
+				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
+
+				while(trial > 0){
+
+					trial--;
+					try{
+						SystemClock.sleep(1000);
+						ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+			    		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
+			    		if(State.CONNECTED == state){  
+							return;
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+						WifiDisconnectCompletely();
+						sendBroadcast(intent);
+						return;
+					}
+					
+				}
+				WifiDisconnectCompletely();
+				sendBroadcast(intent);
+			}
+		};
+		
+		Thread thread1 = new Thread(wifiConnectRunner);
+		Thread thread2 = new Thread(wifiStateCheckRunner);
+		thread1.start();
+		thread2.start();
 	}
 
 	public void WifiDisconnectCompletely(){

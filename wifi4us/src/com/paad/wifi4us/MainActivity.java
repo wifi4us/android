@@ -154,9 +154,9 @@ public class MainActivity extends ActionBarActivity {
     	
     	tabHost.setup();
     	
-    	addTab("receive", "使用流量",  R.drawable.tab_search_selector, R.id.receive, tabHost);
-    	addTab("send", "分享流量",  R.drawable.tab_share_selector, R.id.send, tabHost);
-    	addTab("other", "其他",  R.drawable.tab_settings_selector, R.id.other, tabHost);
+    	addTab("receive", getString(R.string.main_activity_tabwidget_receivetext),  R.drawable.tab_search_selector, R.id.receive, tabHost);
+    	addTab("send", getString(R.string.main_activity_tabwidget_sendtext),  R.drawable.tab_share_selector, R.id.send, tabHost);
+    	addTab("other", getString(R.string.main_activity_tabwidget_othertext),  R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
     	
     }
@@ -381,7 +381,7 @@ public class MainActivity extends ActionBarActivity {
 			mSocialShare.setContext(context);
 			mImageContent.setTitle(context.getResources()
 					.getString(R.string.setDiscuss));
-			mImageContent.setContent("鏂囨");
+			mImageContent.setContent("���������");
 			mImageContent.setLinkUrl("http://wifi4us.paad.com/");
 			mImageContent.setImageData(BitmapFactory.decodeResource(
 					context.getResources(), R.drawable.ic_launcher));

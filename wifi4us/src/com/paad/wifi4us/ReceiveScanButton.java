@@ -149,7 +149,7 @@ public class ReceiveScanButton extends Fragment{
 		}
 		
 		
-		transaction.add(R.id.receive_container_scan, receive_id_start_scan_progressbar, "receive_id_start_scan_progressbar_scan");
+		transaction.replace(R.id.receive_container_scan_result, receive_id_start_scan_progressbar, "receive_id_start_scan_progressbar_scan");
 		transaction.commitAllowingStateLoss(); 
 
 	}
@@ -168,7 +168,7 @@ public class ReceiveScanButton extends Fragment{
         	receive_id_start_scan_resultlist = new ReceiveScanResultList();
         }
         ((ReceiveScanResultList)receive_id_start_scan_resultlist).setView(wifiAPList);
-        transaction.add(R.id.receive_container_scan, receive_id_start_scan_resultlist, "receive_id_start_scan_resultlist");
+        transaction.replace(R.id.receive_container_scan_result, receive_id_start_scan_resultlist, "receive_id_start_scan_resultlist");
       
         
         transaction.commitAllowingStateLoss();
@@ -187,7 +187,7 @@ public class ReceiveScanButton extends Fragment{
         if(receive_id_start_scan_nothing == null){
         	receive_id_start_scan_nothing = new ReceiveStartScanNothing();
         }
-        transaction.add(R.id.receive_container_scan, receive_id_start_scan_nothing, "receive_id_start_scan_nothing");
+        transaction.replace(R.id.receive_container_scan_result, receive_id_start_scan_nothing, "receive_id_start_scan_nothing");
         
         transaction.commitAllowingStateLoss();
 	}

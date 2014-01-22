@@ -33,17 +33,21 @@ import com.paad.wifi4us.utility.MyWifiManager;
 
 public class ReceiveScanResultList extends ListFragment{
 	//ignore first wifi connected broadcast	
+	private Context context;
 	private ArrayList<String> scanresultlist;
 	private ArrayAdapter<String> scanresultlist_adapter;
 	private ClickConnectReceiver clickConnectReceiver;
 	private ConmunicationReceiver conmunicationReceiver;
 	private ConnectFailReceiver connectFailReceiver;
-	private WifiAuthReceiver wifiAuthReceiver;
+	private WifiDisconnectReceiver wifiDisconnectReceiver;
+	
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_connect_progressbar;
 	private Fragment receive_id_start_wifi_connected_fail_text;
 	private Activity currentActivity;
+	
 	private MyWifiManager myWifiManager;
+	private String rawssid;
 
     //Receive Service 	
     private ReceiveService receiveService;
@@ -77,23 +81,25 @@ public class ReceiveScanResultList extends ListFragment{
 	public void onCreate(Bundle savedInstanceState) {
 		Intent intent = new Intent(getActivity(), ReceiveService.class);  
 		currentActivity = getActivity();
+		context = getActivity().getApplicationContext();
+
         //bind service to get ready for all the clickable element
-		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
+		currentActivity.bindService(intent, sc, Context.BIND_AUTO_CREATE); 
         super.onCreate(savedInstanceState);
         
     }
 	
 	public void onDestroy(){
 		super.onDestroy();
-		getActivity().unbindService(sc);
+		currentActivity.unbindService(sc);
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
-		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
+		myWifiManager = new MyWifiManager(context);
 		ArrayList<String> resultshown = getShownName(scanresultlist);
 
-		scanresultlist_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, resultshown);
+		scanresultlist_adapter = new ArrayAdapter<String>(currentActivity, android.R.layout.simple_list_item_1, resultshown);
 		setListAdapter(scanresultlist_adapter);
 		return inflater.inflate(R.layout.fragment_receive_scan_resultlist, container, false);
 	}
@@ -101,8 +107,10 @@ public class ReceiveScanResultList extends ListFragment{
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
 		if(!haveBondService)
 			return;
+		
+
 		if(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_ENABLED){
-			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "请先打开wifi", Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(context, "请先打开wifi", Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
 			return;
@@ -112,15 +120,13 @@ public class ReceiveScanResultList extends ListFragment{
     	UIToProgressbar();
 		Constant.FLAG.FINISH_VIDEO = false;
 		Constant.FLAG.FINISH_PRECONNNECT = false;
-		String rawssid = scanresultlist.get(pos);
-
-		
-	
+		rawssid = scanresultlist.get(pos);
  
 		clickConnectReceiver = new ClickConnectReceiver();
 		conmunicationReceiver = new ConmunicationReceiver();
 		connectFailReceiver = new ConnectFailReceiver();
-		wifiAuthReceiver = new WifiAuthReceiver();
+		wifiDisconnectReceiver = new WifiDisconnectReceiver();
+
 		/*
 		 * process the next step until the wifi has been disconnected completely, 
 		 * in case the broadcast receiver gets the wrong state which the last wifi 
@@ -132,14 +138,13 @@ public class ReceiveScanResultList extends ListFragment{
 	        } catch (InterruptedException e) {
 	            e.printStackTrace();
 	        }
-			Context c = getActivity().getApplicationContext();
-			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 			if(State.DISCONNECTED == state){
-				getActivity().getApplicationContext().registerReceiver(connectFailReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT));
-				getActivity().getApplicationContext().registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-	        	getActivity().getApplicationContext().registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
-				getActivity().getApplicationContext().registerReceiver(wifiAuthReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
+				context.registerReceiver(connectFailReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT));
+				context.registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+				context.registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
+				context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 
 	        	receiveService.WifiConnect(rawssid);
 	        	break;
@@ -160,6 +165,18 @@ public class ReceiveScanResultList extends ListFragment{
     		ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
     		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
     		if(State.CONNECTED == state){  
+    			String actualSSID = myWifiManager.getWifiManager().getConnectionInfo().getSSID();
+    			if(!actualSSID.equals(rawssid)){
+    				Intent i = new Intent();
+    				i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
+    				i.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifi连接认证超时");
+    				currentActivity.sendBroadcast(i);
+    					
+    				receiveService.WifiDisconnectCompletely();
+    	     		c.unregisterReceiver(this);
+    	     		return;
+    			}
+
      			c.unregisterReceiver(this);
      	        receiveService.EstablishConmunication();
     		}  
@@ -192,13 +209,6 @@ public class ReceiveScanResultList extends ListFragment{
 		}   		
 	}
 	
-	public class WifiAuthReceiver extends BroadcastReceiver{
-		public void onReceive(Context c, Intent intent) {
-			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-			System.out.println(state.toString());
-		}   		
-	}
-	
 	public class ConnectFailReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
 			ProgressbarToFail("连接过程被打断，网络连接失败");
@@ -206,11 +216,29 @@ public class ReceiveScanResultList extends ListFragment{
 		}
 	}
 	
+
+	public class WifiDisconnectReceiver extends BroadcastReceiver{
+		public void onReceive(Context c, Intent intent) {
+			if(!haveBondService)
+				return;
+			//get reward for receiving
+			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+			if(state.equals(SupplicantState.INACTIVE)){ 
+				ProgressbarToFail("分享者的共享意外中断");
+     	   		receiveService.WifiDisconnectCompletely();
+     	   		c.unregisterReceiver(this);
+    		}  
+
+		}
+	}
+
 	private void UIToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
 		transaction.remove(this);
 		receive_id_start_connect_progressbar = new WifiProgressBar();
-		transaction.add(R.id.receive_container_scan, receive_id_start_connect_progressbar, "receive_id_start_connect_progressbar");
+		transaction.replace(R.id.receive_container_scan_result, receive_id_start_connect_progressbar, "receive_id_start_connect_progressbar");
+
+        
 		transaction.commitAllowingStateLoss(); 
 	}
 	
@@ -222,17 +250,17 @@ public class ReceiveScanResultList extends ListFragment{
 		}
 		receive_id_start_wifi_connected_fail_text = new ReceiveWifiConnectedFailText();
 		((ReceiveWifiConnectedFailText)receive_id_start_wifi_connected_fail_text).setTextWord(state);
-		transaction.add(R.id.receive_container_scan, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
+		transaction.add(R.id.receive_container_scan_result, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
 		transaction.commitAllowingStateLoss(); 
 	}
 	
 	private ArrayList<String> getShownName(ArrayList<String> arr){
 		ArrayList<String> temp_arr = new ArrayList<String>(arr);
 		for(int i = 0; i < temp_arr.size(); i++){
-			String shownname = "伟大无私的分享者" + temp_arr.get(i).substring(1, 8);
+			String shownname = "伟大无私的" + temp_arr.get(i).substring(1, 8);
 			String modepart = temp_arr.get(i).substring(24, 28);
 			if(modepart.equals("3005")){
-				shownname = shownname + "分享了流量，最多使用30分钟或5M哦";
+				shownname = shownname + "分享了流量，最多使用30分钟或5M";
 			}
 			temp_arr.set(i, shownname);
 		}

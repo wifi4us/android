@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
 
 public class ReceiveSwitcherButton extends Fragment{
@@ -28,8 +27,6 @@ public class ReceiveSwitcherButton extends Fragment{
 	private Fragment receive_id_start_scan_progressbar;
 	private Fragment receive_id_switcher_text_on;
 	private Fragment receive_id_switcher_text_off;
-	private Fragment receive_id_start_scan_text_openwifi;
-	private Fragment receive_id_start_scan_button;
     private ClickSwitcherReceiver clickSwitcherReceiver;
 	private FragmentManager fragmentManager;
 	private MyWifiManager myWifiManager;
@@ -113,7 +110,6 @@ public class ReceiveSwitcherButton extends Fragment{
     		
     		if(state == WifiManager.WIFI_STATE_ENABLING){
     			UISwitcherFromProgressToTextOn();
-    			UISwitcherInitScanZone();
         		c.unregisterReceiver(this);
 
     		}
@@ -121,25 +117,6 @@ public class ReceiveSwitcherButton extends Fragment{
 
     	}
     }
-	
-	private void UISwitcherInitScanZone(){
-		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
-        receive_id_start_scan_text_openwifi= fragmentManager.findFragmentByTag("receive_id_start_scan_text_openwifi");
-        if(receive_id_start_scan_text_openwifi != null)
-		{
-			transaction.remove(receive_id_start_scan_text_openwifi);
-		}
-        
-        receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-		
-		if(receive_id_start_scan_button == null && !Constant.FLAG.STATE_RECEIVE){
-			receive_id_start_scan_button = new ReceiveScanButton();
-			transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
-		}
-		
-		transaction.commitAllowingStateLoss(); 
-
-	}
 	
 	
 	private void UISwitcherFromTextToProgressbar(){
