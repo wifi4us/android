@@ -34,7 +34,7 @@ public class ReceiveScanButton extends Fragment{
 	private Fragment receive_id_start_scan_resultlist;
 	private Fragment receive_id_start_scan_nothing;
 	private Fragment receive_id_start_wifi_connected_fail_text;
-    private ClickScanReceiver clickScanReceiver;
+    public static ClickScanReceiver clickScanReceiver;
 	private FragmentManager fragmentManager;
 	private MyWifiManager myWifiManager;
 	

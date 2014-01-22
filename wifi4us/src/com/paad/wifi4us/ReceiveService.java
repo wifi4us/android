@@ -58,7 +58,7 @@ public class ReceiveService extends Service {
     
     private static int totalTimeSeconds;
     private static long totalTrafficBytes;
-    private Timer timer; 
+    public  Timer timer; 
 
  
     private Socket socket;
@@ -151,7 +151,7 @@ public class ReceiveService extends Service {
 		
 		Runnable wifiStateCheckRunner = new Runnable(){
 			public void run(){
-				int trial = 20;
+				int trial = Constant.Networks.WIFICONNECT_TRIALS;
 				Intent intent = new Intent();
 				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifi连接认证超时");
 				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
@@ -266,7 +266,7 @@ public class ReceiveService extends Service {
 	
 		//start the alarm and send broadcast every 5 seconds
 		timer = new Timer();  
-
+		
 	    TimerTask task = new TimerTask(){  
 	        public void run() {  
 	        	try{

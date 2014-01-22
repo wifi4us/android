@@ -32,14 +32,13 @@ import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
 
 public class ReceiveScanResultList extends ListFragment{
-	//ignore first wifi connected broadcast	
 	private Context context;
 	private ArrayList<String> scanresultlist;
 	private ArrayAdapter<String> scanresultlist_adapter;
-	private ClickConnectReceiver clickConnectReceiver;
-	private ConmunicationReceiver conmunicationReceiver;
-	private ConnectFailReceiver connectFailReceiver;
-	private WifiDisconnectReceiver wifiDisconnectReceiver;
+	public static ClickConnectReceiver clickConnectReceiver;
+	public static ConmunicationReceiver conmunicationReceiver;
+	public static ConnectFailReceiver connectFailReceiver;
+	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
 	
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_connect_progressbar;
@@ -75,6 +74,7 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	public void onStop(){
 		super.onStop();
+
 	}
 	
 	
@@ -82,6 +82,7 @@ public class ReceiveScanResultList extends ListFragment{
 		Intent intent = new Intent(getActivity(), ReceiveService.class);  
 		currentActivity = getActivity();
 		context = getActivity().getApplicationContext();
+		unResgiterOldReceiver(context);
 
         //bind service to get ready for all the clickable element
 		currentActivity.bindService(intent, sc, Context.BIND_AUTO_CREATE); 
@@ -125,7 +126,7 @@ public class ReceiveScanResultList extends ListFragment{
 		clickConnectReceiver = new ClickConnectReceiver();
 		conmunicationReceiver = new ConmunicationReceiver();
 		connectFailReceiver = new ConnectFailReceiver();
-		wifiDisconnectReceiver = new WifiDisconnectReceiver();
+		wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
 
 		/*
 		 * process the next step until the wifi has been disconnected completely, 
@@ -178,9 +179,9 @@ public class ReceiveScanResultList extends ListFragment{
     			}
 
      			c.unregisterReceiver(this);
+     			
      	        receiveService.EstablishConmunication();
     		}  
-
 		}
 	}
 	
@@ -217,7 +218,7 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 	
 
-	public class WifiDisconnectReceiver extends BroadcastReceiver{
+	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
 			if(!haveBondService)
 				return;
@@ -266,5 +267,13 @@ public class ReceiveScanResultList extends ListFragment{
 		}
 		
 		return temp_arr;
+	}
+	
+	private void unResgiterOldReceiver(Context context){
+		try{
+			context.unregisterReceiver(ReceiveScanButton.clickScanReceiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }

@@ -55,17 +55,17 @@ public class ReceiveWifiConnectedState extends Fragment{
 		fragmentManager = getFragmentManager();
 		currentFragment = this;
 		
+		Context context = getActivity().getApplicationContext();
+		unResgiterOldReceiver(context);
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
-        getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
-		getActivity().getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
+        context.registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
+		context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 	}
 	
 	public void onDestroy(){
 		super.onDestroy();
 		getActivity().unbindService(sc);
-		getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
-		getActivity().getApplicationContext().unregisterReceiver(wifiDisconnectReceiver);
 	}
 	
 
@@ -77,6 +77,30 @@ public class ReceiveWifiConnectedState extends Fragment{
 
 		
 		return view_res;
+	}
+	
+	private void unResgiterOldReceiver(Context context){
+		try{
+			context.unregisterReceiver(ReceiveScanResultList.clickConnectReceiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{
+			context.unregisterReceiver(ReceiveScanResultList.conmunicationReceiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{
+			context.unregisterReceiver(ReceiveScanResultList.connectFailReceiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{
+			context.unregisterReceiver(ReceiveScanResultList.wifiDisconnectReceiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
 	}
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
@@ -96,8 +120,10 @@ public class ReceiveWifiConnectedState extends Fragment{
 			//get reward for receiving
 			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
 			if(state.equals(SupplicantState.DISCONNECTED)){  
-     	   		receiveService.closeConnection();
-     	   		receiveService.WifiDisconnectCompletely();
+				c.unregisterReceiver(connectedStateReceiver);
+				c.unregisterReceiver(this);
+				receiveService.timer.cancel();
+				
      	   		Constant.FLAG.STATE_RECEIVE = false;
      			
      			FragmentTransaction transaction = fragmentManager.beginTransaction();

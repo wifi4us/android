@@ -50,7 +50,11 @@ public class SendService extends Service {
         super.onCreate();  
 		myWifiManager = new MyWifiManager(getApplicationContext());   
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
-
+		try{
+	    	serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
     }  
 	
@@ -169,10 +173,7 @@ public class SendService extends Service {
 		Runnable heartBeat = new Runnable(){
 			public void run(){
 				socket = null;
-				serverSocket = null;
 				try{
-					serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
-			        
 					socket = serverSocket.accept();
 					socket.setSoTimeout(Constant.Networks.TIME_INTERVAL_AD);
 
@@ -215,21 +216,29 @@ public class SendService extends Service {
 		Runnable moniterAp = new Runnable(){
 			public void run(){
 				while(true){
-					try{
 						SystemClock.sleep(1000);
 
 						if(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_DISABLED){
 								sendConnectionFinishBroadcast();	
-								out.close(); 
-					        	in.close();
-					        	socket.close();
-					        	serverSocket.close();
+								try{
+									out.close(); 
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+								try{
+						        	in.close();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+								try{
+						        	socket.close();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+
 					        	return;
+
 						}
-					}catch(Exception e){
-						e.printStackTrace();
-						return;
-					}
 				}
 			}
 		};

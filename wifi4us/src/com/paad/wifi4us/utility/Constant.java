@@ -32,7 +32,7 @@ public class Constant {
     	public static final int TIME_INTERVAL = 5000;
         public static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
         public static final String GET_BASE_HTTPURL = "http://wifi4us.duapp.com/get.php";
-
+    	public static final int WIFICONNECT_TRIALS = 10;
     }
     
     public static final class BroadcastSend {

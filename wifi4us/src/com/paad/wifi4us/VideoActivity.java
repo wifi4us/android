@@ -1,11 +1,15 @@
 package com.paad.wifi4us;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -30,6 +34,9 @@ public class VideoActivity extends Activity {
 	private String adid;
 	private String adword;
 
+	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
+	private Activity currentActivity;
+	
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -66,6 +73,14 @@ public class VideoActivity extends Activity {
 		}
     }  
     
+    public void onStop(){
+    	super.onStop();
+    	try{
+    		getApplicationContext().unregisterReceiver(wifiDisconnectReceiver);
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
     
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
@@ -75,8 +90,10 @@ public class VideoActivity extends Activity {
         setContentView(R.layout.activity_video);
         adid = getIntent().getStringExtra("adid");
         adword = getIntent().getStringExtra("adword");
+        currentActivity = this;
+        wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
+		getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 
-        
         
         button_sound = (Button)findViewById(R.id.receive_button_ad_sound_button);
         button_sound.getBackground().setAlpha(100);
@@ -118,7 +135,24 @@ public class VideoActivity extends Activity {
         });
     }
     
-    class MyCount extends CountDownTimer {     
+	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
+		public void onReceive(Context c, Intent intent) {
+			if(!haveBondService)
+				return;
+			//get reward for receiving
+			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+			if(state.equals(SupplicantState.INACTIVE)){ 
+				Intent i = new Intent();
+				i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
+				sendBroadcast(i);
+				receiveService.WifiDisconnectCompletely();
+				currentActivity.finish();
+				c.unregisterReceiver(this);
+			}
+		}
+	}
+	
+    public class MyCount extends CountDownTimer {     
         public MyCount(long millisInFuture, long countDownInterval) {     
             super(millisInFuture, countDownInterval);     
         }     
