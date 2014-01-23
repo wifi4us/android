@@ -12,6 +12,29 @@ package com.paad.wifi4us.utility;
  *
  */
 public class Constant {
+	
+	public static class HttpParas{
+		public static String IMEI = "mei";
+		public static String PHONE = "phone";
+		public static String USER_ID="userid";
+		public static String ID_NUM = "id_num";
+		public static String NAME = "name";
+		public static String ALIPAY_ID="alipay_id";
+		public static String TYPE = "type";
+		public static String PROGRAM = "program";
+		public static String NOTES = "notes";
+	}
+	
+	public static class XmlResultKey{
+		public static String TRADE_ID="trade_id";
+		public static String PROGRAM="program";
+		public static String PERIOD_NUMBER="period_number";
+		public static String STATE = "state";
+		public static String TICKET_ID="ticket_id";
+		public static String BONUS = "bonus";
+		public static String CREDIT = "credit";
+
+	}
     
 	public static class FLAG {
 		public static boolean FINISH_VIDEO;
@@ -32,6 +55,9 @@ public class Constant {
     	public static final int TIME_INTERVAL = 5000;
         public static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
         public static final String GET_BASE_HTTPURL = "http://wifi4us.duapp.com/get.php";
+        public static final String LOTTERY_HISTORY_HTTPURL = "http://wifi4us.duapp.com/get_lottery_info.php";
+        public static final String CREDIT_PER_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/get_credit_mechanism.php";
+        public static final String EXCHANGE_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/reduce.php";
     	public static final int WIFICONNECT_TRIALS = 10;
     }
     
