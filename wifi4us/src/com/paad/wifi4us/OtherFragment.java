@@ -257,7 +257,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.btn_exchange:
 			try {
-				startActivity(new Intent(getActivity(), DltActivity.class));
+				startActivity(new Intent(getActivity(), LotteryActivity.class));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
