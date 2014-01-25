@@ -54,7 +54,7 @@ public class Constant {
     	public static final int TIME_INTERVAL_AD = 20000;
     	public static final int TIME_INTERVAL = 5000;
         public static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
-        public static final String GET_BASE_HTTPURL = "http://wifi4us.duapp.com/get.php";
+        public static final String GET_BASE_HTTPURL = "http://wifi4us.duapp.com/getcredit.php";
         public static final String LOTTERY_HISTORY_HTTPURL = "http://wifi4us.duapp.com/get_lottery_info.php";
         public static final String CREDIT_PER_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/get_credit_mechanism.php";
         public static final String EXCHANGE_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/reduce.php";
