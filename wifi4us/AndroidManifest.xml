@@ -78,7 +78,7 @@
             android:label="@string/title_activity_feedback" >
         </activity>
         <activity
-            android:name=".DltActivity"
+            android:name=".LotteryActivity"
             android:label="@string/title_activity_feedback" >
         </activity>
 

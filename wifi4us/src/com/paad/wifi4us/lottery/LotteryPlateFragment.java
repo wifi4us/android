@@ -1,21 +1,17 @@
 /**
- * @(#)LotteryPlateFragment.java, 2014-1-23. Copyright 2014 Yodao, Inc. All
- *                                rights reserved. YODAO
- *                                PROPRIETARY/CONFIDENTIAL. Use is subject to
- *                                license terms.
+ * @(#)LotteryPlateFragment.java, 2014-1-23. 
  */
 package com.paad.wifi4us.lottery;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,133 +31,144 @@ import com.paad.wifi4us.R;
  * @author yangshi
  */
 public class LotteryPlateFragment extends Fragment implements OnClickListener {
+	int checkedRedBalls = 0;
+	
+	int checkedBlueBalls = 0;
+	
+	TextView tv;
+	
+	long caipiaoCnt = -1;
+	
+	long creditPerCaipiao = 2;
+	
+    int numRedBall = 33;
+
+    int numBlueBall = 16;
+
+    int minRedBall = 6;
+
+    int minBlueBall = 1;
+
+    int col = 7;
+
+    List<CheckBox> redTbs = new ArrayList<CheckBox>();
+    
+    List<CheckBox> blueTbs = new ArrayList<CheckBox>();
+    
+    boolean[] blueStatus = new boolean[numBlueBall];
+    
+    boolean[] redStatus = new boolean[numRedBall];
+    
+    Button confirmButton;
+    
+    void reset(){
+    	redTbs.clear();
+    	blueTbs.clear();
+    	checkedBlueBalls = 0;
+    	checkedRedBalls = 0;
+    	caipiaoCnt = -1;
+    }
+    
+    
+	
+	@Override
+	public void onStop() {
+		for(int i =0;i<blueStatus.length;++i){
+			blueStatus[i] = blueTbs.get(i).isChecked();
+		}
+		for(int i =0;i<redStatus.length;++i){
+			redStatus[i] = redTbs.get(i).isChecked();
+		}
+		super.onStop();
+	}
+
+
+
+	OnCheckedChangeListener redballListener = new OnCheckedChangeListener() {
+		
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			if (isChecked) {
+				++checkedRedBalls;
+			} else {
+				--checkedRedBalls;
+			}
+			updatePrice();
+			refreshTextView();
+		}
+		
+	};
+	
+	OnCheckedChangeListener blueballListener = new OnCheckedChangeListener() {
+		
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			if (isChecked) {
+				++checkedBlueBalls;
+			} else {
+				--checkedBlueBalls;
+			}
+			updatePrice();
+			refreshTextView();
+		}
+		
+	};
 
     LayoutInflater inflater;
 
     View result;
-
-    /* (non-Javadoc)
-     * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
-     */
-    @Override
-    public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
-        super.onAttach(activity);
+    
+    public void buildBalls(List<CheckBox> cbs, ViewGroup parrent, int ballLayout, OnCheckedChangeListener listener, int size, boolean[] status){
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
-
-        tv = (TextView) result.findViewById(R.id.dlt_text);
-        LinearLayout redlayout = (LinearLayout) result
-                .findViewById(R.id.dlt_red);
         while (true) {
-            if (redTbs.size() >= numRedBall) {
+            if (cbs.size() >= size) {
                 break;
             }
-            LinearLayout ll = new LinearLayout(result.getContext());
+            LinearLayout ll = new LinearLayout(parrent.getContext());
             ll.setGravity(Gravity.CENTER_HORIZONTAL);
-            redlayout.addView(ll, lp);
+            parrent.addView(ll, lp);
             for (int j = 0; j < col; ++j) {
-                if (redTbs.size() >= numRedBall) {
+                if (cbs.size() >= size) {
                     CheckBox tb = (CheckBox) inflater.inflate(
-                            R.layout.checkbox_redball, null);
+                    		ballLayout, null);
                     tb.setVisibility(View.INVISIBLE);
                     ll.addView(tb);
                     continue;
                 }
                 CheckBox tb = (CheckBox) inflater.inflate(
-                        R.layout.checkbox_redball, null);
-                tb.setOnCheckedChangeListener(redballListener);
-                tb.setText((redTbs.size() + 1) + "");
-                tb.setChecked(false);
+                		ballLayout, null);
+                tb.setOnCheckedChangeListener(listener);
+                tb.setText((cbs.size() + 1) + "");
                 ll.addView(tb);
-                redTbs.add(tb);
+                cbs.add(tb);
+                tb.setChecked(status[cbs.size()-1]);
             }
         }
-
-        LinearLayout bluelayout = (LinearLayout) result
-                .findViewById(R.id.dlt_blue);
-
-        while (true) {
-            if (blueTbs.size() >= numBlueBall) {
-                break;
-            }
-            LinearLayout ll = new LinearLayout(result.getContext());
-            ll.setGravity(Gravity.CENTER_HORIZONTAL);
-            bluelayout.addView(ll, lp);
-            for (int j = 0; j < col; ++j) {
-                if (blueTbs.size() >= numBlueBall) {
-                    CheckBox tb = (CheckBox) inflater.inflate(
-                            R.layout.checkbox_blueball, null);
-                    tb.setVisibility(View.INVISIBLE);
-                    ll.addView(tb);
-                    continue;
-                }
-                CheckBox tb = (CheckBox) inflater.inflate(
-                        R.layout.checkbox_blueball, null);
-                tb.setOnCheckedChangeListener(blueballListener);
-                tb.setText((blueTbs.size() + 1) + "");
-                tb.setChecked(false);
-                ll.addView(tb);
-                blueTbs.add(tb);
-            }
-        }
-        confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
-        confirmButton.setOnClickListener(this);
-        refreshTextView();
     }
-
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         result = inflater.inflate(R.layout.fragment_lottery_plate, container,
                 false);
+        Log.i("lottery", "oncreateview");
         this.inflater = inflater;
+        tv = (TextView) result.findViewById(R.id.dlt_text);
+        reset();
+        buildBalls(redTbs,(LinearLayout) result
+                .findViewById(R.id.dlt_red),R.layout.checkbox_redball,redballListener,numRedBall,redStatus);
+        buildBalls(blueTbs,(LinearLayout) result
+                .findViewById(R.id.dlt_blue),R.layout.checkbox_blueball,blueballListener,numBlueBall, blueStatus);
+        confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
+        confirmButton.setOnClickListener(this);
+        refreshTextView();
         return result;
 
     }
 
-    int checkedRedBalls = 0;
-
-    int checkedBlueBalls = 0;
-
-    TextView tv;
-
-    long caipiaoCnt = -1;
-
-    long creditPerCaipiao = 2;
-
-    OnCheckedChangeListener redballListener = new OnCheckedChangeListener() {
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView,
-                boolean isChecked) {
-            if (isChecked) {
-                ++checkedRedBalls;
-            } else {
-                --checkedRedBalls;
-            }
-            updatePrice();
-            refreshTextView();
-        }
-
-    };
-
-    OnCheckedChangeListener blueballListener = new OnCheckedChangeListener() {
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView,
-                boolean isChecked) {
-            if (isChecked) {
-                ++checkedBlueBalls;
-            } else {
-                --checkedBlueBalls;
-            }
-            updatePrice();
-            refreshTextView();
-        }
-
-    };
 
     protected void updatePrice() {
         if (checkedRedBalls >= 6 && checkedBlueBalls >= 1) {
@@ -187,35 +194,19 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     protected void refreshTextView() {
         if (tv != null) {
             if (caipiaoCnt > 0) {
-                tv.setText("兑换" + caipiaoCnt + "注 需" + caipiaoCnt
+                tv.setText("已购买" + caipiaoCnt + "注，需"+ caipiaoCnt
                         * creditPerCaipiao + "积分");
                 confirmButton.setClickable(true);
             } else {
-                tv.setText("请至少选择6个红球一个篮球");
+                tv.setText("选择至少6个红球和一个篮球");
                 confirmButton.setClickable(false);
             }
         }
     }
 
-    int numRedBall = 33;
-
-    int numBlueBall = 16;
-
-    int minRedBall = 6;
-
-    int minBlueBall = 1;
-
-    int col = 7;
-
-    List<CheckBox> redTbs = new ArrayList<CheckBox>();
-
-    List<CheckBox> blueTbs = new ArrayList<CheckBox>();
-
-    Button confirmButton;
-
     String buildConfirmInfo() {
         StringBuilder sb = new StringBuilder();
-        sb.append("您选择的号码是：\n红球：");
+        sb.append("您购买的彩票是：\n红球：");
         for (int i = 0; i < redTbs.size(); ++i) {
             if (redTbs.get(i).isChecked()) {
                 sb.append(i + 1);
@@ -229,8 +220,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 sb.append(" ");
             }
         }
-        sb.append("\n共" + caipiaoCnt + "注，需要" + caipiaoCnt * creditPerCaipiao
-                + "积分。");
+        sb.append("\n共" + caipiaoCnt + "注, 需要" + caipiaoCnt * creditPerCaipiao
+                + "积分");
         return sb.toString();
     }
 
@@ -239,13 +230,13 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         AlertDialog.Builder builder = new Builder(getActivity());
         builder.setMessage(buildConfirmInfo());
         builder.setTitle("购买确认");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("购买", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
