@@ -1,5 +1,7 @@
 package com.paad.wifi4us;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.frontia.Frontia;
+import com.baidu.frontia.api.FrontiaAuthorization.MediaType;
 import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
 import com.baidu.frontia.api.FrontiaSocialShareListener;
-import com.baidu.frontia.api.FrontiaAuthorization.MediaType;
 import com.paad.wifi4us.utility.Constant;
 
 public class MainActivity extends ActionBarActivity {
@@ -158,7 +160,14 @@ public class MainActivity extends ActionBarActivity {
     	addTab("send", getString(R.string.main_activity_tabwidget_sendtext),  R.drawable.tab_share_selector, R.id.send, tabHost);
     	addTab("other", getString(R.string.main_activity_tabwidget_othertext),  R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
-    	
+    	Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(){
+
+			@Override
+			public void uncaughtException(Thread arg0, Throwable arg1) {
+				Log.e("uncaught", arg1.getMessage());
+			}
+    		
+    	});
     }
 	
 	public void onDestroy(){
@@ -381,7 +390,7 @@ public class MainActivity extends ActionBarActivity {
 			mSocialShare.setContext(context);
 			mImageContent.setTitle(context.getResources()
 					.getString(R.string.setDiscuss));
-			mImageContent.setContent("О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫");
+			mImageContent.setContent("нд╟╦");
 			mImageContent.setLinkUrl("http://wifi4us.paad.com/");
 			mImageContent.setImageData(BitmapFactory.decodeResource(
 					context.getResources(), R.drawable.ic_launcher));
