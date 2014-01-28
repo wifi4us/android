@@ -34,6 +34,13 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lottery);
+    	Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()	{
+    		@Override
+    		public void uncaughtException(Thread arg0, Throwable arg1) {
+    			Log.e("lottery", arg1.getMessage());
+    			
+    		}
+    	});
         Log.d("LotteryActivity", "in onCreate");
         fragmentManager = this.getSupportFragmentManager();
         ActionBar actionBar = getSupportActionBar();
