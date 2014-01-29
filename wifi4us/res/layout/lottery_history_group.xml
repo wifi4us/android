@@ -2,15 +2,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <TextView 
-    android:id="@+id/lottery_history_period"
+    android:id="@+id/lottery_history_ticket_id"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="35dip"
+    android:layout_marginTop="10dip"
+    android:textSize="20sp"
     android:layout_alignParentLeft="true" />
 <TextView 
     android:id="@+id/lottery_history_state"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
+    android:gravity="right"
+	android:layout_marginRight="30dip"
+    android:layout_marginTop="10dip"
+    android:textSize="20sp"
+    android:layout_alignParentRight="true"
     android:layout_toRightOf="@+id/lottery_history_period" />
 
     </RelativeLayout>
