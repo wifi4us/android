@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lottery_info_listview"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="@drawable/list_line" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dip"
+	android:paddingRight="10dip"
+	android:layout_marginRight="10dip"
+    android:orientation="vertical" >
+
+	<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_id_title"
+        android:layout_marginTop="20dip"
+        android:textSize="20sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_id_summery" />
+	
+    <EditText
+        android:id="@+id/lottery_pref_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/lottery_pref_id_dialogTitle"
+        android:inputType="number" />
+    
+    
+    
+	<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_username_title"
+        android:layout_marginTop="20dip"
+        android:textSize="20sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_username_summery" />
+	
+    <EditText
+		android:id="@+id/lottery_pref_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/lottery_pref_username_dialogTitle"
+        android:inputType="text" />
+    
+	<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_phone_title"
+        android:layout_marginTop="20dip"
+        android:textSize="20sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_phone_summery" />
+	
+    <EditText
+		android:id="@+id/lottery_pref_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/lottery_pref_phone_dialogTitle"
+        android:inputType="phone" />
+    
+	<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_alipay_title"
+        android:layout_marginTop="20dip"
+        android:textSize="20sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lottery_pref_alipay_summery" />
+	
+    <EditText
+		android:id="@+id/lottery_pref_alipay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/lottery_pref_alipay_dialogTitle"
+        android:inputType="textEmailAddress" />
+</LinearLayout>
+</ScrollView>

@@ -8,7 +8,9 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,8 +26,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paad.wifi4us.R;
+import com.paad.wifi4us.utility.Constant;
 
 /**
  * @author yangshi
@@ -60,6 +64,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     boolean[] redStatus = new boolean[numRedBall];
     
     Button confirmButton;
+	SharedPreferences sharedPreference;
     
     void reset(){
     	redTbs.clear();
@@ -154,6 +159,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
             Bundle savedInstanceState) {
         result = inflater.inflate(R.layout.fragment_lottery_plate, container,
                 false);
+        sharedPreference = getActivity().getSharedPreferences("lottery", Context.MODE_PRIVATE);
         Log.i("lottery", "oncreateview");
         this.inflater = inflater;
         tv = (TextView) result.findViewById(R.id.dlt_text);
@@ -224,9 +230,24 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 + "积分");
         return sb.toString();
     }
+    
+	boolean checkUserInfo() {
+		if (sharedPreference.getString(Constant.HttpParas.ALIPAY_ID, null) != null
+				&& sharedPreference.getString(Constant.HttpParas.ID_NUM, null) != null
+				&& sharedPreference.getString(Constant.HttpParas.PHONE, null) != null
+				&& sharedPreference.getString(Constant.HttpParas.NAME, null) != null) {
+			return true;
+		}
+		return false;
+	}
 
     @Override
     public void onClick(View arg0) {
+    	
+    	if(!checkUserInfo()){
+    		Toast.makeText(getActivity(), "请先完善用户信息", Toast.LENGTH_LONG).show();
+    		return;
+    	}
         AlertDialog.Builder builder = new Builder(getActivity());
         builder.setMessage(buildConfirmInfo());
         builder.setTitle("购买确认");
