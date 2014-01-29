@@ -153,7 +153,7 @@ public class ReceiveService extends Service {
 			public void run(){
 				int trial = Constant.Networks.WIFICONNECT_TRIALS;
 				Intent intent = new Intent();
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifiÁ¬½ÓÈÏÖ¤³¬Ê±");
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifiï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½Ê±");
 				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
 
 				while(trial > 0){
@@ -203,21 +203,21 @@ public class ReceiveService extends Service {
 				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP); 
 				if(!openSocketConnection()){
 					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ÒÑ¾­ÓÐÈË½ÓÈëÕâ¸ö·ÖÏíÕßÁË");
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!getAdvertisement()){
 					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "·ÖÏíÕß¹Ø±ÕµÄ3G»òÕßÍøËÙ¼«Âý");
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ï¿½ï¿½ï¿½ï¿½ï¿½ß¹Ø±Õµï¿½3Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!setHeartBeat()){
 					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "Õý³£Á¬½ÓÖÐ¶Ï");
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½");
 					sendBroadcast(intent);
 					return;
 				}
@@ -330,8 +330,7 @@ public class ReceiveService extends Service {
 		requestURL = Constant.Networks.AD_BASE_HTTPURL + parameters;
 		
 		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
-		HttpXmlParser xpp = new HttpXmlParser();
-		if(xpp.getResultFromURL(requestURL, result)){
+		if(HttpXmlParser.getResultFromURL(requestURL, result)){
 			adWord = result.get("adword");
     		adLength = result.get("length");
     		adId = result.get("adid");

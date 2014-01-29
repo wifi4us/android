@@ -69,22 +69,20 @@
 	<string name="lottery_state_6">已派奖</string>
 	<string name="lottery_state_unknow">未知</string>
 	
-	<string name="lottery_pref_alot">大额奖金</string>
-	<string name="lottery_pref_alittle">小额奖金</string>
 	<string name="lottery_pref_username_dialogTitle">请输入真实姓名</string>
 	<string name="lottery_pref_username_summery">用于兑大额奖金的真实姓名</string>
 	<string name="lottery_pref_username_title">姓名</string>
 	
-	<string name="lottery_pref_id_dialogTitle">身份证</string>
+	<string name="lottery_pref_id_dialogTitle">请输入证件号码</string>
 	<string name="lottery_pref_id_summery">用于兑换大额奖金的有效证件</string>
-	<string name="lottery_pref_id_title">请输入证件号码</string>
+	<string name="lottery_pref_id_title">身份证</string>
 	
-	<string name="lottery_pref_phone_dialogTitle">联系电话</string>
-	<string name="lottery_pref_phone_summery">通知您兑换大额奖金时的联系方式</string>
-	<string name="lottery_pref_phone_title">请输入电话号码</string>
+	<string name="lottery_pref_phone_dialogTitle">请输入电话号码</string>
+	<string name="lottery_pref_phone_summery">通知您兑换大额奖金的联系方式</string>
+	<string name="lottery_pref_phone_title">联系电话</string>
 	
-	<string name="lottery_pref_alipay_dialogTitle">支付宝</string>
+	<string name="lottery_pref_alipay_dialogTitle">请输入支付宝号码</string>
 	<string name="lottery_pref_alipay_summery">小额奖金直接打入您的支付宝</string>
-	<string name="lottery_pref_alipay_title">请输入支付宝号码</string>
+	<string name="lottery_pref_alipay_title">支付宝</string>
 			
 </resources>
