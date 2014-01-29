@@ -88,9 +88,12 @@ public class HttpXmlParser {
 
 				while(result.addElementFromXml(xpp));
 				in.close();
+				urlConnection.disconnect();
+				return result;
+			}else{
+				urlConnection.disconnect();
+				return null;
 			}
-			urlConnection.disconnect();
-			return result;
 		} catch (Exception e) {
 
 			e.printStackTrace();

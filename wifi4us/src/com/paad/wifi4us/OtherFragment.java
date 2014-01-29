@@ -103,10 +103,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				registerUrl = Constant.Networks.REGISTER_BASE_HTTPURL + "?"
 						+ "imei=" + tm.getDeviceId();
 			}
-			HttpXmlParser xpp = new HttpXmlParser();
 			SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 
-			if (xpp.getResultFromURL(registerUrl, result)) {
+			if (HttpXmlParser.getResultFromURL(registerUrl, result)) {
 				String userid = result.get("userid");
 				useridHandler.obtainMessage(MSG_SUCCESS, userid).sendToTarget();
 			} else {
@@ -136,10 +135,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			} else {
 				registerUrl = registerUrl + "&" + "imei=" + tm.getDeviceId();
 			}
-			HttpXmlParser xpp = new HttpXmlParser();
 			SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
 
-			if (xpp.getResultFromURL(registerUrl, result)) {
+			if (HttpXmlParser.getResultFromURL(registerUrl, result)) {
 				String account = result.get("account");
 				creditHandler.obtainMessage(MSG_SUCCESS, account)
 						.sendToTarget();
