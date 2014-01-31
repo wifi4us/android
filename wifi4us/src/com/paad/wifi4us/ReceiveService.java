@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -21,40 +20,24 @@ import android.net.NetworkInfo.State;
 import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.v4.util.SimpleArrayMap;
-import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.HttpDownLoader;
-import com.paad.wifi4us.utility.HttpXmlParser;
 import com.paad.wifi4us.utility.MyWifiManager;
 import com.paad.wifi4us.utility.PasswdUtil;
+import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.paad.wifi4us.utility.data.AdContent;
 
 public class ReceiveService extends Service {
-	private String make;
-	private String model;
-	private String androidversion;
-	private String carrier;
-	private String resolution;
-	private String userid;
-	
-	
 	private final IBinder binder = new MyBinder();
 	private MyWifiManager myWifiManager;
     private ArrayList<String> wifiApList; 
     private String connectinfo;
-    private String adWord;
-    private String adId;
-    private String adURL;
-    private String adLength;
-    private String requestURL;
+    private ArrayList<AdContent> adList;
     
     private static int totalTimeSeconds;
     private static long totalTrafficBytes;
@@ -153,7 +136,7 @@ public class ReceiveService extends Service {
 			public void run(){
 				int trial = Constant.Networks.WIFICONNECT_TRIALS;
 				Intent intent = new Intent();
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifiï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½Ê±");
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifiÁ¬½Ó³¬Ê±");
 				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
 
 				while(trial > 0){
@@ -203,28 +186,39 @@ public class ReceiveService extends Service {
 				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP); 
 				if(!openSocketConnection()){
 					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ÒÑ¾­ÓÐÈË½ÓÈëÕâ¸ö·ÖÏíÕß");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!getAdvertisement()){
 					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ï¿½ï¿½ï¿½ï¿½ï¿½ß¹Ø±Õµï¿½3Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½");
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "¶Ô·½3GÍøËÙÌ«Âý»òÕßÍøÂçÒì³£");
 					sendBroadcast(intent);
 					return;
 				}
 				
 				if(!setHeartBeat()){
 					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½");
+					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "½¨Á¢Á¬½ÓÒì³£");
 					sendBroadcast(intent);
 					return;
 				}
 				
+				String adwords = "";
+				String adids = "";
+				String adtexts = "";
+				for(AdContent adcontent:adList){
+					adwords += adcontent.adword + "|";
+					adids += adcontent.adid + "|";
+					adtexts += adcontent.adtext + "|";
+				}
+				
 				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ok");
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD, adWord);
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID, adId);
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD, adwords);
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID, adids);
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADTEXT, adtexts);
+
 				sendBroadcast(intent);
 			}
 		};
@@ -301,79 +295,40 @@ public class ReceiveService extends Service {
 	
 	private boolean getAdvertisement(){
 		//get url to request advertisement meta data
-		try{
-			make = URLEncoder.encode(Build.MANUFACTURER, "UTF-8");
-			model = URLEncoder.encode(Build.MODEL, "UTF-8");
-			androidversion = URLEncoder.encode(Build.VERSION.RELEASE, "UTF-8");
+		String make = DeviceInfo.getInstance(this).getMake();
+		String model = DeviceInfo.getInstance(this).getModel();
+		String androidversion = DeviceInfo.getInstance(this).getAndroidVer();
+		String carrier = DeviceInfo.getInstance(this).getCarrier();
+		String resolution = DeviceInfo.getInstance(this).getResolution();
+		String userid = sharedPreference.getString("USER_ID");
 		
-			TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
-			carrier = URLEncoder.encode(telephonyManager.getSimOperatorName() + "." + telephonyManager.getNetworkType(), "UTF-8");
-		
-			DisplayMetrics metrics = new DisplayMetrics();
-			Display display = (Display) ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-			display.getMetrics(metrics);
-			Integer w = Integer.valueOf(metrics.widthPixels);
-			Integer h = Integer.valueOf(metrics.heightPixels);
-			resolution = URLEncoder.encode(h.toString() + "x" + w.toString(), "UTF-8");
-		
-			userid = URLEncoder.encode(sharedPreference.getString("USER_ID"), "UTF-8");
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		String parameters = "?" + "userid" + "=" + userid + "&"
-									+ "make" + "=" + make + "&"
-									+ "model" + "=" + model + "&"
-									+ "resolution" + "=" + resolution + "&"
-									+ "carrier" + "=" + carrier + "&"
-									+ "androidversion" + "=" + androidversion;
-		requestURL = Constant.Networks.AD_BASE_HTTPURL + parameters;
-		
-		SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
-		if(HttpXmlParser.getResultFromURL(requestURL, result)){
-			adWord = result.get("adword");
-    		adLength = result.get("length");
-    		adId = result.get("adid");
-        	adURL = result.get("url");
-    		
-		}else{
-			return false;	
-		}
-		
-		
-		String adDir = getApplicationContext().getCacheDir().toString() + "/ad_" + adId + ".3gp";
-		File adFile = new File(adDir);
-		HttpDownLoader dld = new HttpDownLoader(adURL, adDir);
-		boolean downloadResult = true;
-		if(adFile.exists()){
-			if(adFile.length() < Long.parseLong(adLength)){
-				downloadResult = dld.downLoad(adFile.length(), Long.parseLong(adLength) - 1);
+		adList = RemoteInfoFetcher.fetchAdList(userid, make, model, resolution, carrier, androidversion);
+
+
+		for(AdContent adcontent:adList){
+			String adDir = getApplicationContext().getCacheDir().toString() + "/ad_" + adcontent.adid + ".3gp";
+			File adFile = new File(adDir);
+			HttpDownLoader dld = new HttpDownLoader(adcontent.url, adDir);
+			boolean downloadResult = true;
+			if(adFile.exists()){
+				if(adFile.length() < Long.parseLong(adcontent.length)){
+					downloadResult = dld.downLoad(adFile.length(), Long.parseLong(adcontent.length) - 1);
+				}
+			}else{
+				downloadResult = dld.downLoad(0, Long.parseLong(adcontent.length) - 1);
 			}
-		}else{
-			downloadResult = dld.downLoad(0, Long.parseLong(adLength) - 1);
+			
+			if(!downloadResult){
+				return false;
+			}
 		}
 		
-		if(!downloadResult){
-			return false;
-		}
 		
 		
 		//check local and download
 				
 		return true;
 	}
-	
-	public void closeConnection(){
-		try{
-			timer.cancel();
-			out.close();
-			in.close();
-			socket.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	
 	
 	private String getPassWord(){
 		String passwd = null;

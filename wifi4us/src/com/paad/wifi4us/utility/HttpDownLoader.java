@@ -20,12 +20,12 @@ public class HttpDownLoader {
 	
 	public boolean downLoad(long start, long end){
 		try{
-			System.out.println(url);
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestMethod("GET");
 			urlConnection.setConnectTimeout(10000);
 			urlConnection.addRequestProperty("Content-Type", "text/xml; charset=utf-8");
 			urlConnection.addRequestProperty("Range", "bytes=" + start + "-" + end);
+
 
             InputStream input=urlConnection.getInputStream();  
             FileOutputStream fs = new FileOutputStream(adDir, true);  

@@ -10,15 +10,8 @@ public class LotteryHistory {
 	public String ticketId;
 	public int state = -1;
 	public String tradeId;
-	public LotteryHistory(String periodNumber, String program, String ticketId,String tradeId, int state){
-		this.periodNumber = periodNumber;
-		this.program = program;
-		this.ticketId = ticketId;
-		this.state = state;
-		this.tradeId = tradeId;
-	}
 	
-	private LotteryHistory(){};
+	public LotteryHistory(){};
 	
 	
 	/**

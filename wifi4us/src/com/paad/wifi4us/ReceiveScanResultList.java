@@ -195,12 +195,15 @@ public class ReceiveScanResultList extends ListFragment{
     		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
       		if(state.equals("ok")){
           		c.unregisterReceiver(this);
-      			String adid = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID);
-      			String adword = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD);
+      			String adids = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID);
+      			String adwords = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD);
+      			String adtexts = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADTEXT);
 
     			Intent startvideo = new Intent(currentActivity, VideoActivity.class);    
-    			startvideo.putExtra("adword", adword);
-    			startvideo.putExtra("adid", adid);
+    			startvideo.putExtra("adwords", adwords);
+    			startvideo.putExtra("adids", adids);
+    			startvideo.putExtra("adtexts", adtexts);
+
     			Constant.FLAG.FINISH_PRECONNNECT = true;
     			currentActivity.startActivity(startvideo);			
     		}else{

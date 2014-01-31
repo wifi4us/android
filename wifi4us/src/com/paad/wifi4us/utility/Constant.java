@@ -23,6 +23,12 @@ public class Constant {
 		public static String TYPE = "type";
 		public static String PROGRAM = "program";
 		public static String NOTES = "notes";
+		public static String MAKE = "make";
+		public static String MODEL = "model";
+		public static String RESOLUTION = "resolution";
+		public static String CARRIER = "carrier";
+		public static String ANDROIDVER = "androidversion";
+
 	}
 	
 	public static class XmlResultKey{
@@ -33,7 +39,13 @@ public class Constant {
 		public static String TICKET_ID="ticket_id";
 		public static String BONUS = "bonus";
 		public static String CREDIT = "credit";
-
+		public static String USER_ID = "userid";
+		public static String ACCOUNT = "account";
+		public static String AD_ID = "ad_id";
+		public static String AD_URL = "url";
+		public static String AD_LENGTH = "length";
+		public static String AD_WORD = "ad_word";
+		public static String AD_TEXT = "text";
 	}
     
 	public static class FLAG {
@@ -54,7 +66,7 @@ public class Constant {
     	public static final int TIME_INTERVAL_AD = 20000;
     	public static final int TIME_INTERVAL = 5000;
         public static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
-        public static final String GET_BASE_HTTPURL = "http://wifi4us.duapp.com/getcredit.php";
+        public static final String GETCREDIT_BASE_HTTPURL = "http://wifi4us.duapp.com/getcredit.php";
         public static final String LOTTERY_HISTORY_HTTPURL = "http://wifi4us.duapp.com/get_lottery_info.php";
         public static final String CREDIT_PER_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/get_credit_mechanism.php";
         public static final String EXCHANGE_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/reduce.php";
@@ -77,6 +89,7 @@ public class Constant {
         public static final String CONMUNICATION_SETUP_EXTRA_STATE = "com.paad.wifi4us.conmunication.setup.extra.state";
         public static final String CONMUNICATION_SETUP_EXTRA_ADWORD = "com.paad.wifi4us.conmunication.setup.extra.adword";
         public static final String CONMUNICATION_SETUP_EXTRA_ADID = "com.paad.wifi4us.conmunication.setup.extra.adid";
+        public static final String CONMUNICATION_SETUP_EXTRA_ADTEXT = "com.paad.wifi4us.conmunication.setup.extra.adtext";
         public static final String CONMUNICATION_SETUP_HEART_BEATEN = "com.paad.wifi4us.conmunication.setup.heartbeaten";
         public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME = "com.paad.wifi4us.conmunication.setup.heartbeaten.time";
         public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC = "com.paad.wifi4us.conmunication.setup.heartbeaten.traffic";	

@@ -19,8 +19,9 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 
 import com.paad.wifi4us.R;
+import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
-import com.paad.wifi4us.utility.SharedMembers;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.paad.wifi4us.utility.data.LotteryHistory;
 
 /**
@@ -30,6 +31,8 @@ import com.paad.wifi4us.utility.data.LotteryHistory;
  */
 public class LotteryHistoryFragment extends Fragment {
 	ExpandableListView lv;
+	private SharedPreferenceHelper sharedPreference;
+
 	List<LotteryHistory> histories = new ArrayList<LotteryHistory>();
 	String[] groupkeys = new String[]{"ticket_id","state"};
 	String[] childkeys = new String[]{"program", "period", "trade_id"};
@@ -41,6 +44,8 @@ public class LotteryHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	lv = (ExpandableListView)inflater.inflate(R.layout.fragment_lottery_history, container, false);
+    	sharedPreference = new SharedPreferenceHelper(getActivity());
+
     	refreshHistories();
     	handler = new Handler();
     	return lv;
@@ -51,7 +56,7 @@ public class LotteryHistoryFragment extends Fragment {
 
 			@Override
 			public void run() {
-				List<LotteryHistory> rst = RemoteInfoFetcher.fetchLotteryHistories(SharedMembers.getInstance().getIMEI(), SharedMembers.getInstance().getUserId());
+				List<LotteryHistory> rst = RemoteInfoFetcher.fetchLotteryHistories(DeviceInfo.getInstance(getActivity()).getIMEI(), sharedPreference.getString("USER_ID"));
 				
 				if(rst!=null){
 					histories = rst;
@@ -127,19 +132,5 @@ public class LotteryHistoryFragment extends Fragment {
     	}
     }
     
-    
-    /**
-     * for test
-     * @return
-     */
-    static List<LotteryHistory> getMockHistories(){
-    	List<LotteryHistory> rst =new ArrayList<LotteryHistory>();
-    	rst.add(new LotteryHistory("1","02,12,22,09,02,12,22,09,22,00,9 |09,05,02,12,22","3","4",0));
-    	rst.add(new LotteryHistory("11","12","13","14",1));
-    	rst.add(new LotteryHistory("21","22","23","24",2));
-    	rst.add(new LotteryHistory("61","62","63","64",0));
-    	return rst;
 
-    }
-    
 }

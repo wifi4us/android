@@ -13,10 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.provider.Settings.Secure;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SimpleArrayMap;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,8 +23,8 @@ import android.widget.TextView;
 
 import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
-import com.paad.wifi4us.utility.Constant;
-import com.paad.wifi4us.utility.HttpXmlParser;
+import com.paad.wifi4us.utility.DeviceInfo;
+import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -88,25 +85,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	private Runnable getUserIdRunner = new Runnable() {
 		public void run() {
-
-			TelephonyManager tm = (TelephonyManager) getActivity()
-					.getSystemService(Context.TELEPHONY_SERVICE);
-			String registerUrl;
-			if (tm.getDeviceId() == null) {
-				registerUrl = Constant.Networks.REGISTER_BASE_HTTPURL
-						+ "?"
-						+ "imei="
-						+ Secure.getString(getActivity()
-								.getApplicationContext().getContentResolver(),
-								Secure.ANDROID_ID);
-			} else {
-				registerUrl = Constant.Networks.REGISTER_BASE_HTTPURL + "?"
-						+ "imei=" + tm.getDeviceId();
-			}
-			SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
-
-			if (HttpXmlParser.getResultFromURL(registerUrl, result)) {
-				String userid = result.get("userid");
+			String imei = DeviceInfo.getInstance(getActivity()).getIMEI();
+			String userid = RemoteInfoFetcher.resgisterUserId(imei);
+			if (userid != null) {
 				useridHandler.obtainMessage(MSG_SUCCESS, userid).sendToTarget();
 			} else {
 				useridHandler.obtainMessage(MSG_FAILURE).sendToTarget();
@@ -121,24 +102,11 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				creditHandler.obtainMessage(CREDIT_INIT).sendToTarget();
 				return;
 			}
-			TelephonyManager tm = (TelephonyManager) getActivity()
-					.getSystemService(Context.TELEPHONY_SERVICE);
-			String registerUrl = Constant.Networks.GET_BASE_HTTPURL
-					+ "?userid=" + userid;
-			if (tm.getDeviceId() == null) {
-				registerUrl = registerUrl
-						+ "&"
-						+ "imei="
-						+ Secure.getString(getActivity()
-								.getApplicationContext().getContentResolver(),
-								Secure.ANDROID_ID);
-			} else {
-				registerUrl = registerUrl + "&" + "imei=" + tm.getDeviceId();
-			}
-			SimpleArrayMap<String, String> result = new SimpleArrayMap<String, String>();
+			
+			String imei = DeviceInfo.getInstance(getActivity()).getIMEI();
+			String account = RemoteInfoFetcher.fetchAccount(userid, imei);
 
-			if (HttpXmlParser.getResultFromURL(registerUrl, result)) {
-				String account = result.get("account");
+			if (account != null) {
 				creditHandler.obtainMessage(MSG_SUCCESS, account)
 						.sendToTarget();
 			} else {
