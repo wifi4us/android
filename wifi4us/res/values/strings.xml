@@ -68,6 +68,7 @@
 	<string name="lottery_state_5">未中奖</string>
 	<string name="lottery_state_6">已派奖</string>
 	<string name="lottery_state_unknow">未知</string>
+	<string name="lottery_more">刷新</string>
 	
 	<string name="lottery_pref_username_dialogTitle">请输入真实姓名</string>
 	<string name="lottery_pref_username_summery">用于兑大额奖金的真实姓名</string>

@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.paad.wifi4us.LotteryActivity;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
 
@@ -40,6 +41,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 	int checkedBlueBalls = 0;
 	
 	TextView tv;
+	
+	LotteryActivity activity;
 	
 	long caipiaoCnt = -1;
 	
@@ -74,7 +77,24 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     	caipiaoCnt = -1;
     }
     
+
     
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
+        sharedPreference = getActivity().getSharedPreferences("lottery", Context.MODE_PRIVATE);
+        activity = (LotteryActivity)getActivity();
+		super.onCreate(savedInstanceState);
+	}
+
+
+
+	public void onResume(){
+		super.onResume();
+    	if(!checkUserInfo()){
+    		Toast.makeText(getActivity(), "请先完善用户信息", Toast.LENGTH_LONG).show();
+    		activity.switchTo(2);
+    	}
+    }
 	
 	@Override
 	public void onStop() {
@@ -159,7 +179,6 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
             Bundle savedInstanceState) {
         result = inflater.inflate(R.layout.fragment_lottery_plate, container,
                 false);
-        sharedPreference = getActivity().getSharedPreferences("lottery", Context.MODE_PRIVATE);
         Log.i("lottery", "oncreateview");
         this.inflater = inflater;
         tv = (TextView) result.findViewById(R.id.dlt_text);
@@ -244,10 +263,6 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     @Override
     public void onClick(View arg0) {
     	
-    	if(!checkUserInfo()){
-    		Toast.makeText(getActivity(), "请先完善用户信息", Toast.LENGTH_LONG).show();
-    		return;
-    	}
         AlertDialog.Builder builder = new Builder(getActivity());
         builder.setMessage(buildConfirmInfo());
         builder.setTitle("购买确认");
@@ -255,6 +270,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                activity.switchTo(1);
             }
         });
         builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
