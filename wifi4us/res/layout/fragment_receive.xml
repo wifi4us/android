@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 	xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout 	xmlns:android="http://schemas.android.com/apk/res/android"
     			android:baselineAligned="false" 
     			android:orientation="vertical"
     			android:layout_width="match_parent"
   				android:layout_height="match_parent">
     	<LinearLayout
+    	    android:id="@+id/receive_fregment_top"
     	    android:baselineAligned="false"
     		android:layout_width="match_parent"
-   			android:layout_height="0dp"
-   			android:layout_weight="1"
+   			android:layout_height="wrap_content"
+   			android:layout_alignParentTop="true"
    			android:layout_margin="10dp"
    			android:padding="10dp"
     		android:orientation="horizontal" 
@@ -35,15 +36,16 @@
     	<LinearLayout 
     	    android:layout_width="match_parent"
    			android:layout_height="0dp"
-   			android:layout_weight="5"
    			android:layout_margin="10dp"
    			android:orientation="vertical"
-   			android:background="@drawable/receive_draw_2">
+   			android:layout_below="@id/receive_fregment_top"
+   			android:layout_alignParentBottom="true"
+			android:background="@drawable/receive_draw_2">
     		
     		<LinearLayout 
     	    	android:layout_width="match_parent"
    				android:layout_height="0dp"
-   				android:layout_weight="2"
+   				android:layout_weight="5"
    				android:layout_margin="10dp"
    				android:orientation="vertical"
    				android:id="@+id/receive_container_scan">
@@ -59,4 +61,4 @@
     		</LinearLayout> 
     		
     	</LinearLayout>
-</LinearLayout>
+</RelativeLayout>

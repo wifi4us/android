@@ -14,7 +14,10 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 
@@ -47,6 +50,19 @@ public class LotteryHistoryFragment extends Fragment {
     	sharedPreference = new SharedPreferenceHelper(getActivity());
 
     	refreshHistories();
+    	LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
+    			LayoutParams.WRAP_CONTENT);
+    	Button footer = new Button(this.getActivity());
+    	footer.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				refreshHistories();				
+			}
+		});
+    	//footer.setLayoutParams(lp);
+    	footer.setText(getResources().getString(R.string.lottery_more));
+    	lv.addFooterView(footer);
     	handler = new Handler();
     	return lv;
     }

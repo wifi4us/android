@@ -27,6 +27,7 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
 
     FragmentManager fragmentManager;
     
+    ActionBar actionBar;
     public static final int TAG_NUM = 3;
     
     @Override
@@ -43,13 +44,17 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
     	});
         Log.d("LotteryActivity", "in onCreate");
         fragmentManager = this.getSupportFragmentManager();
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayShowTitleEnabled(false);
         for (int i = 0; i < TAG_NUM; ++i) {
             Tab tab = actionBar.newTab().setText(tags[i]).setTabListener(this);
             actionBar.addTab(tab, i);
         }
+    }
+    
+    public void switchTo(int i){
+    	actionBar.selectTab(actionBar.getTabAt(i));
     }
     
     @Override
