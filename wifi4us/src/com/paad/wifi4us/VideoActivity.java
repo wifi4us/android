@@ -1,5 +1,8 @@
 package com.paad.wifi4us;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -23,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.data.AdContent;
 
 public class VideoActivity extends Activity {
 	
@@ -31,9 +35,9 @@ public class VideoActivity extends Activity {
 	private TextView counttime;
 	private MyVideoView video;
 	private MediaController controller;
-	private String adid;
-	private String adword;
-
+	private ArrayList<AdContent> adList;
+	private Iterator<AdContent> it;
+	
 	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
 	private Activity currentActivity;
 	
@@ -88,13 +92,14 @@ public class VideoActivity extends Activity {
         //bind service to get ready for all the clickable element
 		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
         setContentView(R.layout.activity_video);
-        adid = getIntent().getStringExtra("adid");
-        adword = getIntent().getStringExtra("adword");
+
+
+        //set receiver in video activity
         currentActivity = this;
         wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
 		getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 
-        
+        //set sound button
         button_sound = (Button)findViewById(R.id.receive_button_ad_sound_button);
         button_sound.getBackground().setAlpha(100);
         button_sound.setOnClickListener(new OnClickListener(){
@@ -103,36 +108,53 @@ public class VideoActivity extends Activity {
 			}
         });
         
-        button_interest = (Button)findViewById(R.id.receive_button_ad_interest_button);
-        button_interest.setText(adword);
-        button_interest.getBackground().setAlpha(100);
-        button_interest.setOnClickListener(new OnClickListener(){
-			public void onClick(View view){
-	            Toast.makeText(VideoActivity.this, "interest click", Toast.LENGTH_SHORT).show();
-			}
-        });
-        
-        
+        //set time counter
         counttime = (TextView)findViewById(R.id.receive_text_ad_timecount);  
         MyCount mc = new MyCount(30000, 1000);  
         mc.start();  
         
+        //set common part of interest button
+        button_interest = (Button)findViewById(R.id.receive_button_ad_interest_button);
+        button_interest.getBackground().setAlpha(100);
+
+        //set common part of video player
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         video = (MyVideoView)findViewById(R.id.videoview);
         video.SetCurrentState(this,new DisplayMetrics());
         controller = new MediaController(this);
         controller.setVisibility(View.INVISIBLE); 
         video.setMediaController(controller);
-        video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + adid + ".3gp");
-        video.start();
+
+        //play all ads
+  		adList = (ArrayList<AdContent>)getIntent().getSerializableExtra(Constant.StartIntentKey.VIDEO_EXTRA_AD);
+        it = adList.iterator();
+        PlayAd();
         
         video.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
         	public void onCompletion(MediaPlayer mp){
-        		Constant.FLAG.FINISH_VIDEO = true;
-        		Constant.FLAG.STATE_RECEIVE = true;
-        		finish();
+        		if(it.hasNext()){
+        			PlayAd();
+        		}else{
+        			Constant.FLAG.FINISH_VIDEO = true;
+            		Constant.FLAG.STATE_RECEIVE = true;
+            		finish();
+        		}
         	}
         });
+        
+        
+    }
+    
+    private void PlayAd(){
+    	AdContent ad = it.next();
+    	button_interest.setText(ad.adword);
+        button_interest.setOnClickListener(new OnClickListener(){
+			public void onClick(View view){
+	            Toast.makeText(VideoActivity.this, "interest click", Toast.LENGTH_SHORT).show();
+			}
+        });       
+        video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + ad.adid + ".3gp");
+        video.start();
     }
     
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
@@ -165,4 +187,6 @@ public class VideoActivity extends Activity {
         	counttime.setText(Long.toString(millisUntilFinished / 1000));     
         }    
     }     
+    
+    
 }

@@ -1,10 +1,15 @@
 package com.paad.wifi4us.utility.data;
 
+import java.io.Serializable;
 import android.support.v4.util.SimpleArrayMap;
-
 import com.paad.wifi4us.utility.Constant;
 
-public class AdContent {
+public class AdContent implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public String adid;
 	public String url;
 	public String length;
@@ -17,6 +22,14 @@ public class AdContent {
 	 * @return
 	 */
 	public AdContent(){};
+	
+	public AdContent(String id, String word, String text){
+		adid = id;
+		adword = word;
+		adtext = text;
+		length = null;
+		url = null;
+	};
 
 	public static AdContent buildAdFromMap(SimpleArrayMap<String, String> map){
 		AdContent adcontent = new AdContent();

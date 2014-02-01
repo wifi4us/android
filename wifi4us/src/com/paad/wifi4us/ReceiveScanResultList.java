@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.data.AdContent;
 
 public class ReceiveScanResultList extends ListFragment{
 	private Context context;
@@ -195,17 +196,14 @@ public class ReceiveScanResultList extends ListFragment{
     		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
       		if(state.equals("ok")){
           		c.unregisterReceiver(this);
-      			String adids = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID);
-      			String adwords = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD);
-      			String adtexts = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADTEXT);
+          		
+          		ArrayList<AdContent> adList = (ArrayList<AdContent>)intent.getSerializableExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_AD);
 
     			Intent startvideo = new Intent(currentActivity, VideoActivity.class);    
-    			startvideo.putExtra("adwords", adwords);
-    			startvideo.putExtra("adids", adids);
-    			startvideo.putExtra("adtexts", adtexts);
-
+    			startvideo.putExtra(Constant.StartIntentKey.VIDEO_EXTRA_AD, adList);
     			Constant.FLAG.FINISH_PRECONNNECT = true;
     			currentActivity.startActivity(startvideo);			
+
     		}else{
     			ProgressbarToFail(state);
           		c.unregisterReceiver(this);

@@ -205,20 +205,8 @@ public class ReceiveService extends Service {
 					return;
 				}
 				
-				String adwords = "";
-				String adids = "";
-				String adtexts = "";
-				for(AdContent adcontent:adList){
-					adwords += adcontent.adword + "|";
-					adids += adcontent.adid + "|";
-					adtexts += adcontent.adtext + "|";
-				}
-				
 				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ok");
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADWORD, adwords);
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADID, adids);
-				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_ADTEXT, adtexts);
-
+				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_AD, adList);
 				sendBroadcast(intent);
 			}
 		};

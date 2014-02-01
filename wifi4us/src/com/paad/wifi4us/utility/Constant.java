@@ -87,14 +87,13 @@ public class Constant {
     	public static final String CONMUNICATION_SETUP_INTERRUPT = "com.paad.wifi4us.conmunication.setup.interrupt";
     	public static final String CONMUNICATION_SETUP = "com.paad.wifi4us.conmunication.setup";
         public static final String CONMUNICATION_SETUP_EXTRA_STATE = "com.paad.wifi4us.conmunication.setup.extra.state";
-        public static final String CONMUNICATION_SETUP_EXTRA_ADWORD = "com.paad.wifi4us.conmunication.setup.extra.adword";
-        public static final String CONMUNICATION_SETUP_EXTRA_ADID = "com.paad.wifi4us.conmunication.setup.extra.adid";
-        public static final String CONMUNICATION_SETUP_EXTRA_ADTEXT = "com.paad.wifi4us.conmunication.setup.extra.adtext";
+        public static final String CONMUNICATION_SETUP_EXTRA_AD = "com.paad.wifi4us.conmunication.setup.extra.adword";
         public static final String CONMUNICATION_SETUP_HEART_BEATEN = "com.paad.wifi4us.conmunication.setup.heartbeaten";
         public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME = "com.paad.wifi4us.conmunication.setup.heartbeaten.time";
         public static final String CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC = "com.paad.wifi4us.conmunication.setup.heartbeaten.traffic";	
     }
     
-    public static final class BroadcastFailConnect {
+    public static final class StartIntentKey {
+        public static final String VIDEO_EXTRA_AD = "com.paad.wifi4us.video.extra.ad";
     }
 }
