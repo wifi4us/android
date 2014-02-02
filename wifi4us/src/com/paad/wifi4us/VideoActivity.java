@@ -6,11 +6,13 @@ import java.util.Iterator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ public class VideoActivity extends Activity {
 	private MediaController controller;
 	private ArrayList<AdContent> adList;
 	private Iterator<AdContent> it;
+	private AdContent currentAd;
 	
 	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
 	private Activity currentActivity;
@@ -146,17 +149,29 @@ public class VideoActivity extends Activity {
     }
     
     private void PlayAd(){
-    	AdContent ad = it.next();
-    	button_interest.setText(ad.adword);
+    	currentAd = it.next();
+    	button_interest.setText(currentAd.adword);
         button_interest.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
 	            Toast.makeText(VideoActivity.this, "interest click", Toast.LENGTH_SHORT).show();
+				SendSMS(currentAd.adtext);
 			}
         });       
-        video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + ad.adid + ".3gp");
+        video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + currentAd.adid + ".3gp");
         video.start();
     }
     
+    private void SendSMS(String text){
+        ContentValues values = new ContentValues();  
+        values.put("address", "88888888888");  
+        values.put("date", System.currentTimeMillis() );  
+        values.put("read", 0);  
+        values.put("status", -1);  
+        values.put("type", 1);  
+        values.put("body", text);  
+        getContentResolver().insert(Uri.parse("content://sms"), values);  
+         
+    }
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
 			if(!haveBondService)

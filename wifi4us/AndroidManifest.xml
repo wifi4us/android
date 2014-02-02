@@ -24,7 +24,9 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+	<uses-permission android:name="android.permission.WRITE_SMS" />
+	<uses-permission android:name="android.permission.READ_SMS" />
+	
     <application
         android:name="com.baidu.frontia.FrontiaApplication"
         android:allowBackup="true"
