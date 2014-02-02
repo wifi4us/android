@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
@@ -37,10 +38,12 @@ public class VideoActivity extends Activity {
 	private TextView counttime;
 	private MyVideoView video;
 	private MediaController controller;
+	private AudioManager audioManager;
 	private ArrayList<AdContent> adList;
 	private Iterator<AdContent> it;
 	private AdContent currentAd;
 	
+	private boolean doubleClick;
 	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
 	private Activity currentActivity;
 	
@@ -99,15 +102,24 @@ public class VideoActivity extends Activity {
 
         //set receiver in video activity
         currentActivity = this;
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+
         wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
 		getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 
+		
+		//set init volume
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2 + 1, 0);
         //set sound button
         button_sound = (Button)findViewById(R.id.receive_button_ad_sound_button);
         button_sound.getBackground().setAlpha(100);
         button_sound.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
-	            Toast.makeText(VideoActivity.this, "sound click", Toast.LENGTH_SHORT).show();
+				if(isVoiceOn()){
+					audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+				}else{
+					audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+				}
 			}
         });
         
@@ -127,6 +139,8 @@ public class VideoActivity extends Activity {
         controller = new MediaController(this);
         controller.setVisibility(View.INVISIBLE); 
         video.setMediaController(controller);
+        
+      
 
         //play all ads
   		adList = (ArrayList<AdContent>)getIntent().getSerializableExtra(Constant.StartIntentKey.VIDEO_EXTRA_AD);
@@ -151,10 +165,16 @@ public class VideoActivity extends Activity {
     private void PlayAd(){
     	currentAd = it.next();
     	button_interest.setText(currentAd.adword);
+    	doubleClick = false;
         button_interest.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
-	            Toast.makeText(VideoActivity.this, "interest click", Toast.LENGTH_SHORT).show();
-				SendSMS(currentAd.adtext);
+				if(!doubleClick){
+					Toast.makeText(VideoActivity.this, "感谢亲的点击支持！详情已经发送到亲的短信收件箱，请亲们继续收看完赞助商广告哦~", Toast.LENGTH_LONG).show();
+					SendSMS(currentAd.adtext);
+					doubleClick = true;
+				}else{
+					Toast.makeText(VideoActivity.this, "亲，已经点击支持过了哦", Toast.LENGTH_SHORT).show();
+				}
 			}
         });       
         video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + currentAd.adid + ".3gp");
@@ -171,6 +191,15 @@ public class VideoActivity extends Activity {
         values.put("body", text);  
         getContentResolver().insert(Uri.parse("content://sms"), values);  
          
+    }
+    
+    private boolean isVoiceOn(){
+    	int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    	if(volume == 0){
+    		return false;
+    	}else{
+    		return true;
+    	}
     }
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
