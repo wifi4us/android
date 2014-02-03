@@ -124,7 +124,8 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		context = getActivity();
 		sharedPreference = new SharedPreferenceHelper(getActivity()
 				.getApplicationContext());
-
+		
+		//init userid
 		other_id_userid_text = (TextView) view_res
 				.findViewById(R.id.other_id_userid);
 		userid = sharedPreference.getString("USER_ID");
@@ -135,11 +136,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext) + userid);
 		}
 
+		//init credit
 		other_id_credit_text = (TextView) view_res
 				.findViewById(R.id.other_id_credits);
 		Thread mThread = new Thread(getCreditRunner);
 		mThread.start();
 
+		
 		view_res.findViewById(R.id.btn_quit).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_about).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_check_update).setOnClickListener(this);

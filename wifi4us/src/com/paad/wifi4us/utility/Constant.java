@@ -14,7 +14,7 @@ package com.paad.wifi4us.utility;
 public class Constant {
 	
 	public static class HttpParas{
-		public static String IMEI = "mei";
+		public static String IMEI = "imei";
 		public static String PHONE = "phone";
 		public static String USER_ID="userid";
 		public static String ID_NUM = "id_num";
@@ -96,4 +96,5 @@ public class Constant {
     public static final class StartIntentKey {
         public static final String VIDEO_EXTRA_AD = "com.paad.wifi4us.video.extra.ad";
     }
+    
 }

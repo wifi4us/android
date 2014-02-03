@@ -14,7 +14,12 @@
     <string name="receive_string_ad_sound_button">声音开关</string>   
     <string name="receive_string_disconnect_wifi">断开连接</string>   
     
-    <string name="send_button_start_share">分享5M流量和30分钟</string>
+    <string name="send_button_start_share">开始分享</string>
+    <string name="send_checkbox">要求对方收看广告，获取更多积分哦</string>
+    <string name="send_radio_button_30">分享5M流量和30分钟，只能供一人使用</string>
+    <string name="send_radio_button_60">分享10M流量和60分钟，只能供一人使用</string>
+    <string name="send_radio_button_unlimit">不限制时间和流量，可以供N个人使用</string>
+            
     <string name="send_text_start_share">您的流量和分享时间将严格限定在5M和30分钟，先到为准</string>
     <string name="send_text_stop_share">已经创建完成，等待接入中</string>
     <string name="send_button_stop_share">立刻停止分享流量</string>

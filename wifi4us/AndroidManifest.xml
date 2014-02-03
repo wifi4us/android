@@ -3,7 +3,9 @@
     package="com.paad.wifi4us"
     android:versionCode="1"
     android:versionName="1.0"
-    android:installLocation="internalOnly"><uses-sdk
+    android:installLocation="internalOnly">
+    
+    <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
 
@@ -26,7 +28,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.WRITE_SMS" />
 	<uses-permission android:name="android.permission.READ_SMS" />
-	
+    
     <application
         android:name="com.baidu.frontia.FrontiaApplication"
         android:allowBackup="true"

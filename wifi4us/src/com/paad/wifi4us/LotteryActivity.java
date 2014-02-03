@@ -61,7 +61,7 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
     public void onTabReselected(Tab arg0, FragmentTransaction arg1) {}
 
     Fragment[] fragments = new Fragment[TAG_NUM];
-    String[] tags = new String[]{"é€‰å·", "è´­ä¹°è®°å½•", "ç”¨æˆ·ä¿¡æ¯"};
+    String[] tags = new String[]{"Ñ¡ºÅ", "¶Ò»»¼ÇÂ¼", "¶Ò½±ĞÅÏ¢"};
     
     @Override
     public void onTabSelected(Tab tab, FragmentTransaction ft) {

@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.paad.wifi4us.LotteryActivity;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 /**
  * @author yangshi
@@ -67,7 +68,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     boolean[] redStatus = new boolean[numRedBall];
     
     Button confirmButton;
-	SharedPreferences sharedPreference;
+	
+    SharedPreferenceHelper sharedPreference;
     
     void reset(){
     	redTbs.clear();
@@ -81,8 +83,9 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     
     @Override
 	public void onCreate(Bundle savedInstanceState) {
-        sharedPreference = getActivity().getSharedPreferences("lottery", Context.MODE_PRIVATE);
-        activity = (LotteryActivity)getActivity();
+		sharedPreference = new SharedPreferenceHelper(getActivity()
+				.getApplicationContext());
+		activity = (LotteryActivity)getActivity();
 		super.onCreate(savedInstanceState);
 	}
 
@@ -251,13 +254,13 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     }
     
 	boolean checkUserInfo() {
-		if (sharedPreference.getString(Constant.HttpParas.ALIPAY_ID, null) != null
-				&& sharedPreference.getString(Constant.HttpParas.ID_NUM, null) != null
-				&& sharedPreference.getString(Constant.HttpParas.PHONE, null) != null
-				&& sharedPreference.getString(Constant.HttpParas.NAME, null) != null) {
-			return true;
+		if (sharedPreference.getString(Constant.HttpParas.ALIPAY_ID).equals("NULL")
+				|| sharedPreference.getString(Constant.HttpParas.ID_NUM).equals("NULL")
+				|| sharedPreference.getString(Constant.HttpParas.PHONE).equals("NULL")
+				|| sharedPreference.getString(Constant.HttpParas.NAME).equals("NULL")) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
     @Override
