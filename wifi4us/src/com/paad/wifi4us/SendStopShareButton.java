@@ -83,16 +83,20 @@ public class SendStopShareButton extends Fragment{
 	
 	public class ClickStopShareReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-    		//The result list fragment or fail result fragment
+    		try{
+        		//The result list fragment or fail result fragment
 
-    		if(!intent.getExtras().get("apstate").equals("ok")){
-    			c.removeStickyBroadcast(intent);
-    	        c.unregisterReceiver(this);
-    			return;
+        		if(!intent.getExtras().get("apstate").equals("ok")){
+        			c.removeStickyBroadcast(intent);
+        	        c.unregisterReceiver(this);
+        			return;
+        		}
+        		
+        		UIScanFromProgressToShare();
+        		c.unregisterReceiver(this);
+    		}catch(Exception e){
+    			e.printStackTrace();
     		}
-    		
-    		UIScanFromProgressToShare();
-    		c.unregisterReceiver(this);
     	}
     }
 

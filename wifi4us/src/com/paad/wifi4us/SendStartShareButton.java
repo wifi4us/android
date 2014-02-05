@@ -1,7 +1,5 @@
 package com.paad.wifi4us;
 
-import com.paad.wifi4us.utility.Constant;
-
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,9 +16,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class SendStartShareButton extends Fragment{
-	private Button startshare;
+	private Button startShare;
+	private CheckBox adMode;
+	private RadioGroup radioGroup;
+	private RadioButton radioButton30;
+	private RadioButton radioButton60;
+	private RadioButton radioButtonUnlimit;
+
 	private Context context;
 	private Fragment send_id_progressbar_button;
 	private Fragment send_id_progressbar_text;
@@ -35,6 +47,8 @@ public class SendStartShareButton extends Fragment{
 	private ConnectionStartReceiver connectionStartReceiver;
 
 	private FragmentManager fragmentManager;
+
+	private SharedPreferenceHelper sharedPreference;
 
     //Send Service 	
     private SendService sendService;
@@ -67,14 +81,22 @@ public class SendStartShareButton extends Fragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
-		
+		sharedPreference = new SharedPreferenceHelper(getActivity().getApplicationContext());
+
 		View view_res = inflater.inflate(R.layout.fragment_send_start_share_button, container, false);
-		startshare = (Button) view_res.findViewById(R.id.send_button_start_share);
-		startshare.setOnClickListener(new OnClickListener(){
+		//init start share button
+		startShare = (Button) view_res.findViewById(R.id.send_button_start_share);
+		startShare.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
+				if(Constant.PreventAbuse.DOUBLE_START_SEND){
+					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "≈¨¡¶≈‰÷√∑÷œÌÕ¯¬Á÷–", Toast.LENGTH_SHORT);
+					toast.show();
+					return;
+				}
+				Constant.PreventAbuse.DOUBLE_START_SEND = true;
+
 				if(!haveBondService)
 	    			return;
-				
 				context = getActivity().getApplicationContext();
 				clickStartShareReceiver = new ClickStartShareReceiver();
 				listenStartReceiver = new ListenStartReceiver();
@@ -89,36 +111,96 @@ public class SendStartShareButton extends Fragment{
 			}
 		});
 
+		//init ad mode checkbox
+		adMode = (CheckBox) view_res.findViewById(R.id.send_checkbox);
+		String currentAdMode = sharedPreference.getString("SEND_AD_MODE");
+		if(currentAdMode.equals("YES")){
+			adMode.setChecked(true);
+		}else{
+			adMode.setChecked(false);
+		}
+		adMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+			public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+				if(isChecked){
+					sharedPreference.putString("SEND_AD_MODE", "YES");
+				}else{
+					sharedPreference.putString("SEND_AD_MODE", "NO");
+				}
+			}
+
+		});
+		
+		//init limit mode radio group
+		radioGroup = (RadioGroup) view_res.findViewById(R.id.send_radio_group);
+		radioButton30 = (RadioButton) view_res.findViewById(R.id.send_radio_button_30);
+		radioButton60 = (RadioButton) view_res.findViewById(R.id.send_radio_button_60);
+		radioButtonUnlimit = (RadioButton) view_res.findViewById(R.id.send_radio_button_unlimit);
+		String currentLimitMode = sharedPreference.getString("SEND_LIMIT_MODE");
+		if(currentLimitMode.equals("30")){
+			radioButton30.setChecked(true);
+		}else if(currentLimitMode.equals("60")){
+			radioButton60.setChecked(true);
+		}else{
+			radioButtonUnlimit.setChecked(true);
+		}
+		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {  
+            public void onCheckedChanged(RadioGroup group, int checkedId) {  
+                // TODO Auto-generated method stub  
+                if(checkedId == radioButton30.getId()){  
+                	sharedPreference.putString("SEND_LIMIT_MODE", "30");
+                }else if(checkedId == radioButton60.getId()){
+                	sharedPreference.putString("SEND_LIMIT_MODE", "60");
+                }else{
+                	sharedPreference.putString("SEND_LIMIT_MODE", "UN");
+                }
+            }  
+        });  
+		
+		
 		return view_res;
 	}
 	
 	public class ClickStartShareReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-    		//The result list fragment or fail result fragment
-    		if(!intent.getExtras().get("apstate").equals("ok")){
-    			UIScanFromProgressToNotReadyState();
-    	        c.unregisterReceiver(this);
-    			return;
+    		try{
+        		//The result list fragment or fail result fragment
+        		if(!intent.getExtras().get("apstate").equals("ok")){
+        			UIScanFromProgressToNotReadyState();
+        	        c.unregisterReceiver(this);
+        			Constant.PreventAbuse.DOUBLE_START_SEND = false;
+        			return;
+        		}
+    			context.registerReceiver(listenStartReceiver, new IntentFilter(Constant.BroadcastSend.LISTEN_SETUP));
+    			context.registerReceiver(connectionStartReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_SETUP));
+        		sendService.ListenHeartBeat();
+        		c.unregisterReceiver(this);
+    		}catch(Exception e){
+    			e.printStackTrace();
     		}
-			context.registerReceiver(listenStartReceiver, new IntentFilter(Constant.BroadcastSend.LISTEN_SETUP));
-			context.registerReceiver(connectionStartReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_SETUP));
-    		sendService.ListenHeartBeat();
-    		c.unregisterReceiver(this);
     	}
     }
 
 	public class ListenStartReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-    		UIScanFromProgressToReadyState();
-    		c.unregisterReceiver(this);
+    		try{
+        		UIScanFromProgressToReadyState();
+        		c.unregisterReceiver(this);
+    			Constant.PreventAbuse.DOUBLE_START_SEND = false;
+    		}catch(Exception e){
+    			e.printStackTrace();
+    		}
     	}
     }
 	
 	
 	public class ConnectionStartReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-    		UIScanFromReadyStateToConnectState();
-    		c.unregisterReceiver(this);
+    		try{
+        		UIScanFromReadyStateToConnectState();
+        		c.unregisterReceiver(this);
+    		}catch(Exception e){
+    			e.printStackTrace();
+    		}
     	}
     }
 	

@@ -39,6 +39,7 @@
             android:name=".FirstActivity"
             android:label="@string/app_name"
             android:noHistory="true"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
@@ -61,7 +62,14 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
-
+        <activity
+            android:name=".VideoFreeActivity"
+            android:noHistory="true"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+        
         <service
             android:name=".ReceiveService"
             android:enabled="true"
@@ -75,14 +83,17 @@
 
         <activity
             android:name=".SettingsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
             android:name=".FeedbackActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_feedback" >
         </activity>
         <activity
             android:name=".LotteryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_feedback" >
         </activity>
 

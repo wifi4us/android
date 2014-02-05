@@ -36,4 +36,9 @@ public class MyVideoView extends VideoView{
 		
 		setMeasuredDimension(width,height);
 	}
+	
+	public void onControllerHide()
+    {
+        return;
+    }
 }

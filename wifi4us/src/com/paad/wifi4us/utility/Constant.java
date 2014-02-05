@@ -53,6 +53,8 @@ public class Constant {
 		public static boolean FINISH_PRECONNNECT;
 		public static boolean STATE_RECEIVE;
 		public static String  LAST_TAB = "NULL";
+		public static boolean RECEIVE_HAS_AD;
+		public static String RECEIVE_LIMIT_MODE;
 	}
 	
     public static final class Security {
@@ -95,6 +97,12 @@ public class Constant {
     
     public static final class StartIntentKey {
         public static final String VIDEO_EXTRA_AD = "com.paad.wifi4us.video.extra.ad";
+    }
+    
+    public static final class PreventAbuse {
+        public static boolean DOUBLE_START_SEND;
+        public static boolean DOUBLE_STOP_SEND;
+
     }
     
 }

@@ -99,14 +99,12 @@ public class VideoActivity extends Activity {
 		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
         setContentView(R.layout.activity_video);
 
-
         //set receiver in video activity
         currentActivity = this;
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
         wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
 		getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
-
 		
 		//set init volume
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2 + 1, 0);
@@ -169,7 +167,7 @@ public class VideoActivity extends Activity {
         button_interest.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
 				if(!doubleClick){
-					Toast.makeText(VideoActivity.this, "感谢亲的点击支持！详情已经发送到亲的短信收件箱，请亲们继续收看完赞助商广告哦~", Toast.LENGTH_LONG).show();
+					Toast.makeText(VideoActivity.this, "详情已经发送到亲的短信收件箱，请亲们继续收看完赞助商广告哦~", Toast.LENGTH_LONG).show();
 					SendSMS(currentAd.adtext);
 					doubleClick = true;
 				}else{
@@ -177,7 +175,16 @@ public class VideoActivity extends Activity {
 				}
 			}
         });       
-        video.setVideoPath(getApplicationContext().getCacheDir().toString() + "/ad_" + currentAd.adid + ".3gp");
+        
+        String filename = getApplicationContext().getCacheDir().toString() + "/ad_" + currentAd.adid + ".3gp";
+        try{
+        	Process p = Runtime.getRuntime().exec("chmod 777 " + filename);    
+            p.waitFor();    
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+          
+        video.setVideoPath(filename);
         video.start();
     }
     
@@ -203,17 +210,21 @@ public class VideoActivity extends Activity {
     }
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-			if(!haveBondService)
-				return;
-			//get reward for receiving
-			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-			if(state.equals(SupplicantState.INACTIVE)){ 
-				Intent i = new Intent();
-				i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
-				sendBroadcast(i);
-				receiveService.WifiDisconnectCompletely();
-				currentActivity.finish();
-				c.unregisterReceiver(this);
+			try{
+				if(!haveBondService)
+					return;
+				//get reward for receiving
+				SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+				if(state.equals(SupplicantState.DISCONNECTED) || state.equals(SupplicantState.INACTIVE)){ 
+					Intent i = new Intent();
+					i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
+					sendBroadcast(i);
+					receiveService.WifiDisconnectCompletely();
+					currentActivity.finish();
+					c.unregisterReceiver(this);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

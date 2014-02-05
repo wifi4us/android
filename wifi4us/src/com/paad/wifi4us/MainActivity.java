@@ -29,6 +29,7 @@ import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
 import com.baidu.frontia.api.FrontiaSocialShareListener;
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class MainActivity extends ActionBarActivity {
 	private FragmentManager fragmentManager;
@@ -52,7 +53,8 @@ public class MainActivity extends ActionBarActivity {
 	private Fragment receive;
 	private Fragment other;
 	
-	
+	private SharedPreferenceHelper sharedPreference;
+
 	//Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -111,9 +113,23 @@ public class MainActivity extends ActionBarActivity {
     	super.onCreate(savedInstanceState);
         
     	Constant.FLAG.STATE_RECEIVE = false;
+		Constant.PreventAbuse.DOUBLE_START_SEND = false;
+		Constant.PreventAbuse.DOUBLE_STOP_SEND = false;
 
-    	
 		fragmentManager = this.getSupportFragmentManager();
+		
+		//init send mode
+		sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+		String sendAdMode = sharedPreference.getString("SEND_AD_MODE");
+		String sendLimitMode = sharedPreference.getString("SEND_LIMIT_MODE");
+		if(sendAdMode.equals("NULL")){
+			sharedPreference.putString("SEND_AD_MODE", "YES");
+		}
+		if(sendLimitMode.equals("NULL")){
+			sharedPreference.putString("SEND_LIMIT_MODE", "30");
+		}
+		
+		
 		Intent intent = new Intent(this, ReceiveService.class);  
 		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 
@@ -390,7 +406,7 @@ public class MainActivity extends ActionBarActivity {
 			mSocialShare.setContext(context);
 			mImageContent.setTitle(context.getResources()
 					.getString(R.string.setDiscuss));
-			mImageContent.setContent("ÎÄ°¸");
+			mImageContent.setContent("ï¿½Ä°ï¿½");
 			mImageContent.setLinkUrl("http://wifi4us.paad.com/");
 			mImageContent.setImageData(BitmapFactory.decodeResource(
 					context.getResources(), R.drawable.ic_launcher));

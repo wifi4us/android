@@ -22,7 +22,7 @@ public class HttpDownLoader {
 		try{
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestMethod("GET");
-			urlConnection.setConnectTimeout(10000);
+			urlConnection.setConnectTimeout(30000);
 			urlConnection.addRequestProperty("Content-Type", "text/xml; charset=utf-8");
 			urlConnection.addRequestProperty("Range", "bytes=" + start + "-" + end);
 

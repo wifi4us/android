@@ -99,6 +99,8 @@ public class ReceiveService extends Service {
 	public void WifiScan(){
 		Runnable myRunnable = new Runnable(){
 			public void run(){
+				myWifiManager.getWifiManager().setWifiEnabled(false);
+				myWifiManager.getWifiManager().setWifiEnabled(true);
 				myWifiManager.getWifiManager().startScan();
 			}
 		};
@@ -126,6 +128,7 @@ public class ReceiveService extends Service {
 
 		Runnable wifiConnectRunner = new Runnable(){
 			public void run(){
+					initConnectMode();
 					String passwd = getPassWord();
 					String ssid = getSSID();
 					myWifiManager.WifiSetupConnect(ssid, passwd);
@@ -143,7 +146,7 @@ public class ReceiveService extends Service {
 
 					trial--;
 					try{
-						SystemClock.sleep(1000);
+						SystemClock.sleep(2000);
 						ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 			    		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 			    		if(State.CONNECTED == state){  
@@ -169,7 +172,23 @@ public class ReceiveService extends Service {
 	}
 
 	public void WifiDisconnectCompletely(){
+		/*try{
+			out.close(); 
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{
+        	in.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		try{
+        	socket.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}*/
 		myWifiManager.getWifiManager().removeNetwork(myWifiManager.getNetworkId());
+		myWifiManager.getWifiManager().disconnect();
 	}
 
 	public void WifiDisconnect(){
@@ -191,12 +210,15 @@ public class ReceiveService extends Service {
 					return;
 				}
 				
-				if(!getAdvertisement()){
-					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "对方3G网速太慢或者网络异常");
-					sendBroadcast(intent);
-					return;
+				if(Constant.FLAG.RECEIVE_HAS_AD){
+					if(!getAdvertisement()){
+						WifiDisconnectCompletely();
+						intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "对方3G网速太慢或者网络异常");
+						sendBroadcast(intent);
+						return;
+					}
 				}
+
 				
 				if(!setHeartBeat()){
 					WifiDisconnectCompletely();
@@ -316,6 +338,25 @@ public class ReceiveService extends Service {
 		//check local and download
 				
 		return true;
+	}
+	
+	private void initConnectMode(){
+		String modepart1 = connectinfo.substring(24, 26);
+		String modepart2 = connectinfo.substring(26, 28);
+		
+		if(modepart1.equals("00")){
+			Constant.FLAG.RECEIVE_HAS_AD = false;
+		}else{
+			Constant.FLAG.RECEIVE_HAS_AD = true;
+		}
+		
+		if(modepart2.equals("30")){
+			Constant.FLAG.RECEIVE_LIMIT_MODE = "30";
+		}else if(modepart2.equals("60")){
+			Constant.FLAG.RECEIVE_LIMIT_MODE = "60";
+		}else{
+			Constant.FLAG.RECEIVE_LIMIT_MODE = "UN";
+		}
 	}
 	
 	private String getPassWord(){

@@ -58,16 +58,21 @@ public class SendService extends Service {
 		
     }  
 	
-	public void WifiApOff(){    	
+	public void WifiApOff(){
+		if(Constant.PreventAbuse.DOUBLE_STOP_SEND){
+			return;
+		}
+		Constant.PreventAbuse.DOUBLE_STOP_SEND = true;
 		Runnable myRunnable = new Runnable(){
 			public void run(){
 				while(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_ENABLING){
 					try {
-						Thread.sleep(500);
+						Thread.sleep(100);
 			        } catch (InterruptedException e) {
 			            e.printStackTrace();
 			        }
 				}
+				
 				if(myWifiManager.setWifiApEnabled(false, null, null)){
 					int try_count = 0;
 					while(true){
@@ -98,6 +103,9 @@ public class SendService extends Service {
 				}else{
 					sendApShutFailBroadcast();
 				}
+				
+				Constant.PreventAbuse.DOUBLE_STOP_SEND = false;
+
 			 
 			}
 		};
@@ -109,9 +117,9 @@ public class SendService extends Service {
 	
 	public void WifiApOn(){			 
 		randomString = PasswdUtil.getRandomPasswd();
+		myWifiManager.getWifiManager().setWifiEnabled(false); 
 		Runnable myRunnable = new Runnable(){
 			public void run(){
-				myWifiManager.getWifiManager().setWifiEnabled(false); 
 				while(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_DISABLED){
 					try {
 						Thread.sleep(100);
@@ -143,7 +151,7 @@ public class SendService extends Service {
 					int try_count = 0;
 					while(true){
 						try {
-							Thread.sleep(300);
+							Thread.sleep(500);
 				        } catch (InterruptedException e) {
 				            e.printStackTrace();
 				        }
@@ -309,8 +317,27 @@ public class SendService extends Service {
 	 		 	
 	 	private String generateSSID() throws Exception{
 	 		String namepart = "W" + sharedPreference.getString("USER_ID");
+	 		
 	 		String passwdpart = PasswdUtil.encryptDES(randomString, Constant.Security.DES_KEY);
-	 		String modepart = "3005";
+	 		
+	 		String adMode = sharedPreference.getString("SEND_AD_MODE");
+	 		String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
+	 		String modepart1;
+	 	    String modepart2;
+	 		if(adMode.equals("YES")){
+	 			modepart1 = "01";
+	 		}else{
+	 			modepart1 = "00";
+	 		}
+	 		if(limitMode.equals("30")){
+	 			modepart2 = "30";
+	 		}else if(limitMode.equals("60")){
+	 			modepart2 = "60";
+	 		}else{
+	 			modepart2 = "UN";
+	 		}
+	 		String modepart = modepart1 + modepart2;
+	 		
 	 		String signpart = PasswdUtil.getMD5Sign(namepart + passwdpart + modepart);
 	 		return namepart + passwdpart + modepart + signpart;
 	 	}

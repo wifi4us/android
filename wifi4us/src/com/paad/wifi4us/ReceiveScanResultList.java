@@ -49,6 +49,7 @@ public class ReceiveScanResultList extends ListFragment{
 	private MyWifiManager myWifiManager;
 	private String rawssid;
 
+	private boolean FINISH_CONNECT;
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -99,6 +100,7 @@ public class ReceiveScanResultList extends ListFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();
 		myWifiManager = new MyWifiManager(context);
+		
 		ArrayList<String> resultshown = getShownName(scanresultlist);
 
 		scanresultlist_adapter = new ArrayAdapter<String>(currentActivity, android.R.layout.simple_list_item_1, resultshown);
@@ -107,10 +109,10 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
+		FINISH_CONNECT = false;
 		if(!haveBondService)
 			return;
 		
-
 		if(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_ENABLED){
 			Toast toast = Toast.makeText(context, "请先打开wifi", Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.CENTER, 0, 0);
@@ -146,7 +148,7 @@ public class ReceiveScanResultList extends ListFragment{
 				context.registerReceiver(connectFailReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT));
 				context.registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 				context.registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
-				context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
+				//context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 
 	        	receiveService.WifiConnect(rawssid);
 	        	break;
@@ -159,77 +161,101 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	public class ClickConnectReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-			
-    		if(!haveBondService){
-    			c.unregisterReceiver(this);
-    			return;
-    		}
-    		ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-    		State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
-    		if(State.CONNECTED == state){  
-    			String actualSSID = myWifiManager.getWifiManager().getConnectionInfo().getSSID();
-    			if(!actualSSID.equals(rawssid)){
-    				Intent i = new Intent();
-    				i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
-    				i.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifi连接认证超时");
-    				currentActivity.sendBroadcast(i);
-    					
-    				receiveService.WifiDisconnectCompletely();
-    	     		c.unregisterReceiver(this);
-    	     		return;
-    			}
-
-     			c.unregisterReceiver(this);
-     			
-     	        receiveService.EstablishConmunication();
-    		}  
+			try{
+				if(!haveBondService){
+					c.unregisterReceiver(this);
+					return;
+				}
+				ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+				State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
+				if(State.CONNECTED == state){  
+ 					c.unregisterReceiver(this);
+ 					/*
+					String actualSSID = myWifiManager.getWifiManager().getConnectionInfo().getSSID();
+					if(!actualSSID.equals(rawssid)){
+						Intent i = new Intent();
+						i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
+						i.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifi认证超时");
+						currentActivity.sendBroadcast(i);
+							
+						receiveService.WifiDisconnectCompletely();
+	     				return;
+					}    */ 			
+ 	        		receiveService.EstablishConmunication();
+				}  
+			}catch(Exception e){
+				e.printStackTrace();
+			}	
 		}
 	}
 	
 	public class ConmunicationReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-    		if(!haveBondService){
-    			c.unregisterReceiver(this);
-    			return;
-    		}
-    		
-    		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
-      		if(state.equals("ok")){
-          		c.unregisterReceiver(this);
-          		
-          		ArrayList<AdContent> adList = (ArrayList<AdContent>)intent.getSerializableExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_AD);
+			try{
+	    		if(!haveBondService){
+	    			c.unregisterReceiver(this);
+	    			return;
+	    		}
+	    		
+	    		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
+	      		if(state.equals("ok")){
+	          		c.unregisterReceiver(this);
+	    			Constant.FLAG.FINISH_PRECONNNECT = true;
 
-    			Intent startvideo = new Intent(currentActivity, VideoActivity.class);    
-    			startvideo.putExtra(Constant.StartIntentKey.VIDEO_EXTRA_AD, adList);
-    			Constant.FLAG.FINISH_PRECONNNECT = true;
-    			currentActivity.startActivity(startvideo);			
-
-    		}else{
-    			ProgressbarToFail(state);
-          		c.unregisterReceiver(this);
-    		}
+	    			if(Constant.FLAG.RECEIVE_HAS_AD){
+	        			Intent startvideo = new Intent(currentActivity, VideoActivity.class);    
+	              		ArrayList<AdContent> adList = (ArrayList<AdContent>)intent.getSerializableExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_AD);
+	        			startvideo.putExtra(Constant.StartIntentKey.VIDEO_EXTRA_AD, adList);	
+	        			currentActivity.startActivity(startvideo);	
+	    			}else{
+	        			Intent startvideofree = new Intent(currentActivity, VideoFreeActivity.class);    
+	        			currentActivity.startActivity(startvideofree);	
+	    			}
+	    		}else{
+	    			if(state.equals("wifi连接超时")){
+	    				c.unregisterReceiver(clickConnectReceiver);
+	    				c.unregisterReceiver(connectFailReceiver);
+	    			}
+	    			ProgressbarToFail(state);
+	          		c.unregisterReceiver(this);
+	    		}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}   		
 	}
 	
 	public class ConnectFailReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-			ProgressbarToFail("连接过程被打断，网络连接失败");
-			c.unregisterReceiver(this);
+			try{
+				ProgressbarToFail("连接过程被打断，网络连接失败");
+				c.unregisterReceiver(this);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 	
 
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-			if(!haveBondService)
-				return;
-			//get reward for receiving
-			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-			if(state.equals(SupplicantState.INACTIVE)){ 
-				ProgressbarToFail("分享者的共享意外中断");
-     	   		receiveService.WifiDisconnectCompletely();
-     	   		c.unregisterReceiver(this);
-    		}  
+			try{
+				if(!haveBondService)
+					return;
+				//get reward for receiving
+				SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+				System.out.println(state.toString());
+				if(state.equals(SupplicantState.COMPLETED)){
+					FINISH_CONNECT = true;
+				}
+				if(state.equals(SupplicantState.DISCONNECTED) && FINISH_CONNECT){ 
+					ProgressbarToFail("分享者的共享意外中断");
+	     	   		receiveService.WifiDisconnectCompletely();
+	     	   		c.unregisterReceiver(this);
+	    		}  
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 
 		}
 	}
@@ -252,7 +278,7 @@ public class ReceiveScanResultList extends ListFragment{
 		}
 		receive_id_start_wifi_connected_fail_text = new ReceiveWifiConnectedFailText();
 		((ReceiveWifiConnectedFailText)receive_id_start_wifi_connected_fail_text).setTextWord(state);
-		transaction.add(R.id.receive_container_scan_result, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
+		transaction.replace(R.id.receive_container_scan_result, receive_id_start_wifi_connected_fail_text, "receive_id_start_wifi_connected_fail_text");
 		transaction.commitAllowingStateLoss(); 
 	}
 	

@@ -70,7 +70,7 @@ public class ReceiveSwitcherButton extends Fragment{
 				if(!haveBondService)
 	    			return;
 				myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
-				if(myWifiManager.getWifiApState() != myWifiManager.WIFI_AP_STATE_DISABLED){
+				if(myWifiManager.getWifiApState() != myWifiManager.WIFI_AP_STATE_DISABLED && myWifiManager.getWifiApState() != myWifiManager.WIFI_AP_STATE_FAILED){
 					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "分享的时候无法打开wifi", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
@@ -95,26 +95,28 @@ public class ReceiveSwitcherButton extends Fragment{
 	
 	public class ClickSwitcherReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-    		if(!haveBondService){
-	    		c.unregisterReceiver(this);
-    			return;
+    		try{
+        		if(!haveBondService){
+    	    		c.unregisterReceiver(this);
+        			return;
+        		}
+        		
+        		int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+
+        		if(state == WifiManager.WIFI_STATE_DISABLING){
+        			UISwitcherFromProgressToTextOff();
+    	    		c.unregisterReceiver(this);
+
+        		} 
+        		
+        		if(state == WifiManager.WIFI_STATE_ENABLING){
+        			UISwitcherFromProgressToTextOn();
+            		c.unregisterReceiver(this);
+
+        		}
+    		}catch(Exception e){
+    			e.printStackTrace();
     		}
-    		
-    		int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
-
-    		if(state == WifiManager.WIFI_STATE_DISABLING){
-    			UISwitcherFromProgressToTextOff();
-	    		c.unregisterReceiver(this);
-
-    		} 
-    		
-    		if(state == WifiManager.WIFI_STATE_ENABLING){
-    			UISwitcherFromProgressToTextOn();
-        		c.unregisterReceiver(this);
-
-    		}
-
-
     	}
     }
 	

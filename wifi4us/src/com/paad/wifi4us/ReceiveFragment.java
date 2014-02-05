@@ -77,7 +77,7 @@ public class ReceiveFragment extends Fragment{
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		receivie_wifi_switcher_button = new ReceiveSwitcherButton();
 
-		transaction.add(R.id.receive_container_switcher_button, receivie_wifi_switcher_button, "receivie_wifi_switcher_button");
+		transaction.replace(R.id.receive_container_switcher_button, receivie_wifi_switcher_button, "receivie_wifi_switcher_button");
 		
 		receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
 		if(receive_id_start_scan_button == null && !Constant.FLAG.STATE_RECEIVE){

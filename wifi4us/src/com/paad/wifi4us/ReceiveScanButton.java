@@ -23,13 +23,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
 import com.paad.wifi4us.utility.PasswdUtil;
 
 public class ReceiveScanButton extends Fragment{
 	private Button scanwifi;
-	private boolean doubleclickscan;
 	private Fragment receive_id_start_scan_progressbar;
 	private Fragment receive_id_start_scan_resultlist;
 	private Fragment receive_id_start_scan_nothing;
@@ -70,7 +68,6 @@ public class ReceiveScanButton extends Fragment{
 
 	}
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
-		doubleclickscan = false;
 		fragmentManager = getFragmentManager();
 		myWifiManager = new MyWifiManager(getActivity().getApplicationContext());
 		View view_res = inflater.inflate(R.layout.fragment_receive_scan_button, container, false);
@@ -79,15 +76,23 @@ public class ReceiveScanButton extends Fragment{
 			public void onClick(View view){
 				if(!haveBondService)
 	    			return;
-				if(doubleclickscan == true)
-					return;
-				doubleclickscan = true;
-				
+		        Fragment goodToScan1 = fragmentManager.findFragmentByTag("receive_id_start_scan_progressbar_scan");
+		        Fragment goodToScan2 = fragmentManager.findFragmentByTag("receive_id_start_connect_progressbar");
+
+		        if(goodToScan1 != null){
+		        	Toast toast = Toast.makeText(getActivity().getApplicationContext(), "正在扫描中...", Toast.LENGTH_SHORT);
+					toast.show();
+		        	return;
+		        }
+		        if(goodToScan2 != null){
+		        	Toast toast = Toast.makeText(getActivity().getApplicationContext(), "正在连接中...", Toast.LENGTH_SHORT);
+					toast.show();
+		        	return;
+		        }
 				if(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_ENABLED){
 					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "请先打开wifi", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
-		            doubleclickscan = false;
 					return;
 				}
 				clickScanReceiver = new ClickScanReceiver();
@@ -105,23 +110,26 @@ public class ReceiveScanButton extends Fragment{
 	
 	public class ClickScanReceiver extends BroadcastReceiver{
     	public void onReceive(Context c, Intent intent) {
-    		if(!haveBondService){
-        		c.unregisterReceiver(this);    			
-    			return;
+    		try{
+    			if(!haveBondService){
+            		c.unregisterReceiver(this);    			
+        			return;
+        		}
+        		//The result list fragment or fail result fragment
+        		ArrayList<String> wifiAPList = receiveService.getWifiScanResult();
+        		removeOtherHotpot(wifiAPList);
+        		//removeOutdatedHotpot(wifiAPList);
+        		if(wifiAPList.size() != 0){
+            		UIScanFromProgressToScanresult(wifiAPList);
+        		}else{
+        			UIScanFromProgressToNothing();
+        		}
+        		
+        		c.unregisterReceiver(this); 
+        		c.removeStickyBroadcast(intent);
+    		}catch(Exception e){
+    			e.printStackTrace();
     		}
-    		//The result list fragment or fail result fragment
-    		ArrayList<String> wifiAPList = receiveService.getWifiScanResult();
-    		removeOtherHotpot(wifiAPList);
-    		removeOutdatedHotpot(wifiAPList);
-    		if(wifiAPList.size() != 0){
-        		UIScanFromProgressToScanresult(wifiAPList);
-    		}else{
-    			UIScanFromProgressToNothing();
-    		}
-    		
-    		c.unregisterReceiver(this); 
-    		c.removeStickyBroadcast(intent);
-            doubleclickscan = false;
     	}
     }
 	
@@ -219,6 +227,7 @@ public class ReceiveScanButton extends Fragment{
     	}      	
 	}
 	
+	/*
 	private void removeOutdatedHotpot(ArrayList<String> arr){
 		ArrayList<String> tempArr = arr;
 		Iterator<String> sListIterator = arr.iterator();  
@@ -247,5 +256,5 @@ public class ReceiveScanButton extends Fragment{
     	    	}
     	    }
     	}
-	}
+	}*/
 }
