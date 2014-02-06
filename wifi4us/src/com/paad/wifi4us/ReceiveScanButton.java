@@ -117,6 +117,9 @@ public class ReceiveScanButton extends Fragment{
         		}
         		//The result list fragment or fail result fragment
         		ArrayList<String> wifiAPList = receiveService.getWifiScanResult();
+        		if(wifiAPList == null){
+        			return;
+        		}
         		removeOtherHotpot(wifiAPList);
         		//removeOutdatedHotpot(wifiAPList);
         		if(wifiAPList.size() != 0){

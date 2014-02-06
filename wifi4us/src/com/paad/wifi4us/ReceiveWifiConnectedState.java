@@ -105,46 +105,41 @@ public class ReceiveWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			try{
-				String timeNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME);
-				String trafficNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
-				time.setText(timeNow);
-				traffic.setText(trafficNow);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			String timeNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME);
+			String trafficNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
+			time.setText(timeNow);
+			traffic.setText(trafficNow);
 		}
 	}
 	
 	
 	public class WifiDisconnectReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-			try{
-				if(!haveBondService)
-					return;
-				//get reward for receiving
-				SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-				if(state.equals(SupplicantState.DISCONNECTED) || state.equals(SupplicantState.INACTIVE)){  
-					c.unregisterReceiver(connectedStateReceiver);
-					c.unregisterReceiver(this);
-					receiveService.timer.cancel();
-					receiveService.WifiDisconnectCompletely();
-					
-	     	   		Constant.FLAG.STATE_RECEIVE = false;
-	     			
-	     			FragmentTransaction transaction = fragmentManager.beginTransaction();
-	     			transaction.remove(currentFragment);
-	     			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
-	     			if(receive_id_start_scan_button == null){
-	     				receive_id_start_scan_button = new ReceiveScanButton();		
-	     				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
-	     			}
-	     			
-	     			transaction.commitAllowingStateLoss();    		
-	    		}  
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			if(!haveBondService)
+				return;
+			//get reward for receiving
+			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+			if(state.equals(SupplicantState.DISCONNECTED) || state.equals(SupplicantState.INACTIVE)){  
+				c.unregisterReceiver(connectedStateReceiver);
+				c.unregisterReceiver(this);
+				receiveService.timer.cancel();
+				receiveService.WifiDisconnectCompletely();
+				
+     	   		Constant.FLAG.STATE_RECEIVE = false;
+     			
+     			FragmentTransaction transaction = fragmentManager.beginTransaction();
+     			transaction.remove(currentFragment);
+     			receive_id_start_scan_button = fragmentManager.findFragmentByTag("receive_id_start_scan_button");
+     			if(receive_id_start_scan_button == null){
+     				receive_id_start_scan_button = new ReceiveScanButton();		
+     				transaction.replace(R.id.receive_container_scan, receive_id_start_scan_button, "receive_id_start_scan_button");
+     			}
+     			
+     			transaction.commitAllowingStateLoss();    		
+    		
+    		}  
+
 		}
 	}
+
 }

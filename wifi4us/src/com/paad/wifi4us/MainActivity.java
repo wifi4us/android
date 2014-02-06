@@ -114,7 +114,6 @@ public class MainActivity extends ActionBarActivity {
         
     	Constant.FLAG.STATE_RECEIVE = false;
 		Constant.PreventAbuse.DOUBLE_START_SEND = false;
-		Constant.PreventAbuse.DOUBLE_STOP_SEND = false;
 
 		fragmentManager = this.getSupportFragmentManager();
 		

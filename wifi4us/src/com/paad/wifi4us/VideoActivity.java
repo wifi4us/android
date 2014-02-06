@@ -210,21 +210,17 @@ public class VideoActivity extends Activity {
     }
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
-			try{
-				if(!haveBondService)
-					return;
-				//get reward for receiving
-				SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-				if(state.equals(SupplicantState.DISCONNECTED) || state.equals(SupplicantState.INACTIVE)){ 
-					Intent i = new Intent();
-					i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
-					sendBroadcast(i);
-					receiveService.WifiDisconnectCompletely();
-					currentActivity.finish();
-					c.unregisterReceiver(this);
-				}
-			}catch(Exception e){
-				e.printStackTrace();
+			if(!haveBondService)
+				return;
+			//get reward for receiving
+			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+			if(state.equals(SupplicantState.DISCONNECTED) || state.equals(SupplicantState.INACTIVE)){ 
+				Intent i = new Intent();
+				i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT); 
+				sendBroadcast(i);
+				receiveService.WifiDisconnectCompletely();
+				currentActivity.finish();
+				c.unregisterReceiver(this);
 			}
 		}
 	}

@@ -54,28 +54,20 @@ public class SendWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			try{
-				String trafficNow = intent.getExtras().getString(Constant.BroadcastSend.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC);
-				traffic.setText(trafficNow);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			String trafficNow = intent.getExtras().getString(Constant.BroadcastSend.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC);
+			traffic.setText(trafficNow);
 		}
 	}
 	
 	private class ConnectedFinishedReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			try{
-				c.unregisterReceiver(this);
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
-				send_id_start_share_button = new SendStartShareButton();
-				send_id_start_share_text = new SendStartShareText();
-				transaction.replace(R.id.send_container, send_id_start_share_button, "send_id_start_share_button");
-				transaction.replace(R.id.send_stateinfo_container, send_id_start_share_text, "send_id_start_share_text");
-				transaction.commitAllowingStateLoss();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			c.unregisterReceiver(this);
+			FragmentTransaction transaction = fragmentManager.beginTransaction();
+			send_id_start_share_button = new SendStartShareButton();
+			send_id_start_share_text = new SendStartShareText();
+			transaction.replace(R.id.send_container, send_id_start_share_button, "send_id_start_share_button");
+			transaction.replace(R.id.send_stateinfo_container, send_id_start_share_text, "send_id_start_share_text");
+			transaction.commitAllowingStateLoss();
 			
 		}
 	}

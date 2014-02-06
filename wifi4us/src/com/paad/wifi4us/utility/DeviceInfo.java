@@ -1,6 +1,8 @@
 package com.paad.wifi4us.utility;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
@@ -18,6 +20,7 @@ public class DeviceInfo {
 
 	private Context context;
 	private TelephonyManager telephonyManager;
+	private ConnectivityManager connectMgr;
 	synchronized public static DeviceInfo getInstance(Context c) {
 		if (instance == null) {
 			instance = new DeviceInfo();
@@ -59,11 +62,14 @@ public class DeviceInfo {
 		}
 	}
 	
+
 	public DeviceInfo() {}
 
 	protected void init(Context c) {
 		context = c;
 		telephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+		connectMgr = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+		 
 	}
 
 }

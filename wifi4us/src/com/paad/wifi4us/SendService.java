@@ -59,10 +59,6 @@ public class SendService extends Service {
     }  
 	
 	public void WifiApOff(){
-		if(Constant.PreventAbuse.DOUBLE_STOP_SEND){
-			return;
-		}
-		Constant.PreventAbuse.DOUBLE_STOP_SEND = true;
 		Runnable myRunnable = new Runnable(){
 			public void run(){
 				while(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_ENABLING){
@@ -104,8 +100,6 @@ public class SendService extends Service {
 					sendApShutFailBroadcast();
 				}
 				
-				Constant.PreventAbuse.DOUBLE_STOP_SEND = false;
-
 			 
 			}
 		};

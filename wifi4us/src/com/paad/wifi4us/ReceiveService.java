@@ -112,6 +112,9 @@ public class ReceiveService extends Service {
 	public ArrayList<String> getWifiScanResult(){
 		wifiApList.clear();
 		List<ScanResult> scanResultList = myWifiManager.getWifiManager().getScanResults();
+		if(scanResultList == null){
+			return null;
+		}
 		if(scanResultList.size() > 0){
 	        for (int i =0; i < scanResultList.size(); i++) {  
 	        	wifiApList.add(scanResultList.get(i).SSID);       
@@ -313,7 +316,9 @@ public class ReceiveService extends Service {
 		String userid = sharedPreference.getString("USER_ID");
 		
 		adList = RemoteInfoFetcher.fetchAdList(userid, make, model, resolution, carrier, androidversion);
-
+		if(adList == null){
+			return false;
+		}
 
 		for(AdContent adcontent:adList){
 			String adDir = getApplicationContext().getCacheDir().toString() + "/ad_" + adcontent.adid + ".3gp";
