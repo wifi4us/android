@@ -7,6 +7,8 @@ import android.content.SharedPreferences.Editor;
 public class SharedPreferenceHelper {
 	private SharedPreferences reader;
 	private Editor writer;
+	
+	public static final String NULL = "NULL";
 
 	public SharedPreferenceHelper(Context context){
 		reader = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE); 
@@ -23,7 +25,7 @@ public class SharedPreferenceHelper {
 	}
 	
 	public String getString(String key){
-		return reader.getString(key, "NULL");
+		return reader.getString(key, SharedPreferenceHelper.NULL);
 	}
 	
 	public void putString(String key, String value){

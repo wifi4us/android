@@ -216,7 +216,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				e.printStackTrace();
 			}
 			break;
-
 		case R.id.btn_agreement:
 			try {
 				showWebViewDialog("agreement.html");
@@ -242,8 +241,10 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.btn_Set_Discuss:
 			MainActivity.startShare(getActivity());
+			break;
 		case R.id.btn_check_update:
 			startUpdate();
+			break;
 		default:
 			break;
 		}

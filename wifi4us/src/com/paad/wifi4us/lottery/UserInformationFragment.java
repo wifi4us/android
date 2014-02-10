@@ -33,24 +33,24 @@ public class UserInformationFragment extends Fragment{
 				.getApplicationContext());
 		String phoneValue = sharedPreference.getString(Constant.HttpParas.PHONE);
 		phone = (EditText)rst.findViewById(R.id.lottery_pref_phone);
-		if(phoneValue != null){
+		if(!phoneValue.equals(SharedPreferenceHelper.NULL)){
 			phone.setText(phoneValue);
 		}
 		String alipayValue = sharedPreference.getString(Constant.HttpParas.ALIPAY_ID);
 		alipay = (EditText)rst.findViewById(R.id.lottery_pref_alipay);
-		if(alipayValue != null){
+		if(!alipayValue.equals(SharedPreferenceHelper.NULL)){
 			alipay.setText(alipayValue);
 		}
 		
 		String nameValue = sharedPreference.getString(Constant.HttpParas.NAME);
 		name = (EditText)rst.findViewById(R.id.lottery_pref_username);
-		if(nameValue != null){
+		if(!nameValue.equals(SharedPreferenceHelper.NULL)){
 			name.setText(nameValue);
 		}
 		
 		String idValue = sharedPreference.getString(Constant.HttpParas.ID_NUM);
 		id = (EditText)rst.findViewById(R.id.lottery_pref_id);
-		if(idValue != null){
+		if(!idValue.equals(SharedPreferenceHelper.NULL)){
 			id.setText(idValue);
 		}
 		return rst;

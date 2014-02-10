@@ -50,7 +50,7 @@
     <string name="webview_back">返回</string>
     <string name="title_activity_settings">应用设置</string>
     <string name="title_activity_feedback">意见反馈</string>
-    <string name="exchange">兑换</string>
+    <string name="exchange">积分换彩票</string>
 
     <string name="main_activity_tabwidget_sendtext">分享</string>
 	<string name="main_activity_tabwidget_receivetext">使用</string>

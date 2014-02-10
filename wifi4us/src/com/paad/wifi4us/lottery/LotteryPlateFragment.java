@@ -9,6 +9,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -86,16 +87,6 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 		activity = (LotteryActivity)getActivity();
 		super.onCreate(savedInstanceState);
 	}
-
-
-
-	public void onResume(){
-		super.onResume();
-    	if(!checkUserInfo()){
-    		Toast.makeText(getActivity(), "请先完善用户信息", Toast.LENGTH_LONG).show();
-    		activity.switchTo(2);
-    	}
-    }
 	
 	@Override
 	public void onStop() {
@@ -191,6 +182,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
         confirmButton.setOnClickListener(this);
         refreshTextView();
+        tv.setText("由xxx公司提供下载链接xxx");
         return result;
 
     }
@@ -223,9 +215,12 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 tv.setText("已购买" + caipiaoCnt + "注，需"+ caipiaoCnt
                         * creditPerCaipiao + "积分");
                 confirmButton.setClickable(true);
+                confirmButton.setBackgroundColor(Color.parseColor("#66B3FF"));
             } else {
                 tv.setText("选择至少6个红球和一个篮球");
                 confirmButton.setClickable(false);
+                confirmButton.setBackgroundColor(Color.LTGRAY);
+
             }
         }
     }
@@ -263,7 +258,11 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 
     @Override
     public void onClick(View arg0) {
-    	
+    	if(!checkUserInfo()){
+    		Toast.makeText(getActivity(), "请先完善用户信息", Toast.LENGTH_LONG).show();
+    		activity.switchTo(2);
+    		return;
+    	}
         AlertDialog.Builder builder = new Builder(getActivity());
         builder.setMessage(buildConfirmInfo());
         builder.setTitle("购买确认");
