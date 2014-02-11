@@ -5,9 +5,8 @@
     android:orientation="vertical" > 
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0.0dip"
-        android:layout_weight="1.0"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:clipToPadding="true"
         android:paddingBottom="10.0dip"
         android:paddingLeft="15.0dip"
@@ -63,30 +62,13 @@
             	</LinearLayout>
 			</LinearLayout>
 			
-            <RelativeLayout
-                android:id="@+id/btn_verison"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10.0dip"
-                android:background="@drawable/selector_list_item_top"
-                android:clickable="true" >
-
-                <TextView
-                    android:id="@+id/text_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10.0dip"
-                    android:text="@string/version"
-                    android:textColor="#ff323232"
-                    android:textSize="18.0sp" />
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/btn_exchange"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_center"
+				android:layout_marginTop="10.0dip"
+                android:background="@drawable/selector_list_item_top"
                 android:clickable="true" >
 
                 <TextView
@@ -239,12 +221,30 @@
                     android:src="@drawable/ic_more" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/btn_check_update"
+			<RelativeLayout
+                android:id="@+id/btn_verison"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10.0dip"
                 android:background="@drawable/selector_list_item_top"
+                android:clickable="true" >
+
+                <TextView
+                    android:id="@+id/text_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/version"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:id="@+id/btn_check_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_list_item_center"
                 android:clickable="true" >
 
                 <TextView
