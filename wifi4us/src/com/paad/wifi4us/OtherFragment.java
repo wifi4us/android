@@ -9,6 +9,9 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -153,8 +156,22 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		view_res.findViewById(R.id.btn_settings).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_agreement).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_exchange).setOnClickListener(this);
+		((TextView)view_res.findViewById(R.id.text_version)).setText(getResources().getString(R.string.version)+"  "+getAppVersion(getActivity()));
 
 		return view_res;
+	}
+	
+	protected String getAppVersion(Context context){
+		PackageManager packageManager = context.getPackageManager(); 
+		PackageInfo packageInfo;
+		try {
+			packageInfo = packageManager.getPackageInfo("com.paad.wifi4us", 0);
+			return packageInfo.versionName;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+			return "";
+		} 
+		 
 	}
 
 	protected void showWebViewDialog(String filename) {
@@ -185,13 +202,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	boolean initShare = false;
 
-	boolean initUpdate = false;
-
 	public void startUpdate() {
-		if (!initUpdate) {
-			UmengUpdateAgent.update(context);
-			initUpdate = true;
-		}
 		UmengUpdateAgent.forceUpdate(context);
 	}
 
@@ -240,7 +251,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			startActivity(new Intent(getActivity(), SettingsActivity.class));
 			break;
 		case R.id.btn_Set_Discuss:
-			MainActivity.startShare(getActivity());
+			((MainActivity)getActivity()).startShare(getActivity());
 			break;
 		case R.id.btn_check_update:
 			startUpdate();

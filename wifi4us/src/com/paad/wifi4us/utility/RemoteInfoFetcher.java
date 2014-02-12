@@ -23,6 +23,14 @@ public class RemoteInfoFetcher {
 		return histories;
 	}
 	
+	public static boolean addUserCredit(String imei,String userid,Integer type, Long duriation, Long traffic){
+		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildAddCreditUrl(imei, userid, type, duriation, traffic));
+		if(mapInArr == null){
+			return false;
+		}
+		return true;
+	}
+	
 	public static Integer fetchLotteryCredit(){
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildLotteryCreditUrl());
 		if(mapInArr == null){

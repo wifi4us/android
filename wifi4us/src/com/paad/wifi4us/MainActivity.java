@@ -29,7 +29,10 @@ import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
 import com.baidu.frontia.api.FrontiaSocialShareListener;
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.DeviceInfo;
+import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends ActionBarActivity {
 	private FragmentManager fragmentManager;
@@ -183,6 +186,8 @@ public class MainActivity extends ActionBarActivity {
 			}
     		
     	});
+    	UmengUpdateAgent.setUpdateOnlyWifi(false);
+    	UmengUpdateAgent.update(this);
     }
 	
 	public void onDestroy(){
@@ -387,10 +392,10 @@ public class MainActivity extends ActionBarActivity {
     	other = fragmentManager.findFragmentById(R.id.other);
     }
     
-    static boolean initShare = false;
-    static FrontiaSocialShareContent mImageContent;
-    static FrontiaSocialShare mSocialShare;
-	public static void startShare(Context context) {
+	boolean initShare = false;
+	FrontiaSocialShareContent mImageContent;
+	FrontiaSocialShare mSocialShare;
+	public void startShare(final Context context) {
 		if (!initShare) {
 			mImageContent = new FrontiaSocialShareContent();
 			boolean isInit = Frontia.init(
@@ -430,6 +435,7 @@ public class MainActivity extends ActionBarActivity {
 					public void onSuccess() {
 						// TODO Auto-generated method stub
 						Log.d("Test", "share success");
+						RemoteInfoFetcher.addUserCredit(DeviceInfo.getInstance(context).getIMEI(), sharedPreference.getString("USER_ID"), 1, 0l, 0l);
 					}
 
 				}, true);

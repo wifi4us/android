@@ -27,6 +27,8 @@ public class Constant {
 		public static String MODEL = "model";
 		public static String RESOLUTION = "resolution";
 		public static String CARRIER = "carrier";
+		public static String DURATION = "duration";
+		public static String TRAFFIC = "traffic";
 		public static String ANDROIDVER = "androidversion";
 
 	}
@@ -72,6 +74,7 @@ public class Constant {
         public static final String LOTTERY_HISTORY_HTTPURL = "http://wifi4us.duapp.com/get_lottery_info.php";
         public static final String CREDIT_PER_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/get_credit_mechanism.php";
         public static final String EXCHANGE_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/reduce.php";
+        public static final String ADD_CREDIT_HTTPURL = "http://wifi4us.duapp.com/add.php";
     	public static final int WIFICONNECT_TRIALS = 10;
     }
     

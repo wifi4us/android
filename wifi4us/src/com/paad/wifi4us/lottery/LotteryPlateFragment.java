@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.paad.wifi4us.LotteryActivity;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 /**
@@ -46,7 +48,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 	
 	long caipiaoCnt = -1;
 	
-	long creditPerCaipiao = 2;
+	Integer creditPerCaipiao;
 	
     int numRedBall = 33;
 
@@ -67,6 +69,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     boolean[] redStatus = new boolean[numRedBall];
     
     Button confirmButton;
+    
+    static final String htmlStr = "<br><small><font size=\"1\" color=\"#ff3030\">(早九点至晚八点出票)<font></small>";
 	
     SharedPreferenceHelper sharedPreference;
     
@@ -181,13 +185,12 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 .findViewById(R.id.dlt_blue),R.layout.checkbox_blueball,blueballListener,numBlueBall, blueStatus);
         confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
         confirmButton.setOnClickListener(this);
+        creditPerCaipiao = RemoteInfoFetcher.fetchLotteryCredit();
         refreshTextView();
-        tv.setText("由xxx公司提供下载链接xxx");
         return result;
 
     }
-
-
+    
     protected void updatePrice() {
         if (checkedRedBalls >= 6 && checkedBlueBalls >= 1) {
             caipiaoCnt = cxy(checkedBlueBalls, 1) * cxy(checkedRedBalls, 6);
@@ -209,21 +212,36 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         return num;
     }
 
-    protected void refreshTextView() {
-        if (tv != null) {
-            if (caipiaoCnt > 0) {
-                tv.setText("已购买" + caipiaoCnt + "注，需"+ caipiaoCnt
-                        * creditPerCaipiao + "积分");
-                confirmButton.setClickable(true);
-                confirmButton.setBackgroundColor(Color.parseColor("#66B3FF"));
-            } else {
-                tv.setText("选择至少6个红球和一个篮球");
-                confirmButton.setClickable(false);
-                confirmButton.setBackgroundColor(Color.LTGRAY);
+	protected void refreshTextView() {
+		if (tv != null) {
 
-            }
-        }
-    }
+			if (checkedBlueBalls == 0 && checkedRedBalls == 0) {
+				if (creditPerCaipiao == null) {
+					tv.setText(Html.fromHtml("无法获取每注彩票所需积分"+htmlStr));
+					return;
+				}
+				tv.setText(Html.fromHtml("每注" + creditPerCaipiao + "积分"
+						+ htmlStr));
+				return;
+			}
+			if (caipiaoCnt > 0) {
+				if (creditPerCaipiao == null) {
+					tv.setText(Html.fromHtml("无法获取每注彩票所需积分"+htmlStr));
+				} else {
+					tv.setText(Html.fromHtml("已购买" + caipiaoCnt + "注，需"
+							+ caipiaoCnt * creditPerCaipiao + "积分" + htmlStr));
+				}
+				confirmButton.setClickable(true);
+				confirmButton.setBackgroundColor(Color.parseColor("#66B3FF"));
+			} else {
+				tv.setText(Html.fromHtml("选择至少6个红球和一个篮球" + htmlStr));
+				confirmButton.setClickable(false);
+				confirmButton.setBackgroundColor(Color.LTGRAY);
+
+			}
+
+		}
+	}
 
     String buildConfirmInfo() {
         StringBuilder sb = new StringBuilder();
@@ -241,8 +259,12 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 sb.append(" ");
             }
         }
-        sb.append("\n共" + caipiaoCnt + "注, 需要" + caipiaoCnt * creditPerCaipiao
+		if (creditPerCaipiao == null) {
+			sb.append("\n无法获取每注彩票所需积分");
+		} else {
+			sb.append("\n共" + caipiaoCnt + "注, 需要" + caipiaoCnt * creditPerCaipiao
                 + "积分");
+		}
         return sb.toString();
     }
     
