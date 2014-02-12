@@ -9,7 +9,25 @@ import com.paad.wifi4us.utility.data.AdContent;
 import com.paad.wifi4us.utility.data.LotteryHistory;
 
 public class RemoteInfoFetcher {
+	
+	private final static boolean debug = true;
 	public static List<LotteryHistory> fetchLotteryHistories(String imei, String userid){
+		if(debug){
+			List<LotteryHistory> histories = new ArrayList<LotteryHistory>();
+			LotteryHistory history = new LotteryHistory();
+			history.periodNumber = "20131201";
+			history.ticketId = "ticketid_123";
+			history.tradeId = "tradeid_123";
+			history.state = 0;
+			histories.add(history);
+			history = new LotteryHistory();
+			history.periodNumber = "20131222";
+			history.ticketId = "ticketid_333";
+			history.tradeId = "tradeid_333";
+			history.state = 2;
+			histories.add(history);
+			return histories;
+		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildLotteryHistoryUrl(imei, userid));
 		if(mapInArr == null){
 			return null;
@@ -24,6 +42,9 @@ public class RemoteInfoFetcher {
 	}
 	
 	public static boolean addUserCredit(String imei,String userid,Integer type, Long duriation, Long traffic){
+		if(debug){
+			return true;
+		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildAddCreditUrl(imei, userid, type, duriation, traffic));
 		if(mapInArr == null){
 			return false;
@@ -32,6 +53,9 @@ public class RemoteInfoFetcher {
 	}
 	
 	public static Integer fetchLotteryCredit(){
+		if(debug){
+			return 5;
+		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildLotteryCreditUrl());
 		if(mapInArr == null){
 			return null;
@@ -43,6 +67,9 @@ public class RemoteInfoFetcher {
 	public static Integer buyTicket(String imei, String userid,
 			String phone, String idNum, String name, String alipayId,
 			String type, String program, int notes){
+		if(debug){
+			return 0;
+		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildExchangeLotteryUrl(imei, userid, phone, idNum, name, alipayId, type, program, notes));
 		if(mapInArr == null){
 			return null;
