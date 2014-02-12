@@ -18,12 +18,14 @@ public class RemoteInfoFetcher {
 			history.periodNumber = "20131201";
 			history.ticketId = "ticketid_123";
 			history.tradeId = "tradeid_123";
+			history.program = "01,02,03,05,22,25,29,31|21,30";
 			history.state = 0;
 			histories.add(history);
 			history = new LotteryHistory();
 			history.periodNumber = "20131222";
 			history.ticketId = "ticketid_333";
 			history.tradeId = "tradeid_333";
+			history.program = "20,22,23,25,27,28,24,31|07";
 			history.state = 2;
 			histories.add(history);
 			return histories;

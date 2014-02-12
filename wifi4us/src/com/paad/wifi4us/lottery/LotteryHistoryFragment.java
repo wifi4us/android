@@ -38,9 +38,9 @@ public class LotteryHistoryFragment extends Fragment {
 
 	List<LotteryHistory> histories = new ArrayList<LotteryHistory>();
 	String[] groupkeys = new String[]{"ticket_id","state"};
-	String[] childkeys = new String[]{"program", "period", "trade_id"};
+	String[] childkeys = new String[]{"period", "trade_id", "program"};
 	int[] groupViews = new int[]{R.id.lottery_history_ticket_id, R.id.lottery_history_state};
-	int[] childViews = new int[]{R.id.lottery_history_program, R.id.lottery_history_period, R.id.lottery_history_trade_id};
+	int[] childViews = new int[]{R.id.lottery_history_period, R.id.lottery_history_trade_id, R.id.lottery_history_program};
 	
 	Handler handler;
     @Override
@@ -50,19 +50,16 @@ public class LotteryHistoryFragment extends Fragment {
     	sharedPreference = new SharedPreferenceHelper(getActivity());
 
     	refreshHistories();
-    	LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
-    			LayoutParams.WRAP_CONTENT);
-    	Button footer = new Button(this.getActivity());
-    	footer.setOnClickListener(new OnClickListener() {
+    	Button header = new Button(this.getActivity());
+    	header.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
 				refreshHistories();				
 			}
 		});
-    	//footer.setLayoutParams(lp);
-    	footer.setText(getResources().getString(R.string.lottery_more));
-    	lv.addFooterView(footer);
+    	header.setText(getResources().getString(R.string.lottery_more));
+    	lv.addHeaderView(header);
     	handler = new Handler();
     	return lv;
     }
@@ -107,14 +104,14 @@ public class LotteryHistoryFragment extends Fragment {
     public Map<String, String> buildGroupMap(LotteryHistory history){
     	Map<String, String> map = new HashMap<String, String>();
     	map.put(groupkeys[0], getResources().getString(R.string.lottery_info_ticket_id)+":"+history.ticketId);
-    	map.put(groupkeys[1], getResources().getString(R.string.lottery_info_state)+":"+ getStateString(history.state));
+    	map.put(groupkeys[1], getStateString(history.state));
     	return map;
     }
     public Map<String, String> buildChildMap(LotteryHistory history){
     	Map<String, String> map = new HashMap<String, String>();
-    	map.put(childkeys[0], getResources().getString(R.string.lottery_info_program)+":"+buildProgramString(history.program));
-    	map.put(childkeys[1], getResources().getString(R.string.lottery_info_period)+":"+history.periodNumber+"");
-    	map.put(childkeys[2], getResources().getString(R.string.lottery_info_trade_id)+":"+history.tradeId);
+    	map.put(childkeys[2], getResources().getString(R.string.lottery_info_program)+":"+buildProgramString(history.program));
+    	map.put(childkeys[0], getResources().getString(R.string.lottery_info_period)+":"+history.periodNumber+"");
+    	map.put(childkeys[1], getResources().getString(R.string.lottery_info_trade_id)+":"+history.tradeId);
     	return map;
     }
     
