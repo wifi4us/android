@@ -145,6 +145,7 @@ public class ReceiveScanResultList extends ListFragment{
 			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
 			if(State.DISCONNECTED == state){
+
 				context.registerReceiver(connectFailReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_INTERRUPT));
 				context.registerReceiver(clickConnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 				context.registerReceiver(conmunicationReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP));
@@ -191,7 +192,6 @@ public class ReceiveScanResultList extends ListFragment{
     			c.unregisterReceiver(this);
     			return;
     		}
-    		
     		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
       		if(state.equals("ok")){
           		c.unregisterReceiver(this);
@@ -208,12 +208,21 @@ public class ReceiveScanResultList extends ListFragment{
     			}
     		}else{
     			if(state.equals("wifi连接超时")){
-    				c.unregisterReceiver(clickConnectReceiver);
-    				c.unregisterReceiver(connectFailReceiver);
+    				try{
+    					c.unregisterReceiver(clickConnectReceiver);
+    				}catch(Exception e){
+    					e.printStackTrace();
+    				}
+    				try{
+    					c.unregisterReceiver(connectFailReceiver);
+    				}catch(Exception e){
+    					e.printStackTrace();
+    				}
     			}
     			ProgressbarToFail(state);
           		c.unregisterReceiver(this);
     		}
+    		
 
 		}   		
 	}
@@ -221,6 +230,18 @@ public class ReceiveScanResultList extends ListFragment{
 	public class ConnectFailReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
 			ProgressbarToFail("连接过程被打断，网络连接失败");
+			
+			try{
+				c.unregisterReceiver(clickConnectReceiver);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				c.unregisterReceiver(conmunicationReceiver);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+
 			c.unregisterReceiver(this);
 		}
 	}

@@ -7,12 +7,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
@@ -59,6 +62,7 @@ public class SendService extends Service {
     }  
 	
 	public void WifiApOff(){
+		stopForeground();
 		Runnable myRunnable = new Runnable(){
 			public void run(){
 				while(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_ENABLING){
@@ -109,7 +113,8 @@ public class SendService extends Service {
 	
 	
 	
-	public void WifiApOn(){			 
+	public void WifiApOn(){		
+		startForeground();
 		randomString = PasswdUtil.getRandomPasswd();
 		myWifiManager.getWifiManager().setWifiEnabled(false); 
 		Runnable myRunnable = new Runnable(){
@@ -339,4 +344,28 @@ public class SendService extends Service {
 	 	private String generatePasswd(){
 	 		return randomString + "1";
 	 	}
+
+		private void startForeground(){
+			   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+			   
+			   mBuilder.setSmallIcon(R.drawable.ic_launcher);
+			   mBuilder.setContentTitle("正在使用一起wifi的服务");
+			   mBuilder.setContentText("使用结束后我会在通知栏消失哦~~");
+			   mBuilder.setTicker("正在使用一起wifi的服务");//第一次提示消息的时候显示在通知栏上
+			   mBuilder.setNumber(12);
+			   //构建一个Intent
+			   Intent resultIntent = new Intent(this, MainActivity.class);
+			   resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			   //封装一个Intent
+			   PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			   // 设置通知主题的意图
+			   mBuilder.setContentIntent(resultPendingIntent);
+			   final Notification notification = mBuilder.build();
+			   startForeground(1, notification);
+		}
+
+
+		private void stopForeground(){
+			stopForeground(true);
+		}
 }
