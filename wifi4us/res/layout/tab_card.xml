@@ -5,7 +5,7 @@ android:layout_height="match_parent"
 android:layout_weight="1"
 android:orientation="vertical"
 android:gravity="center_horizontal"
-android:background="#999999"
+android:background="@drawable/selector_tab_backgroud"
 android:padding="5dp">
 
 <ImageView android:id="@+id/tabimage"
@@ -17,6 +17,7 @@ android:layout_weight="3"
 
 <TextView android:id="@+id/tabtitle"
 android:layout_width="wrap_content"
+android:textColor="#000000"
 style="?android:attr/tabWidgetStyle"
 android:layout_height="0dip"
 android:layout_weight="1" 

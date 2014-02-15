@@ -4,6 +4,8 @@
     <string name="startservice">share 15 mins and 3M</string>
     <string name="hello">hello world</string>
     <string name="send">send</string>
+    <string name="sponsor_url">www.baidu.com</string>
+    <string name="sponsor_description">彩票购买部分由xxx提供</string>
     
     <string name="receive_string_switcher_text_on">Wifi已打开</string>
     <string name="receive_string_switcher_text_off">Wifi已关闭</string>
@@ -28,6 +30,8 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="text_versioin">版本</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="binary_code">二维码</string>
     <string name="help">帮助</string>
     <string name="check_update">检查更新</string>
     <string name="feedback">反馈</string>
@@ -64,6 +68,7 @@
 	<string name="lottery_info_program">方案</string>
 	<string name="lottery_info_state">状态</string>
 	<string name="lottery_info_trade_id">交易号</string>
+	<string name="no_history">无彩票记录</string>
 	<string name="redball">红球</string>
 	<string name="blueball">蓝球</string>
 	<string name="lottery_state_0">申购成功</string>

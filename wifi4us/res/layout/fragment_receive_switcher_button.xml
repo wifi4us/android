@@ -6,11 +6,5 @@
 	<Button 
 		android:id="@+id/receivie_button_wifi_switcher"
     	android:text="@string/receive_string_switcher_button"
-    	android:layout_width="match_parent"
-  		android:layout_height="wrap_content"
-		android:layout_marginLeft="5dp"  
-		android:layout_marginRight="5dp"  
-		android:layout_marginBottom="2dp"
-		android:layout_marginTop="2dp"
-		android:background="@drawable/button_shape"/>
+		style="@style/button"/>
 </LinearLayout>

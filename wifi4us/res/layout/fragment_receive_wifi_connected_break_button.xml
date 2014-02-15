@@ -3,16 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-		<Button android:layout_width="match_parent"   
-			android:layout_height="match_parent"
-			android:gravity="center|center_horizontal" 
-			android:layout_marginLeft="50dp"  
-			android:layout_marginRight="50dp"  
-			android:layout_marginBottom="20dp"
-			android:layout_marginTop="20dp"
+		<Button android:gravity="center|center_horizontal" 
+			style="@style/button"
 			android:text="@string/receive_string_disconnect_wifi"
-			android:id="@+id/receive_button_disconnect_wifi"
-            android:background="@drawable/button_shape">  
+			android:id="@+id/receive_button_disconnect_wifi">  
 		</Button>  
 
 </LinearLayout>

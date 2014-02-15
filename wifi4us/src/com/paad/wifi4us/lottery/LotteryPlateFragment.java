@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -186,6 +188,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
         confirmButton.setOnClickListener(this);
         creditPerCaipiao = RemoteInfoFetcher.fetchLotteryCredit();
+        TextView sponsorLink = (TextView)result.findViewById(R.id.sponsor_link);
+        sponsorLink.setMovementMethod(LinkMovementMethod.getInstance());
         refreshTextView();
         return result;
 

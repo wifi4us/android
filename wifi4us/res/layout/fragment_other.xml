@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+	style="@style/topView"
     android:orientation="vertical" > 
 
     <ScrollView
@@ -65,10 +66,8 @@
 
             <RelativeLayout
                 android:id="@+id/btn_exchange"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
 				android:layout_marginTop="10.0dip"
-                android:background="@drawable/selector_list_item_top"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -91,9 +90,7 @@
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/btn_Set_Score"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_center"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -117,9 +114,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_Set_Discuss"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_bottom"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -143,10 +138,8 @@
 
             <RelativeLayout
                 android:id="@+id/btn_settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+				style="@style/otherElement"
                 android:layout_marginTop="10.0dip"
-                android:background="@drawable/selector_list_item_top"
                 android:clickable="true"
                 android:visibility="visible" >
 
@@ -171,9 +164,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_agreement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_center"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -197,9 +188,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_help"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_bottom"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -223,10 +212,8 @@
 
 			<RelativeLayout
                 android:id="@+id/btn_verison"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+				style="@style/otherElement"
                 android:layout_marginTop="10.0dip"
-                android:background="@drawable/selector_list_item_top"
                 android:clickable="true" >
 
                 <TextView
@@ -242,9 +229,7 @@
             
             <RelativeLayout
                 android:id="@+id/btn_check_update"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_center"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -265,12 +250,57 @@
                     android:contentDescription="@null"
                     android:src="@drawable/ic_more" />
             </RelativeLayout>
+            
+			<RelativeLayout
+                android:id="@+id/btn_clear_cache"
+				style="@style/otherElement"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/clear_cache"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
+			<RelativeLayout
+                android:id="@+id/btn_binary_code"
+				style="@style/otherElement"
+                android:clickable="true" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10.0dip"
+                    android:text="@string/binary_code"
+                    android:textColor="#ff323232"
+                    android:textSize="18.0sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16.0dip"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_more" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/btn_feed_back"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_center"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -294,9 +324,7 @@
 
             <RelativeLayout
                 android:id="@+id/btn_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selector_list_item_bottom"
+				style="@style/otherElement"
                 android:clickable="true" >
 
                 <TextView
@@ -320,10 +348,8 @@
 
             <RelativeLayout
                 android:id="@+id/btn_quit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+				style="@style/otherElement"
                 android:layout_marginTop="10.0dip"
-                android:background="@drawable/selector_list_item_alone"
                 android:clickable="true" >
 
                 <TextView

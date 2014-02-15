@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -178,6 +179,9 @@ public class MainActivity extends ActionBarActivity {
     	addTab("send", getString(R.string.main_activity_tabwidget_sendtext),  R.drawable.tab_share_selector, R.id.send, tabHost);
     	addTab("other", getString(R.string.main_activity_tabwidget_othertext),  R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
+    	for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.WHITE);
+    	}
     	Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(){
 
 			@Override

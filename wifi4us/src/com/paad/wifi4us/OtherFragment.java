@@ -1,5 +1,6 @@
 package com.paad.wifi4us;
 
+import java.io.File;
 import java.io.InputStream;
 
 import org.apache.http.util.EncodingUtils;
@@ -8,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baidu.frontia.api.FrontiaSocialShare;
@@ -156,6 +159,8 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		view_res.findViewById(R.id.btn_settings).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_agreement).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_exchange).setOnClickListener(this);
+		view_res.findViewById(R.id.btn_clear_cache).setOnClickListener(this);
+		view_res.findViewById(R.id.btn_binary_code).setOnClickListener(this);
 		((TextView)view_res.findViewById(R.id.text_version)).setText(getResources().getString(R.string.version)+"  "+getAppVersion(getActivity()));
 
 		return view_res;
@@ -234,6 +239,49 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				e.printStackTrace();
 			}
 			break;
+		case R.id.btn_binary_code:
+			ImageView iv = new ImageView(context);
+			iv.setImageResource(R.drawable.logo);
+			new Builder(getActivity())
+					.setTitle("二维码")
+					.setIcon(R.drawable.logo)
+					.setIcon(android.R.drawable.ic_dialog_info)
+					.setPositiveButton("确认",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+								}
+							}).setView(iv).create().show();
+			break;
+		case R.id.btn_clear_cache:
+			try {
+				new Builder(getActivity())
+						.setMessage("确认清空缓存" + context.getCacheDir() + "?")
+						.setTitle("缓存确认")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setPositiveButton("清空",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.dismiss();
+										clearCache();
+									}
+								})
+						.setNegativeButton("取消",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.dismiss();
+									}
+								}).create().show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
 		case R.id.btn_exchange:
 			try {
 				startActivity(new Intent(getActivity(), LotteryActivity.class));
@@ -260,6 +308,31 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			break;
 		}
 
+	}
+
+	private void clearCache() {
+		// TODO Auto-generated method stub
+		long clear = 0;
+		long all = 0;
+		File directory = context.getCacheDir();
+        if (directory != null && directory.exists() && directory.isDirectory()) {
+            for (File item : directory.listFiles()) {
+            	long length = item.length();
+            	all+=length;
+                if(item.delete()){
+                	clear+=length;
+                }
+            }
+        }
+        new Builder(getActivity()).setMessage("清除完毕")
+				.setTitle("共" + all + "字节，" + "成功清除" + clear + "字节")
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				}).create().show();
 	}
 
 	/*

@@ -15,11 +15,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.TextView;
 
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.DeviceInfo;
@@ -41,14 +41,15 @@ public class LotteryHistoryFragment extends Fragment {
 	String[] childkeys = new String[]{"period", "trade_id", "program"};
 	int[] groupViews = new int[]{R.id.lottery_history_ticket_id, R.id.lottery_history_state};
 	int[] childViews = new int[]{R.id.lottery_history_period, R.id.lottery_history_trade_id, R.id.lottery_history_program};
-	
+	TextView textView;
 	Handler handler;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-    	lv = (ExpandableListView)inflater.inflate(R.layout.fragment_lottery_history, container, false);
+    	View view = inflater.inflate(R.layout.fragment_lottery_history, container, false);
     	sharedPreference = new SharedPreferenceHelper(getActivity());
-
+    	lv = (ExpandableListView)view.findViewById(R.id.lottery_history_listview);
+    	textView = (TextView)view.findViewById(R.id.lottery_history_textview);
     	refreshHistories();
     	Button header = new Button(this.getActivity());
     	header.setOnClickListener(new OnClickListener() {
@@ -61,7 +62,7 @@ public class LotteryHistoryFragment extends Fragment {
     	header.setText(getResources().getString(R.string.lottery_more));
     	lv.addHeaderView(header);
     	handler = new Handler();
-    	return lv;
+    	return view;
     }
     
     void refreshHistories(){
@@ -69,7 +70,7 @@ public class LotteryHistoryFragment extends Fragment {
 
 			@Override
 			public void run() {
-				List<LotteryHistory> rst = RemoteInfoFetcher.fetchLotteryHistories(DeviceInfo.getInstance(getActivity()).getIMEI(), sharedPreference.getString("USER_ID"));
+				List<LotteryHistory> rst = null;//RemoteInfoFetcher.fetchLotteryHistories(DeviceInfo.getInstance(getActivity()).getIMEI(), sharedPreference.getString("USER_ID"));
 				
 				if(rst!=null){
 					histories = rst;
@@ -86,6 +87,7 @@ public class LotteryHistoryFragment extends Fragment {
     	}).start();;
     }
     public void updateView(){
+    	textView.setVisibility(View.GONE);
     	List<Map<String,String>> groupData = new ArrayList<Map<String,String>>();
     	List<List<Map<String,String>>> childData = new ArrayList<List<Map<String,String>>>();
     	for(LotteryHistory history:histories){

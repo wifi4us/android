@@ -42,13 +42,48 @@
         <LinearLayout
             android:id="@+id/dlt_blue"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="10dip"
             android:layout_marginRight="10dip"
-            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical" >
+        </LinearLayout><LinearLayout
+            android:id="@+id/sponsor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sponsor_logo" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="@string/sponsor_description" />
+
+                <TextView
+                    android:id="@+id/sponsor_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/sponsor_description"
+                    android:autoLink="all"
+                    android:textSize="15sp"
+                    android:text="@string/sponsor_url" />
+            </LinearLayout>
         </LinearLayout>
 
         <Button
