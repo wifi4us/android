@@ -134,7 +134,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		view_res.findViewById(R.id.btn_feed_back).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_help).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_Set_Discuss).setOnClickListener(this);
-		view_res.findViewById(R.id.btn_Set_Score).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_settings).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_agreement).setOnClickListener(this);
 		view_res.findViewById(R.id.btn_exchange).setOnClickListener(this);

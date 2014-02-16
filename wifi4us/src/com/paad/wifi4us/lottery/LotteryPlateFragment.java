@@ -5,7 +5,7 @@ package com.paad.wifi4us.lottery;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
@@ -14,6 +14,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
@@ -30,7 +32,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.paad.wifi4us.LotteryActivity;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
@@ -189,7 +190,30 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 .findViewById(R.id.dlt_blue),R.layout.checkbox_blueball,blueballListener,numBlueBall, blueStatus);
         confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
         confirmButton.setOnClickListener(this);
-        creditPerCaipiao = RemoteInfoFetcher.fetchLotteryCredit();
+        final Handler handler = new Handler(){
+        	
+        	@Override
+        	public void handleMessage(Message msg) {
+        		refreshTextView();
+        		super.handleMessage(msg);
+        	}
+        	
+        };
+        new AsyncTask<Object, Object, Object>(){
+
+			@SuppressLint("HandlerLeak")
+			@Override
+			protected Object doInBackground(Object... arg0) {
+				try{
+				creditPerCaipiao = RemoteInfoFetcher.fetchLotteryCredit();
+				handler.obtainMessage().sendToTarget();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				return null;
+			}
+        	
+        }.execute(new Object[]{new Object()});
 		TextView sponsorLink = (TextView) result
 				.findViewById(R.id.sponsor_link);
 		sponsorLink.setText(Html.fromHtml("<a href='"
@@ -290,6 +314,9 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < redTbs.size(); ++i) {
             if (redTbs.get(i).isChecked()) {
+            	if(i+1<=9){
+            		sb.append(0);
+            	}
                 sb.append(i + 1);
                 sb.append(",");
             }
@@ -329,14 +356,14 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         builder.setPositiveButton("购买", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
 				final DeviceInfo di = DeviceInfo.getInstance(activity);
 				final SharedPreferenceHelper sph = new SharedPreferenceHelper(
 						activity);
-				new AsyncTask<Object, String, Integer>(){
+				new AsyncTask<Object, String, int[]>(){
 
 					@Override
-					protected Integer doInBackground(Object... arg0) {
+					protected int[] doInBackground(Object... arg0) {
+						try{
 						// TODO Auto-generated method stub
 						return RemoteInfoFetcher.buyTicket(di.getIMEI(), sph
 								.getString("USER_ID"), sharedPreference
@@ -345,20 +372,26 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 								.getString(Constant.HttpParas.NAME), sharedPreference
 								.getString(Constant.HttpParas.ALIPAY_ID), "lottery",
 								buildProgramString(), (int)caipiaoCnt);
+						}catch(Exception e){
+							e.printStackTrace();
+							return new int[]{0,999};
+						}
 					}
 
 					@Override
-					protected void onPostExecute(Integer result) {
-						if(result == 0){
+					protected void onPostExecute(int[] result) {
+						if(result[0] == 0){
 							Toast.makeText(activity, "购买成功", Toast.LENGTH_SHORT).show();
 						}else{
-							Toast.makeText(activity, "购买出错", Toast.LENGTH_SHORT).show();
+							Toast.makeText(activity, "购买失败", Toast.LENGTH_SHORT).show();
 						}
+						sph.putString("CREDIT", String.valueOf(result[1]));
 						super.onPostExecute(result);
 					}
 					
 					
 				}.execute(new Object[0]);
+				dialog.dismiss();
 			}
         });
         builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {

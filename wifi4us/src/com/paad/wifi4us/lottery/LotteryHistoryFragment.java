@@ -11,6 +11,7 @@ import java.util.Map;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,6 @@ public class LotteryHistoryFragment extends Fragment {
 	int[] groupViews = new int[]{R.id.lottery_history_ticket_id, R.id.lottery_history_state};
 	int[] childViews = new int[]{R.id.lottery_history_period, R.id.lottery_history_trade_id, R.id.lottery_history_program};
 	TextView textView;
-	Handler handler;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class LotteryHistoryFragment extends Fragment {
     	sharedPreference = new SharedPreferenceHelper(getActivity());
     	lv = (ExpandableListView)view.findViewById(R.id.lottery_history_listview);
     	textView = (TextView)view.findViewById(R.id.lottery_history_textview);
+    	textView.setVisibility(View.GONE);
     	refreshHistories();
     	Button header = new Button(this.getActivity());
     	header.setOnClickListener(new OnClickListener() {
@@ -61,27 +62,30 @@ public class LotteryHistoryFragment extends Fragment {
 		});
     	header.setText(getResources().getString(R.string.lottery_more));
     	lv.addHeaderView(header);
-    	handler = new Handler();
     	return view;
     }
     
     void refreshHistories(){
+    	final Handler handler = new Handler(){
+
+			@Override
+			public void handleMessage(Message msg) {
+				updateView();
+				super.handleMessage(msg);
+			}
+    		
+    	};
     	new Thread(new Runnable(){
 
 			@Override
 			public void run() {
-				List<LotteryHistory> rst = null;//RemoteInfoFetcher.fetchLotteryHistories(DeviceInfo.getInstance(getActivity()).getIMEI(), sharedPreference.getString("USER_ID"));
+				List<LotteryHistory> rst = RemoteInfoFetcher.fetchLotteryHistories(DeviceInfo.getInstance(getActivity()).getIMEI(), sharedPreference.getString("USER_ID"));
 				
 				if(rst!=null){
 					histories = rst;
-					handler.post(new Runnable(){
-
-						@Override
-						public void run() {
-							updateView();
-						}
-						
-					});
+					handler.obtainMessage().sendToTarget();
+				}else{
+					textView.setVisibility(View.VISIBLE);
 				}
 			}
     	}).start();;

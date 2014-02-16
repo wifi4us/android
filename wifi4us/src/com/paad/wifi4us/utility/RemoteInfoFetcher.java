@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 
 import com.paad.wifi4us.utility.data.AdContent;
 import com.paad.wifi4us.utility.data.LotteryHistory;
@@ -66,18 +67,20 @@ public class RemoteInfoFetcher {
 		return Integer.valueOf(strCredit);
 	}
 	
-	public static Integer buyTicket(String imei, String userid,
+	public static int[] buyTicket(String imei, String userid,
 			String phone, String idNum, String name, String alipayId,
 			String type, String program, int notes){
 		if(debug){
-			return 0;
+			return new int[]{0,9527};
 		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildExchangeLotteryUrl(imei, userid, phone, idNum, name, alipayId, type, program, notes));
 		if(mapInArr == null){
 			return null;
 		}
 		String state = mapInArr.get(0).get(Constant.XmlResultKey.STATE);
-		return Integer.valueOf(state);
+		String credit = mapInArr.get(0).get(Constant.XmlResultKey.ACCOUNT);
+		Log.d("remoteInfoFetch", state);
+		return new int[]{Integer.valueOf(state),Integer.valueOf(credit)};
 	}
 	
 	public static String resgisterUserId(String imei){
