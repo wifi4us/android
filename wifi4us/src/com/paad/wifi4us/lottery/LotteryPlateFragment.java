@@ -9,11 +9,13 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import android.widget.Toast;
 import com.paad.wifi4us.LotteryActivity;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
@@ -187,9 +190,21 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
         confirmButton.setOnClickListener(this);
         creditPerCaipiao = RemoteInfoFetcher.fetchLotteryCredit();
-        TextView sponsorLink = (TextView)result.findViewById(R.id.sponsor_link);
-        sponsorLink.setMovementMethod(LinkMovementMethod.getInstance());
-        refreshTextView();
+		TextView sponsorLink = (TextView) result
+				.findViewById(R.id.sponsor_link);
+		sponsorLink.setText(Html.fromHtml("<a href='"
+				+ getResources().getString(R.string.sponsor_url) + "'>"
+				+ getResources().getString(R.string.sponsor_line1) +"<br>"
+				+ getResources().getString(R.string.sponsor_line2) + "</a>"));
+		sponsorLink.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.sponsor_url))));
+				
+			}
+		});
+		refreshTextView();
         return result;
 
     }
@@ -271,6 +286,26 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         return sb.toString();
     }
     
+    String buildProgramString(){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < redTbs.size(); ++i) {
+            if (redTbs.get(i).isChecked()) {
+                sb.append(i + 1);
+                sb.append(",");
+            }
+        }
+        String red = sb.toString();
+        sb = new StringBuilder();
+        for (int i = 0; i < blueTbs.size(); ++i) {
+            if (blueTbs.get(i).isChecked()) {
+                sb.append(i + 1);
+                sb.append(",");
+            }
+        }
+        String blue = sb.toString();
+        return red.substring(0,red.length()-1)+"|"+blue.substring(0,blue.length()-1);
+    }
+    
 	boolean checkUserInfo() {
 		if (sharedPreference.getString(Constant.HttpParas.ALIPAY_ID).equals("NULL")
 				|| sharedPreference.getString(Constant.HttpParas.ID_NUM).equals("NULL")
@@ -294,9 +329,37 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         builder.setPositiveButton("购买", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                activity.switchTo(1);
-            }
+				dialog.dismiss();
+				final DeviceInfo di = DeviceInfo.getInstance(activity);
+				final SharedPreferenceHelper sph = new SharedPreferenceHelper(
+						activity);
+				new AsyncTask<Object, String, Integer>(){
+
+					@Override
+					protected Integer doInBackground(Object... arg0) {
+						// TODO Auto-generated method stub
+						return RemoteInfoFetcher.buyTicket(di.getIMEI(), sph
+								.getString("USER_ID"), sharedPreference
+								.getString(Constant.HttpParas.PHONE), sharedPreference
+								.getString(Constant.HttpParas.ID_NUM), sharedPreference
+								.getString(Constant.HttpParas.NAME), sharedPreference
+								.getString(Constant.HttpParas.ALIPAY_ID), "lottery",
+								buildProgramString(), (int)caipiaoCnt);
+					}
+
+					@Override
+					protected void onPostExecute(Integer result) {
+						if(result == 0){
+							Toast.makeText(activity, "购买成功", Toast.LENGTH_SHORT).show();
+						}else{
+							Toast.makeText(activity, "购买出错", Toast.LENGTH_SHORT).show();
+						}
+						super.onPostExecute(result);
+					}
+					
+					
+				}.execute(new Object[0]);
+			}
         });
         builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
             @Override

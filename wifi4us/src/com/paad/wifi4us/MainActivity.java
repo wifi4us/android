@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,6 +84,8 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actiongbar_menu, menu);
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.green));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">一起wifi</font>"));
         return super.onCreateOptionsMenu(menu);
     }
     
@@ -460,7 +464,23 @@ public class MainActivity extends ActionBarActivity {
 					public void onSuccess() {
 						// TODO Auto-generated method stub
 						Log.d("Test", "share success");
-						RemoteInfoFetcher.addUserCredit(DeviceInfo.getInstance(context).getIMEI(), sharedPreference.getString("USER_ID"), 1, 0l, 0l);
+						new AsyncTask<Object, Object, Boolean>() {
+
+							@Override
+							protected Boolean doInBackground(Object... arg0) {
+								// TODO Auto-generated method stub
+								return RemoteInfoFetcher.addUserCredit(DeviceInfo.getInstance(context).getIMEI(), sharedPreference.getString("USER_ID"), 1, 0l, 0l);
+							}
+
+							@Override
+							protected void onPostExecute(Boolean result) {
+								if(result){
+									Toast.makeText(MainActivity.this, "分享成功，已获得奖励积分", Toast.LENGTH_SHORT).show();
+								}
+								super.onPostExecute(result);
+							}
+							
+						};
 					}
 
 				}, true);

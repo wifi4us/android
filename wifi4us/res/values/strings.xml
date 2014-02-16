@@ -4,8 +4,9 @@
     <string name="startservice">share 15 mins and 3M</string>
     <string name="hello">hello world</string>
     <string name="send">send</string>
-    <string name="sponsor_url">www.baidu.com</string>
-    <string name="sponsor_description">彩票购买部分由xxx提供</string>
+    <string name="sponsor_line1">彩票宝描述</string>
+    <string name="sponsor_line2">彩票购买部分由xxx提供</string>
+	<string name="sponsor_url">http://www.baidu.com</string>
     
     <string name="receive_string_switcher_text_on">Wifi已打开</string>
     <string name="receive_string_switcher_text_off">Wifi已关闭</string>
