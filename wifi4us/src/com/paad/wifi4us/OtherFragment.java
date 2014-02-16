@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
@@ -46,6 +48,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 	private static final int MSG_SUCCESS = 0;
 	private static final int MSG_FAILURE = 1;
 	private static final int CREDIT_INIT = 2;
+	//"<br><small><font size=\"1\" color=\"#ff3030\">(早九点至晚八点出票)<font></small>";
+	private static final String USER_HTML_STR="<font size=\"8\" color=\"#000000\"  >ID   </font><font size=\"8\" color=\"#919191\">xxx</font>"; 
+	private static final String CREDIT_HTML_STR="<font size=\"5\" color=\"#9ACD32\">积分    </font><font size=\"5\" color=\"#919191\">xxx</font>"; 
 
 	FrontiaSocialShareContent mImageContent = new FrontiaSocialShareContent();
 	FrontiaSocialShare mSocialShare;
@@ -61,15 +66,23 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			case MSG_SUCCESS:
 				String tempid = (String) msg.obj;
 				userid = String.format("%07d", Integer.parseInt(tempid));
-				other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext) + userid);
+				refreshUserId(userid);
 				sharedPreference.putString("USER_ID", userid);
 				break;
 			case MSG_FAILURE:
-				other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext_initfail));
+				refreshUserId(getResources().getString(R.string.main_activity_otherfragment_useridtext_initfail));
 				break;
 			}
 		}
 	};
+	
+	void refreshUserId(String id){
+		other_id_userid_text.setText(Html.fromHtml(USER_HTML_STR.replace("xxx", userid)));
+	}
+	
+	void refreshCredit(String credit){
+		other_id_credit_text.setText(Html.fromHtml(CREDIT_HTML_STR.replace("xxx", credit)));
+	}
 
 	@SuppressLint("HandlerLeak")
 	private Handler creditHandler = new Handler() {
@@ -77,13 +90,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			switch (msg.what) {
 			case MSG_SUCCESS:
 				String tempcredit = (String) msg.obj;
-				other_id_credit_text.setText(context.getString(R.string.main_activity_otherfragment_credittext) + tempcredit);
+				refreshCredit(tempcredit);
 				sharedPreference.putString("CREDIT", tempcredit);
 				break;
 			case MSG_FAILURE:
 				break;
 			case CREDIT_INIT:
-				other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_credittext) + "0");
+				refreshUserId("0");
 				break;
 			}
 		}
@@ -139,7 +152,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			Thread mThread = new Thread(getUserIdRunner);
 			mThread.start();
 		} else {
-			other_id_userid_text.setText(context.getString(R.string.main_activity_otherfragment_useridtext) + userid);
+			refreshUserId(userid);
 		}
 
 		//init credit
@@ -208,6 +221,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 	boolean initShare = false;
 
 	public void startUpdate() {
+    	Toast.makeText(getActivity(), "正在获取最新版本...", Toast.LENGTH_SHORT).show();
 		UmengUpdateAgent.forceUpdate(context);
 	}
 
@@ -351,7 +365,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		other_id_credit_text = (TextView) getActivity().findViewById(
 				R.id.other_id_credits);
 		String creditText = sharedPreference.getString("CREDIT");
-		other_id_credit_text.setText(context.getString(R.string.main_activity_otherfragment_credittext) + creditText);
+		refreshCredit(creditText);
 	}
 
 }

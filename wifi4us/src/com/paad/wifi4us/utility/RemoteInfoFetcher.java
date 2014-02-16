@@ -81,6 +81,9 @@ public class RemoteInfoFetcher {
 	}
 	
 	public static String resgisterUserId(String imei){
+		if(debug){
+			return "2468";
+		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildRegisterUrl(imei));
 		if(mapInArr == null){
 			return null;
@@ -89,6 +92,9 @@ public class RemoteInfoFetcher {
 	}
 
 	public static String fetchAccount(String userid, String imei){
+		if(debug){
+			return "9527";
+		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildFetchAccountUrl(userid, imei));
 		if(mapInArr == null){
 			return null;

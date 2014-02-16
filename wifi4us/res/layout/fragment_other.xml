@@ -38,16 +38,18 @@
 				<LinearLayout
                 	android:layout_width="match_parent"
                 	android:layout_height="match_parent"
+                	android:layout_gravity="center_vertical"
+                	android:layout_marginLeft="40dip"
+                	android:gravity="center_vertical|"
                 	android:orientation="vertical" >
                 	<TextView
                     	android:id="@+id/other_id_userid"
                     	android:layout_width="wrap_content"
                     	android:layout_height="wrap_content"
-                    	android:layout_gravity="center_horizontal"
+                    	android:layout_gravity="left"
                     	android:layout_marginLeft="6.0dip"
                    		android:gravity="center"
                     	android:text="@string/unknow_user"
-                    	android:textColor="#ff323232"
                     	android:textSize="16.0sp" />
 
                 		<TextView
@@ -55,8 +57,7 @@
                     		android:layout_width="wrap_content"
                     		android:layout_height="wrap_content"
                     		android:layout_marginLeft="5sp"
-                    		android:textColor="#FF0000"
-                    		android:layout_gravity="center_horizontal"
+                    		android:layout_gravity="left"
                     		android:gravity="center"
                     		android:text="@string/no_user_name"
                     		android:textSize="12.0sp" />

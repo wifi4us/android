@@ -34,6 +34,9 @@ import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
+import com.umeng.update.UpdateStatus;
 
 public class MainActivity extends ActionBarActivity {
 	private FragmentManager fragmentManager;
@@ -192,6 +195,24 @@ public class MainActivity extends ActionBarActivity {
     	});
     	UmengUpdateAgent.setUpdateOnlyWifi(false);
     	UmengUpdateAgent.update(this);
+    	UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+    	    @Override
+    	    public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
+    	        switch (updateStatus) {
+    	        case UpdateStatus.Yes: // has update
+    	            UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
+    	            break;
+    	        case UpdateStatus.No: // has no update
+    	            Toast.makeText(MainActivity.this, "已经是最新版本", Toast.LENGTH_SHORT).show();
+    	            break;
+    	        case UpdateStatus.NoneWifi: // none wifi
+    	            Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
+    	        case UpdateStatus.Timeout: // time out
+    	            Toast.makeText(MainActivity.this, "更新失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+    	            break;
+    	        }
+    	    }
+    	});
     }
 	
 	public void onDestroy(){
