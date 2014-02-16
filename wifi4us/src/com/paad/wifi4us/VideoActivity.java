@@ -19,6 +19,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -186,6 +187,11 @@ public class VideoActivity extends Activity {
         }
           
         video.setVideoPath(filename);
+        try{
+        	SystemClock.sleep(1000);
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
         video.start();
     }
     

@@ -24,9 +24,7 @@ public class SendWifiConnectedState extends Fragment{
 	private Fragment send_id_start_share_button;
 	private Fragment send_id_start_share_text;
 	
-	private TextView time;
 	private TextView traffic;
-	private TextView clientinfo;
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -45,16 +43,17 @@ public class SendWifiConnectedState extends Fragment{
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		View view_res = inflater.inflate(R.layout.fragment_send_wifi_connected_state, container, false);	
-		time = (TextView)view_res.findViewById(R.id.send_text_time_left);
 		traffic = (TextView)view_res.findViewById(R.id.send_text_traffic_used);
-
+		traffic.setText("0");
 		return view_res;
 	}
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
 			String trafficNow = intent.getExtras().getString(Constant.BroadcastSend.CONNECTION_HEARTBEAT_EXTRA_TRAFFIC);
-			traffic.setText(trafficNow);
+			int kbTraffic = Integer.parseInt(trafficNow);
+			String kb = String.valueOf(kbTraffic / 1024);
+			traffic.setText(kb);
 		}
 	}
 	

@@ -340,5 +340,4 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			refreshUserId(userid);
 		}
 	}
-
 }
