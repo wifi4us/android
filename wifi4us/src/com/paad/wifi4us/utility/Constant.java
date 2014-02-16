@@ -68,7 +68,8 @@ public class Constant {
     	public static final int SERVER_PORT = 12345;
     	public static final String AD_BASE_HTTPURL = "http://wifi4us.duapp.com/getadid.php";
     	public static final int TIME_INTERVAL_AD = 20000;
-    	public static final int TIME_INTERVAL = 5000;
+    	public static final int TIME_INTERVAL = 2500;
+    	public static final int TIME_INTERVAL_RECEIVE = 5000;
         public static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
         public static final String GETCREDIT_BASE_HTTPURL = "http://wifi4us.duapp.com/getcredit.php";
         public static final String LOTTERY_HISTORY_HTTPURL = "http://wifi4us.duapp.com/get_lottery_info.php";

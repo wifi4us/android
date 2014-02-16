@@ -47,7 +47,6 @@ public class SendWifiConnectedState extends Fragment{
 		View view_res = inflater.inflate(R.layout.fragment_send_wifi_connected_state, container, false);	
 		time = (TextView)view_res.findViewById(R.id.send_text_time_left);
 		traffic = (TextView)view_res.findViewById(R.id.send_text_traffic_used);
-		clientinfo = (TextView)view_res.findViewById(R.id.send_text_client_info);
 
 		return view_res;
 	}

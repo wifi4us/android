@@ -168,6 +168,7 @@ public class VideoActivity extends Activity {
 			public void onClick(View view){
 				if(!doubleClick){
 					Toast.makeText(VideoActivity.this, "详情已经发送到亲的短信收件箱，请亲们继续收看完赞助商广告哦~", Toast.LENGTH_LONG).show();
+					button_interest.setText("已发到短信收件箱");
 					SendSMS(currentAd.adtext);
 					doubleClick = true;
 				}else{
@@ -176,7 +177,7 @@ public class VideoActivity extends Activity {
 			}
         });       
         
-        String filename = getApplicationContext().getCacheDir().toString() + "/ad_" + currentAd.adid + ".3gp";
+        String filename = getApplicationContext().getCacheDir().toString() + "/ad_" + currentAd.adid + ".mp4";
         try{
         	Process p = Runtime.getRuntime().exec("chmod 777 " + filename);    
             p.waitFor();    
@@ -210,6 +211,7 @@ public class VideoActivity extends Activity {
     }
 	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
+			try{
 			if(!haveBondService)
 				return;
 			//get reward for receiving
@@ -221,6 +223,9 @@ public class VideoActivity extends Activity {
 				receiveService.WifiDisconnectCompletely();
 				currentActivity.finish();
 				c.unregisterReceiver(this);
+			}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

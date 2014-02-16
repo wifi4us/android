@@ -162,27 +162,26 @@ public class ReceiveScanResultList extends ListFragment{
 	
 	public class ClickConnectReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
+			try{
 			if(!haveBondService){
 				c.unregisterReceiver(this);
 				return;
 			}
 			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
 			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();  
-			if(State.CONNECTED == state){  
-					c.unregisterReceiver(this);
-					/*
+			if(State.CONNECTED == state){  					
 				String actualSSID = myWifiManager.getWifiManager().getConnectionInfo().getSSID();
 				if(!actualSSID.equals(rawssid)){
-					Intent i = new Intent();
-					i.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP);
-					i.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "wifi认证超时");
-					currentActivity.sendBroadcast(i);
-						
-					receiveService.WifiDisconnectCompletely();
+					receiveService.WifiDisconnect();
+					receiveService.WifiConnect(rawssid);
      				return;
-				}    */ 			
-	        		receiveService.EstablishConmunication();
+				} 
+				c.unregisterReceiver(this);
+	        	receiveService.EstablishConmunication();
 			}  
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -192,11 +191,11 @@ public class ReceiveScanResultList extends ListFragment{
     			c.unregisterReceiver(this);
     			return;
     		}
+
     		String state = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE);
       		if(state.equals("ok")){
           		c.unregisterReceiver(this);
     			Constant.FLAG.FINISH_PRECONNNECT = true;
-
     			if(Constant.FLAG.RECEIVE_HAS_AD){
         			Intent startvideo = new Intent(currentActivity, VideoActivity.class);    
               		ArrayList<AdContent> adList = (ArrayList<AdContent>)intent.getSerializableExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_AD);
@@ -230,7 +229,7 @@ public class ReceiveScanResultList extends ListFragment{
 	public class ConnectFailReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent) {
 			ProgressbarToFail("连接过程被打断，网络连接失败");
-			
+			receiveService.WifiDisconnectCompletely();
 			try{
 				c.unregisterReceiver(clickConnectReceiver);
 			}catch(Exception e){
@@ -270,8 +269,6 @@ public class ReceiveScanResultList extends ListFragment{
 		transaction.remove(this);
 		receive_id_start_connect_progressbar = new WifiProgressBar();
 		transaction.replace(R.id.receive_container_scan_result, receive_id_start_connect_progressbar, "receive_id_start_connect_progressbar");
-
-        
 		transaction.commitAllowingStateLoss(); 
 	}
 	
@@ -290,10 +287,25 @@ public class ReceiveScanResultList extends ListFragment{
 	private ArrayList<String> getShownName(ArrayList<String> arr){
 		ArrayList<String> temp_arr = new ArrayList<String>(arr);
 		for(int i = 0; i < temp_arr.size(); i++){
-			String shownname = "伟大无私的" + temp_arr.get(i).substring(1, 8);
+			String shownname = "无私的" + temp_arr.get(i).substring(1, 8);
 			String modepart = temp_arr.get(i).substring(24, 28);
-			if(modepart.equals("3005")){
-				shownname = shownname + "分享了流量，最多使用30分钟或5M";
+			if(modepart.equals("0130")){
+				shownname = shownname + "分享了5M流量，不过TA要求你看了30秒广告才能用";
+			}
+			if(modepart.equals("0030")){
+				shownname = shownname + "分享了5M流量，随便用别客气";
+			}
+			if(modepart.equals("0160")){
+				shownname = shownname + "分享了10M流量，不过TA要求你看了30秒广告才能用";
+			}
+			if(modepart.equals("0060")){
+				shownname = shownname + "分享了10M流量，随便用别客气";
+			}
+			if(modepart.equals("01UN")){
+				shownname = shownname + "分享了无限的流量，不过TA要求你看了30秒广告才能用";
+			}
+			if(modepart.equals("00UN")){
+				shownname = shownname + "分享了无限的流量，随便用别客气";
 			}
 			temp_arr.set(i, shownname);
 		}

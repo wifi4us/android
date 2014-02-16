@@ -6,14 +6,18 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.regex.Pattern;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
@@ -34,6 +38,7 @@ public class SendService extends Service {
 	private PrintWriter out;
 	
 	private SharedPreferenceHelper sharedPreference;
+	private WakeLock wakeLock;  
 
 	
 	public class MyBinder extends Binder {  
@@ -53,6 +58,7 @@ public class SendService extends Service {
         super.onCreate();  
 		myWifiManager = new MyWifiManager(getApplicationContext());   
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+    	wakeLock = null;
 		try{
 	    	serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
 		}catch(Exception e){
@@ -181,6 +187,7 @@ public class SendService extends Service {
 			public void run(){
 				socket = null;
 				try{
+					String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 					socket = serverSocket.accept();
 					socket.setSoTimeout(Constant.Networks.TIME_INTERVAL_AD);
 
@@ -202,6 +209,21 @@ public class SendService extends Service {
 		            	if(info == null){
 							WifiApOff();
 		            	}
+		            	if(!isNumeric(info)){
+		            		continue;
+		            	}
+		            	if(limitMode.equals("30")){
+		            		if(Integer.parseInt(info) > 5 * 1024 * 1024){
+			            		WifiApOff();
+			            	}
+		            	}
+		            	
+		            	if(limitMode.equals("60")){
+		            		if(Integer.parseInt(info) > 10 * 1024 * 1024){
+			            		WifiApOff();
+			            	}
+		            	}
+		   
 		            	if(!connect_setup_done){
 							sendConnectionSetupBroadcast();
 							connect_setup_done = true;
@@ -250,8 +272,11 @@ public class SendService extends Service {
 			}
 		};
 		
-		Thread thread1 = new Thread(heartBeat);
-		thread1.start();
+		String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
+		if(!limitMode.equals("UN")){
+			Thread thread1 = new Thread(heartBeat);
+			thread1.start();
+		}
 		
 		Thread thread2 = new Thread(moniterAp);
 		thread2.start();
@@ -346,26 +371,56 @@ public class SendService extends Service {
 	 	}
 
 		private void startForeground(){
-			   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+			acquireWakeLock();
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 			   
-			   mBuilder.setSmallIcon(R.drawable.ic_launcher);
-			   mBuilder.setContentTitle("正在使用一起wifi的服务");
-			   mBuilder.setContentText("使用结束后我会在通知栏消失哦~~");
-			   mBuilder.setTicker("正在使用一起wifi的服务");//第一次提示消息的时候显示在通知栏上
-			   mBuilder.setNumber(12);
-			   //构建一个Intent
-			   Intent resultIntent = new Intent(this, MainActivity.class);
-			   resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			   //封装一个Intent
-			   PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			   // 设置通知主题的意图
-			   mBuilder.setContentIntent(resultPendingIntent);
-			   final Notification notification = mBuilder.build();
-			   startForeground(1, notification);
+			mBuilder.setSmallIcon(R.drawable.ic_launcher);
+			mBuilder.setContentTitle("正在使用一起wifi的服务");
+			mBuilder.setContentText("使用结束后我会在通知栏消失哦~~");
+			mBuilder.setTicker("正在使用一起wifi的服务");//第一次提示消息的时候显示在通知栏上
+			mBuilder.setNumber(12);
+			//构建一个Intent
+			Intent resultIntent = new Intent(this, MainActivity.class);
+			resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			//封装一个Intent
+			PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			// 设置通知主题的意图
+			mBuilder.setContentIntent(resultPendingIntent);
+			final Notification notification = mBuilder.build();
+			startForeground(1, notification);			   
 		}
-
 
 		private void stopForeground(){
+			releaseWakeLock();
 			stopForeground(true);
 		}
+		
+	    //获取电源锁，保持该服务在屏幕熄灭时仍然获取CPU时，保持运行  
+	    private void acquireWakeLock()  
+	    {  
+	        if (null == wakeLock)  
+	        {  
+	            PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);  
+	            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "PostLocationService");  
+	            if (null != wakeLock)  
+	            {  
+	                wakeLock.acquire();  
+	            }  
+	        }  
+	    }  
+	      
+	    //释放设备电源锁  
+	    private void releaseWakeLock()  
+	    {  
+	        if (null != wakeLock)  
+	        {  
+	            wakeLock.release();  
+	            wakeLock = null;  
+	        }  
+	    } 
+
+	    public static boolean isNumeric(String str){
+	        Pattern pattern = Pattern.compile("[0-9]*");
+	        return pattern.matcher(str).matches();   
+	    }
 }

@@ -170,8 +170,16 @@ public class SendStartShareButton extends Fragment{
         			Constant.PreventAbuse.DOUBLE_START_SEND = false;
         			return;
         		}
-    			context.registerReceiver(listenStartReceiver, new IntentFilter(Constant.BroadcastSend.LISTEN_SETUP));
-    			context.registerReceiver(connectionStartReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_SETUP));
+				
+        		String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
+				if(limitMode.equals("UN")){
+	    			Constant.PreventAbuse.DOUBLE_START_SEND = false;
+	        		UIScanFromProgressToReadyState();
+				}else{
+					context.registerReceiver(listenStartReceiver, new IntentFilter(Constant.BroadcastSend.LISTEN_SETUP));
+	    			context.registerReceiver(connectionStartReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_SETUP));
+				}
+				
         		sendService.ListenHeartBeat();
         		c.unregisterReceiver(this);
     		}catch(Exception e){

@@ -23,6 +23,8 @@ import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
@@ -53,6 +55,8 @@ public class ReceiveService extends Service {
 
 	private SharedPreferenceHelper sharedPreference;
 
+	private WakeLock wakeLock;  
+
 	
 	public class MyBinder extends Binder {  
 		ReceiveService getService() {  
@@ -72,6 +76,7 @@ public class ReceiveService extends Service {
         myWifiManager = new MyWifiManager(getApplicationContext());
 		wifiApList = new ArrayList<String>();
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+    	wakeLock = null;
     }  
 	
 	public void onDestroy() {  
@@ -211,12 +216,15 @@ public class ReceiveService extends Service {
 			public void run(){
 				Intent intent = new Intent();
 				intent.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP); 
-				if(!openSocketConnection()){
-					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "已经有人接入这个分享者");
-					sendBroadcast(intent);
-					return;
+				if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
+					if(!openSocketConnection()){
+						WifiDisconnectCompletely();
+						intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "已经有人接入这个分享者");
+						sendBroadcast(intent);
+						return;
+					}
 				}
+
 				
 				if(Constant.FLAG.RECEIVE_HAS_AD){
 					if(!getAdvertisement()){
@@ -227,12 +235,13 @@ public class ReceiveService extends Service {
 					}
 				}
 
-				
-				if(!setHeartBeat()){
-					WifiDisconnectCompletely();
-					intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "建立连接异常");
-					sendBroadcast(intent);
-					return;
+				if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
+					if(!setHeartBeat()){
+						WifiDisconnectCompletely();
+						intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "建立连接异常");
+						sendBroadcast(intent);
+						return;
+					}
 				}
 				
 				intent.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_EXTRA_STATE, "ok");
@@ -245,34 +254,10 @@ public class ReceiveService extends Service {
 		thread.start();
 	}	
 	
-	private void startForeground(){
-		   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-		   
-		   mBuilder.setSmallIcon(R.drawable.ic_launcher);
-		   mBuilder.setContentTitle("正在使用一起wifi的服务");
-		   mBuilder.setContentText("使用结束后我会在通知栏消失哦~~");
-		   mBuilder.setTicker("正在使用一起wifi的服务");//第一次提示消息的时候显示在通知栏上
-		   mBuilder.setNumber(12);
-		   //构建一个Intent
-		   Intent resultIntent = new Intent(this, MainActivity.class);
-		   resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		   //封装一个Intent
-		   PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-		   // 设置通知主题的意图
-		   mBuilder.setContentIntent(resultPendingIntent);
-		   final Notification notification = mBuilder.build();
-		   startForeground(1, notification);
-	}
-
-
-	private void stopForeground(){
-		stopForeground(true);
-	}
-	
 	private boolean openSocketConnection(){
 		try{
 			socket=new Socket(getIpFromInt(myWifiManager.getWifiManager().getDhcpInfo().gateway), Constant.Networks.SERVER_PORT);
-			socket.setSoTimeout(Constant.Networks.TIME_INTERVAL);
+			socket.setSoTimeout(Constant.Networks.TIME_INTERVAL_RECEIVE);
 
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -288,6 +273,7 @@ public class ReceiveService extends Service {
 			}
 			
 		}catch(SocketTimeoutException e){
+			
 			e.printStackTrace();
 			return false;
 			//heartbeat stop 
@@ -306,7 +292,7 @@ public class ReceiveService extends Service {
 	    TimerTask task = new TimerTask(){  
 	        public void run() {  
 	        	try{
-		        	totalTimeSeconds = totalTimeSeconds + 3;
+		        	totalTimeSeconds = totalTimeSeconds + 2;
 					String time = String.valueOf(totalTimeSeconds);
 					long totalTrafficBytesShown = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes() - totalTrafficBytes;
 					String traffic = String.valueOf(totalTrafficBytesShown);
@@ -319,7 +305,7 @@ public class ReceiveService extends Service {
 					getApplicationContext().sendBroadcast(heartbeat);
 					
 					//send traffic to ap host through socket
-					out.println("T" + totalTrafficBytesShown);
+					out.println(totalTrafficBytesShown);
 					out.flush();
 					
 	        	}catch(Exception e){
@@ -329,7 +315,7 @@ public class ReceiveService extends Service {
 	        }  
 	          
 	    };  
-	    timer.schedule(task, 0, 3000);
+	    timer.schedule(task, 0, 2000);
 	
 		return true;
 	}
@@ -350,7 +336,7 @@ public class ReceiveService extends Service {
 		}
 
 		for(AdContent adcontent:adList){
-			String adDir = getApplicationContext().getCacheDir().toString() + "/ad_" + adcontent.adid + ".3gp";
+			String adDir = getApplicationContext().getCacheDir().toString() + "/ad_" + adcontent.adid + ".mp4";
 			File adFile = new File(adDir);
 			HttpDownLoader dld = new HttpDownLoader(adcontent.url, adDir);
 			boolean downloadResult = true;
@@ -422,5 +408,54 @@ public class ReceiveService extends Service {
 		}
 	}
 	
+	private void startForeground(){
+		   acquireWakeLock();  
+		   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+		   
+		   mBuilder.setSmallIcon(R.drawable.ic_launcher);
+		   mBuilder.setContentTitle("正在使用一起wifi的服务");
+		   mBuilder.setContentText("使用结束后我会在通知栏消失哦~~");
+		   mBuilder.setTicker("正在使用一起wifi的服务");//第一次提示消息的时候显示在通知栏上
+		   mBuilder.setNumber(12);
+		   //构建一个Intent
+		   Intent resultIntent = new Intent(this, MainActivity.class);
+		   resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		   //封装一个Intent
+		   PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		   // 设置通知主题的意图
+		   mBuilder.setContentIntent(resultPendingIntent);
+		   final Notification notification = mBuilder.build();
+		   startForeground(1, notification);
+	}
+
+
+	private void stopForeground(){
+		releaseWakeLock();
+		stopForeground(true);
+	}
+	
+    //获取电源锁，保持该服务在屏幕熄灭时仍然获取CPU时，保持运行  
+    private void acquireWakeLock()  
+    {  
+        if (null == wakeLock)  
+        {  
+            PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);  
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "PostLocationService");  
+            if (null != wakeLock)  
+            {  
+                wakeLock.acquire();  
+            }  
+        }  
+    }  
+      
+    //释放设备电源锁  
+    private void releaseWakeLock()  
+    {  
+        if (null != wakeLock)  
+        {  
+            wakeLock.release();  
+            wakeLock = null;  
+        }  
+    } 
 	
 }

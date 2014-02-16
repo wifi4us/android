@@ -59,7 +59,9 @@ public class ReceiveWifiConnectedState extends Fragment{
 		unResgiterOldReceiver(context);
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
-        context.registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
+		if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
+	        context.registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
+		}
 		context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 	}
 	
@@ -73,9 +75,11 @@ public class ReceiveWifiConnectedState extends Fragment{
 		View view_res = inflater.inflate(R.layout.fragment_receive_wifi_connected_state, container, false);	
 		time = (TextView)view_res.findViewById(R.id.receive_text_time_left);
 		traffic = (TextView)view_res.findViewById(R.id.receive_text_traffic_used);
-		
-
-		
+		if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
+			traffic.setText("0");
+		}else{
+			traffic.setText("不限流量模式");
+		}
 		return view_res;
 	}
 	
@@ -121,9 +125,11 @@ public class ReceiveWifiConnectedState extends Fragment{
 				//get reward for receiving
 				SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
 				if(state.equals(SupplicantState.DISCONNECTED) || state.equals(SupplicantState.INACTIVE)){  
-					c.unregisterReceiver(connectedStateReceiver);
+					if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
+						c.unregisterReceiver(connectedStateReceiver);
+						receiveService.timer.cancel();
+					}
 					c.unregisterReceiver(this);
-					receiveService.timer.cancel();
 					receiveService.WifiDisconnectCompletely();
 					
 	     	   		Constant.FLAG.STATE_RECEIVE = false;

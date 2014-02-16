@@ -7,7 +7,6 @@
 		<TextView
 		    android:layout_width="wrap_content"   
 			android:layout_height="wrap_content"
-			android:text="wrap_content"
 			android:id="@+id/send_text_time_left"/>
 		
 		<TextView
@@ -15,10 +14,6 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/send_text_traffic_used"/>
 		
-		<TextView
-		    android:layout_width="wrap_content"   
-			android:layout_height="wrap_content"
-			android:text="wrap_content"
-			android:id="@+id/send_text_client_info"/>
+	
 		
 </LinearLayout>
