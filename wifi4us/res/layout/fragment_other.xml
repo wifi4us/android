@@ -351,6 +351,8 @@
                 android:id="@+id/btn_quit"
 				style="@style/otherElement"
                 android:layout_marginTop="10.0dip"
+                android:background="#ff0000"
+                
                 android:clickable="true" >
 
                 <TextView
@@ -359,7 +361,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10.0dip"
                     android:text="@string/quit"
-                    android:textColor="#ff323232"
+                    android:textColor="#ffffff"
                     android:textSize="18.0sp" />
 
                 <ImageView
