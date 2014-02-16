@@ -10,7 +10,7 @@ import com.paad.wifi4us.utility.data.LotteryHistory;
 
 public class RemoteInfoFetcher {
 	
-	private final static boolean debug = true;
+	private final static boolean debug = false;
 	public static List<LotteryHistory> fetchLotteryHistories(String imei, String userid){
 		if(debug){
 			List<LotteryHistory> histories = new ArrayList<LotteryHistory>();

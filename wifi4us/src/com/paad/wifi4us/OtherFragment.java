@@ -47,7 +47,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	private static final int MSG_SUCCESS = 0;
 	private static final int MSG_FAILURE = 1;
-	private static final int CREDIT_INIT = 2;
 	//"<br><small><font size=\"1\" color=\"#ff3030\">(早九点至晚八点出票)<font></small>";
 	private static final String USER_HTML_STR="<font size=\"8\" color=\"#000000\"  >ID   </font><font size=\"8\" color=\"#919191\">xxx</font>"; 
 	private static final String CREDIT_HTML_STR="<font size=\"5\" color=\"#9ACD32\">积分    </font><font size=\"5\" color=\"#919191\">xxx</font>"; 
@@ -84,24 +83,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		other_id_credit_text.setText(Html.fromHtml(CREDIT_HTML_STR.replace("xxx", credit)));
 	}
 
-	@SuppressLint("HandlerLeak")
-	private Handler creditHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case MSG_SUCCESS:
-				String tempcredit = (String) msg.obj;
-				refreshCredit(tempcredit);
-				sharedPreference.putString("CREDIT", tempcredit);
-				break;
-			case MSG_FAILURE:
-				break;
-			case CREDIT_INIT:
-				refreshUserId("0");
-				break;
-			}
-		}
-	};
-
 	private Runnable getUserIdRunner = new Runnable() {
 		public void run() {
 			String imei = DeviceInfo.getInstance(getActivity()).getIMEI();
@@ -110,26 +91,6 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				useridHandler.obtainMessage(MSG_SUCCESS, userid).sendToTarget();
 			} else {
 				useridHandler.obtainMessage(MSG_FAILURE).sendToTarget();
-			}
-
-		}
-	};
-
-	private Runnable getCreditRunner = new Runnable() {
-		public void run() {
-			if (userid.equals("NULL")) {
-				creditHandler.obtainMessage(CREDIT_INIT).sendToTarget();
-				return;
-			}
-			
-			String imei = DeviceInfo.getInstance(getActivity()).getIMEI();
-			String account = RemoteInfoFetcher.fetchAccount(userid, imei);
-
-			if (account != null) {
-				creditHandler.obtainMessage(MSG_SUCCESS, account)
-						.sendToTarget();
-			} else {
-				creditHandler.obtainMessage(MSG_FAILURE).sendToTarget();
 			}
 
 		}
@@ -158,8 +119,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		//init credit
 		other_id_credit_text = (TextView) view_res
 				.findViewById(R.id.other_id_credits);
-		Thread mThread = new Thread(getCreditRunner);
-		mThread.start();
+		String tempcredit = sharedPreference.getString("CREDIT");
+		if(tempcredit.equals("NULL")){
+			tempcredit = "0";
+		}
+		refreshCredit(tempcredit);
+		sharedPreference.putString("CREDIT", tempcredit);
+
 
 		
 		view_res.findViewById(R.id.btn_quit).setOnClickListener(this);
@@ -366,6 +332,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				R.id.other_id_credits);
 		String creditText = sharedPreference.getString("CREDIT");
 		refreshCredit(creditText);
+		
+		other_id_userid_text = (TextView) (TextView) getActivity().findViewById(
+				R.id.other_id_userid);
+		String userid = sharedPreference.getString("USER_ID");
+		if(!userid.equals("NULL")){
+			refreshUserId(userid);
+		}
 	}
 
 }

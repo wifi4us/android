@@ -60,7 +60,7 @@
 	<string name="main_activity_tabwidget_receivetext">使用</string>
 	<string name="main_activity_tabwidget_othertext">其他</string>
 	<string name="main_activity_otherfragment_useridtext">你的id为：</string>
-	<string name="main_activity_otherfragment_useridtext_initfail">请保持网络畅通，关闭软件再打开，不然无法使用服务</string>
+	<string name="main_activity_otherfragment_useridtext_initfail">用户id获取失败</string>
 	<string name="main_activity_otherfragment_credittext">你的积分为：</string>
 	
 	<string name="lottery_info_period">期次</string>
