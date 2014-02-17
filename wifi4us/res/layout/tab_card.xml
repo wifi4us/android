@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="0dip"
-android:layout_height="match_parent"
-android:layout_weight="1"
-android:orientation="vertical"
-android:gravity="center_horizontal"
-android:background="@drawable/selector_tab_backgroud"
-android:padding="5dp">
+	android:layout_width="0dip"
+	android:layout_height="match_parent"
+	android:layout_weight="1"
+	android:orientation="vertical"
+	android:gravity="center_horizontal"
+	android:background="@drawable/selector_tab_backgroud"
+	android:padding="2dp">
 
-<ImageView android:id="@+id/tabimage"
-android:layout_width="wrap_content"
-android:scaleType="centerInside"
-android:layout_height="0dip"
-android:layout_weight="3" 
-/>
+	<ImageView android:id="@+id/tabimage"
+		android:layout_width="wrap_content"
+		android:scaleType="centerInside"
+		android:layout_height="0dp"
+		android:layout_weight="7"/>
 
-<TextView android:id="@+id/tabtitle"
-android:layout_width="wrap_content"
-android:textColor="#000000"
-style="?android:attr/tabWidgetStyle"
-android:layout_height="0dip"
-android:layout_weight="1" 
-/>
+	<TextView android:id="@+id/tabtitle"
+		android:layout_width="wrap_content"
+		android:textColor="#000000"
+		style="?android:attr/tabWidgetStyle"
+		android:layout_height="0dp"
+		android:layout_weight="3"/>
+	
 </LinearLayout>

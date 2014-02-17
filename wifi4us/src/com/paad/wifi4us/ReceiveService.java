@@ -44,7 +44,6 @@ public class ReceiveService extends Service {
     private String connectinfo;
     private ArrayList<AdContent> adList;
     
-    private static int totalTimeSeconds;
     private static long totalTrafficBytes;
     public  Timer timer; 
 
@@ -209,7 +208,6 @@ public class ReceiveService extends Service {
 	}
 	
 	public void EstablishConmunication(){
-		totalTimeSeconds = 0;
 		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
 
 		Runnable setupConnectionRunner = new Runnable(){
@@ -292,14 +290,11 @@ public class ReceiveService extends Service {
 	    TimerTask task = new TimerTask(){  
 	        public void run() {  
 	        	try{
-		        	totalTimeSeconds = totalTimeSeconds + 2;
-					String time = String.valueOf(totalTimeSeconds);
 					long totalTrafficBytesShown = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes() - totalTrafficBytes;
 					String traffic = String.valueOf(totalTrafficBytesShown);
 					
 					Intent heartbeat = new Intent();
 					heartbeat.setAction(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN); 
-					heartbeat.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME, time);
 					heartbeat.putExtra(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC, traffic);
 					
 					getApplicationContext().sendBroadcast(heartbeat);

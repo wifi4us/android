@@ -16,6 +16,8 @@
     <string name="receive_string_start_scan_text_openwifi">请打开wifi开关</string>   
     <string name="receive_string_ad_sound_button">声音开关</string>   
     <string name="receive_string_disconnect_wifi">断开连接</string>   
+    <string name="receive_text_state_unit">KB</string>
+    <string name="receive_text_state_startwork">已经使用</string>
     
     <string name="send_button_start_share">开始分享</string>
     <string name="send_checkbox">要求对方收看广告，获取更多积分哦</string>
@@ -28,7 +30,7 @@
     <string name="send_button_stop_share">立刻停止分享流量</string>
     <string name="send_text_start_fail">分享失败，您的手机运营商网络不是3G，或者android系统版本过低</string>
     <string name="send_text_state_unit">KB</string>
-    <string name="send_text_state_startwork">已经使用</string>
+    <string name="send_text_state_startwork">已经分享</string>
     
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
@@ -60,8 +62,8 @@
     <string name="exchange">积分换彩票</string>
 
     <string name="main_activity_tabwidget_sendtext">分享</string>
-	<string name="main_activity_tabwidget_receivetext">使用</string>
-	<string name="main_activity_tabwidget_othertext">其他</string>
+	<string name="main_activity_tabwidget_receivetext">发现</string>
+	<string name="main_activity_tabwidget_othertext">更多</string>
 	<string name="main_activity_otherfragment_useridtext">你的id为：</string>
 	<string name="main_activity_otherfragment_useridtext_initfail">用户id获取失败</string>
 	<string name="main_activity_otherfragment_credittext">你的积分为：</string>

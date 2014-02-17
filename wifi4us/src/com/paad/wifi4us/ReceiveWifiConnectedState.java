@@ -24,7 +24,6 @@ public class ReceiveWifiConnectedState extends Fragment{
 	
 	private ConnectedStateReceiver connectedStateReceiver;
 	private WifiDisconnectReceiver wifiDisconnectReceiver;
-	private TextView time;
 	private TextView traffic;
 	
 	private Fragment currentFragment;
@@ -73,7 +72,6 @@ public class ReceiveWifiConnectedState extends Fragment{
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		View view_res = inflater.inflate(R.layout.fragment_receive_wifi_connected_state, container, false);	
-		time = (TextView)view_res.findViewById(R.id.receive_text_time_left);
 		traffic = (TextView)view_res.findViewById(R.id.receive_text_traffic_used);
 		if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
 			traffic.setText("0");
@@ -109,10 +107,10 @@ public class ReceiveWifiConnectedState extends Fragment{
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			String timeNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TIME);
 			String trafficNow = intent.getExtras().getString(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN_EXTRA_TRAFFIC);
-			time.setText(timeNow);
-			traffic.setText(trafficNow);
+			int kbTraffic = Integer.parseInt(trafficNow);
+			String kb = String.valueOf(kbTraffic / 1024);
+			traffic.setText(kb);
 		}
 	}
 	

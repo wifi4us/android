@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_more"
+        android:icon="@drawable/action_settings"
         android:title="@string/settings"
         wifi4us:showAsAction="always"/>
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/ball_blue"
+        android:icon="@drawable/action_socialshare"
         android:title="@string/setDiscuss"
         wifi4us:showAsAction="always"/>
 
