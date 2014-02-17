@@ -3,38 +3,94 @@ package com.paad.wifi4us.utility;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyStore;
 import java.util.ArrayList;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.support.v4.util.SimpleArrayMap;
 
 public class HttpXmlParser {
+    public static HttpClient httpClient;
+    
+        public static synchronized HttpClient getHttpClient() {
+                  
+                        if (null == httpClient) {
+                           // åˆå§‹åŒ–å·¥ä½œ
+                            try {
+                              KeyStore trustStore = KeyStore.getInstance(KeyStore
+                                      .getDefaultType());
+                               trustStore.load(null, null);
+                               SSLSocketFactoryEx sf = new SSLSocketFactoryEx(trustStore);
+                               sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);  //å…è®¸æ‰€æœ‰ä¸»æœºçš„éªŒè¯
+                 
+                               HttpParams params = new BasicHttpParams();
+                
+                               HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+                               HttpProtocolParams.setContentCharset(params,
+                                       HTTP.UTF_8);
+                               HttpProtocolParams.setUseExpectContinue(params, true);
+                
+                               // è®¾ç½®è¿æ¥ç®¡ç†å™¨çš„è¶…æ—¶
+                                 ConnManagerParams.setTimeout(params, 5000);
+                               // è®¾ç½®è¿æ¥è¶…æ—¶
+                               HttpConnectionParams.setConnectionTimeout(params, 5000);
+                              // è®¾ç½®socketè¶…æ—¶
+                              HttpConnectionParams.setSoTimeout(params, 5000);
+                
+                              // è®¾ç½®http httpsæ”¯æŒ
+                              SchemeRegistry schReg = new SchemeRegistry();
+                              schReg.register(new Scheme("http", PlainSocketFactory
+                                      .getSocketFactory(), 80));
+                             schReg.register(new Scheme("https", sf, 443));
+                
+                               ClientConnectionManager conManager = new ThreadSafeClientConnManager(
+                                        params, schReg);
+                 
+                                  httpClient = new DefaultHttpClient(conManager, params);
+                           } catch (Exception e) {
+                                 e.printStackTrace();
+                                 return new DefaultHttpClient();
+                           }
+                        }
+                       return httpClient;
+                 }
+    
 	public static ArrayList<SimpleArrayMap<String, String>> getResultFromURL(String requestURL) {
-		URL url;
-		HttpURLConnection urlConnection;
 		ArrayList<SimpleArrayMap<String, String>> mapInArr;
 		try {
 			System.out.println(requestURL);
+			HttpClient client = getHttpClient();
+			HttpGet get = new HttpGet(requestURL);
+			HttpResponse httpResponse = client.execute(get);
 
-			url = new URL(requestURL);
-			urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setRequestMethod("GET");
-			urlConnection.setConnectTimeout(5000);
-			urlConnection.addRequestProperty("Content-Type",
-					"text/xml; charset=utf-8");
-			urlConnection.connect();
-
-			int status = urlConnection.getResponseCode();
+			int status = httpResponse.getStatusLine().getStatusCode();
 
 			if (status == HttpURLConnection.HTTP_OK) {
-				InputStream in = urlConnection.getInputStream();
 
 				XmlPullParserFactory factory = XmlPullParserFactory
 						.newInstance();
 				factory.setNamespaceAware(true);
 				XmlPullParser xpp = factory.newPullParser();
+				InputStream in = httpResponse.getEntity().getContent();
 				xpp.setInput(in, null);
 
 				int eventType = xpp.getEventType();
@@ -44,11 +100,11 @@ public class HttpXmlParser {
 				mapInArr = null;  
 	            while (eventType != XmlPullParser.END_DOCUMENT) {  
 	                switch (eventType) {  
-	                case XmlPullParser.START_DOCUMENT:// ÎÄµµ¿ªÊ¼ÊÂ¼ş,¿ÉÒÔ½øĞĞÊı¾İ³õÊ¼»¯´¦Àí  
-	                	mapInArr = new ArrayList<SimpleArrayMap<String, String>>();// ÊµÀı»¯¼¯ºÏÀà  
+	                case XmlPullParser.START_DOCUMENT:// ï¿½Äµï¿½ï¿½ï¿½Ê¼ï¿½Â¼ï¿½,ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½İ³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
+	                	mapInArr = new ArrayList<SimpleArrayMap<String, String>>();// Êµï¿½ï¿½ï¿½ï¿½ï¿½  
 	                    break;  
-	                case XmlPullParser.START_TAG://¿ªÊ¼¶ÁÈ¡Ä³¸ö±êÇ©  
-	                    //Í¨¹ıgetNameÅĞ¶Ï¶Áµ½ÄÄ¸ö±êÇ©£¬È»ºóÍ¨¹ınextText()»ñÈ¡ÎÄ±¾½ÚµãÖµ£¬»òÍ¨¹ıgetAttributeValue(i)»ñÈ¡ÊôĞÔ½ÚµãÖµ  
+	                case XmlPullParser.START_TAG://ï¿½ï¿½Ê¼ï¿½ï¿½È¡Ä³ï¿½ï¿½ï¿½ï¿½Ç©  
+	                    //Í¨ï¿½ï¿½getNameï¿½Ğ¶Ï¶ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½Ç©ï¿½ï¿½È»ï¿½ï¿½Í¨ï¿½ï¿½nextText()ï¿½ï¿½È¡ï¿½Ä±ï¿½ï¿½Úµï¿½Öµï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½getAttributeValue(i)ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ô½Úµï¿½Öµ  
 	                    String name = xpp.getName();  
 	                    if (name.equalsIgnoreCase("record")) {  
 	                    	currentMap = new SimpleArrayMap<String, String>();  
@@ -56,11 +112,11 @@ public class HttpXmlParser {
 	                    		currentMap.put(xpp.getAttributeName(i), xpp.getAttributeValue(i));  
 	                        }   
 	                    } else if (currentMap != null) { 
-	                    	currentMap.put(name, xpp.nextText());// Èç¹ûºóÃæÊÇTextÔªËØ,¼´·µ»ØËüµÄÖµ    
+	                    	currentMap.put(name, xpp.nextText());// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TextÔªï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ    
 	                    }  
 	                    break;  
-	                case XmlPullParser.END_TAG:// ½áÊøÔªËØÊÂ¼ş  
-	                    //¶ÁÍêÒ»¸öPerson£¬¿ÉÒÔ½«ÆäÌí¼Óµ½¼¯ºÏÀàÖĞ  
+	                case XmlPullParser.END_TAG:// ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½Â¼ï¿½  
+	                    //ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Personï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 	                    if (xpp.getName().equalsIgnoreCase("record")&& currentMap != null) {  
 	                    	mapInArr.add(currentMap);  
 	                    	currentMap = null;  
@@ -70,10 +126,8 @@ public class HttpXmlParser {
 	                eventType = xpp.next();  
 	            }  
 				in.close();
-				urlConnection.disconnect();
 				return mapInArr;
 			}else{
-				urlConnection.disconnect();
 				return null;
 			}
 		} catch (Exception e) {
