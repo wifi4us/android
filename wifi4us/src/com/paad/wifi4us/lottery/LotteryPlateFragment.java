@@ -263,6 +263,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 				}
 				tv.setText(Html.fromHtml("每注" + creditPerCaipiao + "积分"
 						+ htmlStr));
+				confirmButton.setClickable(false);
+				confirmButton.setBackgroundColor(Color.LTGRAY);
 				return;
 			}
 			if (caipiaoCnt > 0) {
