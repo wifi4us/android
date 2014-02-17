@@ -8,6 +8,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -190,15 +191,6 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 .findViewById(R.id.dlt_blue),R.layout.checkbox_blueball,blueballListener,numBlueBall, blueStatus);
         confirmButton = (Button) result.findViewById(R.id.dlt_confirm_btn);
         confirmButton.setOnClickListener(this);
-        final Handler handler = new Handler(){
-        	
-        	@Override
-        	public void handleMessage(Message msg) {
-        		refreshTextView();
-        		super.handleMessage(msg);
-        	}
-        	
-        };
         new AsyncTask<Object, Object, Object>(){
 
 			@SuppressLint("HandlerLeak")
@@ -206,11 +198,18 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 			protected Object doInBackground(Object... arg0) {
 				try{
 				creditPerCaipiao = RemoteInfoFetcher.fetchLotteryCredit();
-				handler.obtainMessage().sendToTarget();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 				return null;
+			}
+			/* (non-Javadoc)
+			* @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+			*/
+			@Override
+			protected void onPostExecute(Object result) {
+			    refreshTextView();
+			    super.onPostExecute(result);
 			}
         	
         }.execute(new Object[]{new Object()});
@@ -219,7 +218,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 		sponsorLink.setText(Html.fromHtml("<a href='"
 				+ getResources().getString(R.string.sponsor_url) + "'>"
 				+ getResources().getString(R.string.sponsor_line1) +"<br>"
-				+ getResources().getString(R.string.sponsor_line2) + "</a>"));
+				+ "<small>"+getResources().getString(R.string.sponsor_line2) + "</small></a>"));
 		sponsorLink.setOnClickListener(new OnClickListener(){
 
 			@Override
@@ -268,7 +267,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 			}
 			if (caipiaoCnt > 0) {
 				if (creditPerCaipiao == null) {
-					tv.setText(Html.fromHtml("无法获取每注彩票所需积分"+htmlStr));
+					tv.setText(Html.fromHtml("qqq已购买" + caipiaoCnt + "注"+htmlStr));
 				} else {
 					tv.setText(Html.fromHtml("已购买" + caipiaoCnt + "注，需"
 							+ caipiaoCnt * creditPerCaipiao + "积分" + htmlStr));
@@ -356,43 +355,62 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         builder.setPositiveButton("购买", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-				final DeviceInfo di = DeviceInfo.getInstance(activity);
-				final SharedPreferenceHelper sph = new SharedPreferenceHelper(
-						activity);
-				new AsyncTask<Object, String, int[]>(){
+                final DeviceInfo di = DeviceInfo.getInstance(activity);
+                final SharedPreferenceHelper sph = new SharedPreferenceHelper(
+                        activity);
+                new AsyncTask<Object, String, int[]>() {
 
-					@Override
-					protected int[] doInBackground(Object... arg0) {
-						try{
-						// TODO Auto-generated method stub
-						return RemoteInfoFetcher.buyTicket(di.getIMEI(), sph
-								.getString("USER_ID"), sharedPreference
-								.getString(Constant.HttpParas.PHONE), sharedPreference
-								.getString(Constant.HttpParas.ID_NUM), sharedPreference
-								.getString(Constant.HttpParas.NAME), sharedPreference
-								.getString(Constant.HttpParas.ALIPAY_ID), "lottery",
-								buildProgramString(), (int)caipiaoCnt);
-						}catch(Exception e){
-							e.printStackTrace();
-							return new int[]{0,999};
-						}
-					}
+                    ProgressDialog dialog;
+                    @Override
+                    protected void onPreExecute() {
+                        dialog = new ProgressDialog(activity);
+                        dialog.setTitle("qqq兑换彩票");
+                        dialog.setMessage("qqq正在兑换，请稍等...");
+                        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        dialog.show();
+                        super.onPreExecute();
+                    }
 
-					@Override
-					protected void onPostExecute(int[] result) {
-						if(result[0] == 0){
-							Toast.makeText(activity, "购买成功", Toast.LENGTH_SHORT).show();
-						}else{
-							Toast.makeText(activity, "购买失败", Toast.LENGTH_SHORT).show();
-						}
-						sph.putString("CREDIT", String.valueOf(result[1]));
-						super.onPostExecute(result);
-					}
-					
-					
-				}.execute(new Object[0]);
-				dialog.dismiss();
-			}
+                    @Override
+                    protected int[] doInBackground(Object... arg0) {
+                        try {
+                            // TODO Auto-generated method stub
+                            return RemoteInfoFetcher.buyTicket(
+                                    di.getIMEI(),
+                                    sph.getString("USER_ID"),
+                                    sharedPreference
+                                            .getString(Constant.HttpParas.PHONE),
+                                    sharedPreference
+                                            .getString(Constant.HttpParas.ID_NUM),
+                                    sharedPreference
+                                            .getString(Constant.HttpParas.NAME),
+                                    sharedPreference
+                                            .getString(Constant.HttpParas.ALIPAY_ID),
+                                    "lottery", buildProgramString(),
+                                    (int) caipiaoCnt);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(int[] result) {
+                        dialog.dismiss();
+                        if (result != null && result[0] == 0) {
+                            Toast.makeText(activity, "购买成功", Toast.LENGTH_SHORT)
+                                    .show();
+                            sph.putString("CREDIT", String.valueOf(result[1]));
+                        } else {
+                            Toast.makeText(activity, "购买失败", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                        super.onPostExecute(result);
+                    }
+
+                }.execute(new Object[0]);
+                dialog.dismiss();
+            }
         });
         builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
             @Override

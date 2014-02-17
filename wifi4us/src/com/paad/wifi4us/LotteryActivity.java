@@ -39,7 +39,7 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
     		@Override
     		public void uncaughtException(Thread arg0, Throwable arg1) {
     			Log.e("lottery", arg1.getMessage());
-    			
+    			arg1.printStackTrace();
     		}
     	});
         Log.d("LotteryActivity", "in onCreate");

@@ -1,21 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" ><TextView
-        android:id="@+id/lottery_history_period"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dip"
-        android:layout_marginTop="5dip"
-        android:textSize="15sp" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="2dip"
-        android:layout_marginLeft="35dip"
-        android:layout_marginRight="35dip"
-        android:background="@drawable/gray_line"
-        android:contentDescription="@null" />
+    android:orientation="vertical" >
 
     <TextView
         android:id="@+id/lottery_history_trade_id"

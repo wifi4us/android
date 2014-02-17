@@ -11,9 +11,15 @@ import com.paad.wifi4us.utility.data.LotteryHistory;
 
 public class RemoteInfoFetcher {
 	
-	private final static boolean debug = false;
+	private static boolean debug = false;
 	public static List<LotteryHistory> fetchLotteryHistories(String imei, String userid){
 		if(debug){
+		    try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 			List<LotteryHistory> histories = new ArrayList<LotteryHistory>();
 			LotteryHistory history = new LotteryHistory();
 			history.periodNumber = "20131201";
@@ -71,6 +77,11 @@ public class RemoteInfoFetcher {
 			String phone, String idNum, String name, String alipayId,
 			String type, String program, int notes){
 		if(debug){
+		    try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 			return new int[]{0,9527};
 		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildExchangeLotteryUrl(imei, userid, phone, idNum, name, alipayId, type, program, notes));
