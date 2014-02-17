@@ -390,23 +390,21 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                                     (int) caipiaoCnt);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            return new int[] {
-                                0, 999
-                            };
+                            return null;
                         }
                     }
 
                     @Override
                     protected void onPostExecute(int[] result) {
                         dialog.dismiss();
-                        if (result[0] == 0) {
+                        if (result != null && result[0] == 0) {
                             Toast.makeText(activity, "购买成功", Toast.LENGTH_SHORT)
                                     .show();
+                            sph.putString("CREDIT", String.valueOf(result[1]));
                         } else {
                             Toast.makeText(activity, "购买失败", Toast.LENGTH_SHORT)
                                     .show();
                         }
-                        sph.putString("CREDIT", String.valueOf(result[1]));
                         super.onPostExecute(result);
                     }
 
