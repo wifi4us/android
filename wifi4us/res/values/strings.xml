@@ -86,6 +86,7 @@
 	<string name="lottery_state_4">已中奖</string>
 	<string name="lottery_state_5">未中奖</string>
 	<string name="lottery_state_6">已派奖</string>
+    <string name="lottery_state_7">正在派奖</string>
 	<string name="lottery_state_unknow">未知</string>
 	<string name="lottery_more">获取最新购买记录</string>
 	
