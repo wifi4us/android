@@ -76,7 +76,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 		if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
 			traffic.setText("0");
 		}else{
-			traffic.setText("不限流量模式");
+			traffic.setText("不限");
 		}
 		return view_res;
 	}

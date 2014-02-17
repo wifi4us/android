@@ -9,14 +9,14 @@
 		<TextView
 		    android:layout_width="wrap_content"   
 			android:layout_height="50dp"
-			android:paddingRight="40dp"
+			android:paddingRight="10dp"
 			android:textSize="20sp"
 			android:gravity="bottom"
 			android:textColor="#111111"
 			android:text="@string/send_text_state_startwork"/>
 		
 		<TextView
-		    android:layout_width="100dp"   
+		    android:layout_width="130dp"   
 			android:layout_height="50dp"
 			android:background="#9ACD32"
 			android:textColor="#FFFFFF"
@@ -25,7 +25,7 @@
 			android:id="@+id/send_text_traffic_used"/>
 		
 	    <TextView
-		    android:layout_width="100dp"   
+		    android:layout_width="50dp"   
 			android:layout_height="50dp"
 			android:paddingLeft="5dp"
 			android:textSize="20sp"

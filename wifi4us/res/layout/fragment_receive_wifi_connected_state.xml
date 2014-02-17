@@ -1,43 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal" >
 
-		
-		
 		<TextView
 		    android:layout_width="wrap_content"   
 			android:layout_height="50dp"
-			android:paddingBottom="5dp"
+			android:paddingRight="10dp"
 			android:textSize="20sp"
 			android:gravity="bottom"
 			android:textColor="#111111"
 			android:text="@string/receive_text_state_startwork"/>
 		
-		<LinearLayout 
-    		android:layout_width="match_parent"
-    		android:layout_height="match_parent"
-    		android:gravity="center" 
-    		android:orientation="horizontal" >
-			
-			<TextView
-		    	android:layout_width="100dp"   
-				android:layout_height="50dp"
-				android:background="#9ACD32"
-				android:textColor="#FFFFFF"
-				android:textSize="40sp"
-				android:gravity="right"
-				android:id="@+id/receive_text_traffic_used"/>
+		<TextView
+		    android:layout_width="150dp"   
+			android:layout_height="50dp"
+			android:background="#9ACD32"
+			android:textColor="#FFFFFF"
+			android:textSize="40sp"
+			android:gravity="right"
+			android:id="@+id/receive_text_traffic_used"/>
 		
-	    	<TextView
-		    	android:layout_width="100dp"   
-				android:layout_height="50dp"
-				android:paddingLeft="5dp"
-				android:textSize="20sp"
-				android:textColor="#111111"
-				android:gravity="bottom"
-				android:text="@string/receive_text_state_unit"/>
-		</LinearLayout>
-	    
+	    <TextView
+		    android:layout_width="50dp"   
+			android:layout_height="50dp"
+			android:paddingLeft="5dp"
+			android:textSize="20sp"
+			android:textColor="#111111"
+			android:gravity="bottom"
+			android:text="@string/receive_text_state_unit"/>
+		
 </LinearLayout>
