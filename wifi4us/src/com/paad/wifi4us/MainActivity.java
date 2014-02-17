@@ -440,7 +440,7 @@ public class MainActivity extends ActionBarActivity {
 			mImageContent.setTitle(context.getResources()
 					.getString(R.string.setDiscuss));
 			mImageContent.setContent(getString(R.string.main_activity_social_share_content));
-			mImageContent.setLinkUrl("http://wifi4us.paad.com/");
+			mImageContent.setLinkUrl("http://www.wifitogether.com/");
 			mImageContent.setImageData(BitmapFactory.decodeResource(
 					context.getResources(), R.drawable.ic_launcher));
 			initShare = true;
