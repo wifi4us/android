@@ -26,7 +26,7 @@ import android.util.Log;
 public class LotteryActivity extends ActionBarActivity implements TabListener{
 
     FragmentManager fragmentManager;
-    
+    String[] tags;
     ActionBar actionBar;
     public static final int TAG_NUM = 3;
     
@@ -47,6 +47,7 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayShowTitleEnabled(false);
+        tags = new String[]{getString(R.string.lottery_tab_1), getString(R.string.lottery_tab_2), getString(R.string.lottery_tab_3)};
         for (int i = 0; i < TAG_NUM; ++i) {
             Tab tab = actionBar.newTab().setText(tags[i]).setTabListener(this);
             actionBar.addTab(tab, i);
@@ -61,8 +62,7 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
     public void onTabReselected(Tab arg0, FragmentTransaction arg1) {}
 
     Fragment[] fragments = new Fragment[TAG_NUM];
-    String[] tags = new String[]{"选号", "购买记录", "用户信息"};
-    
+     
     @Override
     public void onTabSelected(Tab tab, FragmentTransaction ft) {
         int pos = tab.getPosition();

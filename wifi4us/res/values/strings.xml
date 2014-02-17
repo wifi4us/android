@@ -68,6 +68,9 @@
 	<string name="main_activity_otherfragment_useridtext_initfail">用户id获取失败</string>
 	<string name="main_activity_otherfragment_credittext">你的积分为：</string>
 	
+	<string name="lottery_tab_1">兑换</string>
+	<string name="lottery_tab_2">购彩记录</string>
+	<string name="lottery_tab_3">实名信息</string>
 	<string name="lottery_info_period">期次</string>
 	<string name="lottery_info_ticket_id">识别码</string>
 	<string name="lottery_info_program">方案</string>
