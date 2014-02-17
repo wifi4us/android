@@ -218,7 +218,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 		sponsorLink.setText(Html.fromHtml("<a href='"
 				+ getResources().getString(R.string.sponsor_url) + "'>"
 				+ getResources().getString(R.string.sponsor_line1) +"<br>"
-				+ getResources().getString(R.string.sponsor_line2) + "</a>"));
+				+ "<small>"+getResources().getString(R.string.sponsor_line2) + "</small></a>"));
 		sponsorLink.setOnClickListener(new OnClickListener(){
 
 			@Override
