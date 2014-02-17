@@ -1,6 +1,8 @@
 package com.paad.wifi4us.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.support.v4.util.SimpleArrayMap;
@@ -47,6 +49,14 @@ public class RemoteInfoFetcher {
 			LotteryHistory history = LotteryHistory.buildHistoryFromMap(map);
 			histories.add(history);
 		}
+		Collections.sort(histories, new Comparator<LotteryHistory>() {
+
+            @Override
+            public int compare(LotteryHistory lhs, LotteryHistory rhs) {
+                return rhs.tradeId.compareTo(lhs.tradeId);
+            }
+		    
+		});
 		return histories;
 	}
 	
@@ -86,6 +96,7 @@ public class RemoteInfoFetcher {
 		}
 		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildExchangeLotteryUrl(imei, userid, phone, idNum, name, alipayId, type, program, notes));
 		if(mapInArr == null){
+		    Log.d("buyTicket", "null result");
 			return null;
 		}
 		String state = mapInArr.get(0).get(Constant.XmlResultKey.STATE);
