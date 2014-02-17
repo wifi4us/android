@@ -47,6 +47,7 @@
    				android:layout_weight="5"
    				android:layout_margin="10dp"
    				android:orientation="vertical"
+   				android:layout_gravity="center|center_horizontal"
    				android:id="@+id/receive_container_scan">
     		</LinearLayout>
     		
@@ -56,6 +57,7 @@
    				android:layout_weight="5"
    				android:layout_margin="10dp"
    				android:orientation="vertical"
+   				android:layout_gravity="center|center_horizontal"
    				android:id="@+id/receive_container_scan_result">
     		</LinearLayout> 
     		

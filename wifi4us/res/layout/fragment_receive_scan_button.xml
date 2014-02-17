@@ -5,6 +5,8 @@
     android:orientation="vertical" >
 
 		<Button
+		    android:layout_width="match_parent"
+   			android:layout_height="wrap_content"
 		    android:id="@+id/receive_button_start_scan_button"
 			style="@style/button"
 		    android:gravity="center|center_horizontal"

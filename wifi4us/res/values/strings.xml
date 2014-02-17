@@ -4,8 +4,8 @@
     <string name="startservice">share 15 mins and 3M</string>
     <string name="hello">hello world</string>
     <string name="send">send</string>
-    <string name="sponsor_line1">彩票宝描述</string>
-    <string name="sponsor_line2">彩票购买部分由xxx提供</string>
+    <string name="sponsor_line1">Android彩票宝</string>
+    <string name="sponsor_line2">实名注册送5元彩金</string>
 	<string name="sponsor_url">http://www.baidu.com</string>
     
     <string name="receive_string_switcher_text_on">Wifi已打开</string>
@@ -83,7 +83,7 @@
 	<string name="lottery_state_5">未中奖</string>
 	<string name="lottery_state_6">已派奖</string>
 	<string name="lottery_state_unknow">未知</string>
-	<string name="lottery_more">刷新</string>
+	<string name="lottery_more">获取最新购买记录</string>
 	
 	<string name="lottery_pref_username_dialogTitle">请输入真实姓名</string>
 	<string name="lottery_pref_username_summery">用于兑大额奖金的真实姓名</string>
