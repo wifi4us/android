@@ -6,7 +6,7 @@
 		android:paddingBottom="5dip"
         android:layout_marginBottom="5dip">
 <TextView 
-    android:id="@+id/lottery_history_ticket_id"
+    android:id="@+id/lottery_history_period"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="35dip"
@@ -21,6 +21,6 @@
 	android:textColor="#ff3030"
     android:textSize="20sp"
     android:layout_alignParentRight="true"
-    android:layout_toRightOf="@+id/lottery_history_ticket_id" />
+    android:layout_toRightOf="@+id/lottery_history_period" />
 
     </RelativeLayout>
