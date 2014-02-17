@@ -36,7 +36,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="text_versioin">版本</string>
     <string name="clear_cache">清除缓存</string>
-    <string name="binary_code">二维码</string>
+    <string name="binary_code">刷二维码下载本软件</string>
     <string name="help">帮助</string>
     <string name="check_update">检查更新</string>
     <string name="feedback">反馈</string>
@@ -67,6 +67,7 @@
 	<string name="main_activity_otherfragment_useridtext">你的id为：</string>
 	<string name="main_activity_otherfragment_useridtext_initfail">用户id获取失败</string>
 	<string name="main_activity_otherfragment_credittext">你的积分为：</string>
+	<string name="main_activity_social_share_content">#一起wifi#流量用不完？便宜了谁也不能便宜移动！流量不够用？赶紧找小伙伴要把！http://www.wifitogether.com，下载一起wifi，全球首款带积分奖励和流量限制的手机个人wifi热点管理工具。把你的流量分享给小伙伴们获取积分。</string>
 	
 	<string name="lottery_tab_1">兑换</string>
 	<string name="lottery_tab_2">购彩记录</string>
