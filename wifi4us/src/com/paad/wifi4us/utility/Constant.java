@@ -1,17 +1,10 @@
-/**
- * @(#)Constants.java, 2014-1-6. 
- * 
- * Copyright 2014 Yodao, Inc. All rights reserved.
- * YODAO PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
 package com.paad.wifi4us.utility;
 
-/**
- *
- * @author yangshi
- *
- */
 public class Constant {
+	public static native String stringFromJNI(int keyName); 
+	static{
+		System.loadLibrary("com_paad_wifi4us_utility_Constant");
+	} 
 	
 	public static class HttpParas{
 		public static String IMEI = "imei";
@@ -60,22 +53,21 @@ public class Constant {
 	}
 	
     public static final class Security {
-    	public static final String DES_KEY = "12345678";
+    	public static final String DES_KEY = stringFromJNI(0);
     }
     
     public static final class Networks {
-        public static final String SERVER_PREFIX = "";
     	public static final int SERVER_PORT = 12345;
-    	public static final String AD_BASE_HTTPURL = "http://wifi4us.duapp.com/getadid.php";
+    	public static final String AD_BASE_HTTPURL = stringFromJNI(1);
     	public static final int TIME_INTERVAL_AD = 20000;
     	public static final int TIME_INTERVAL = 2500;
     	public static final int TIME_INTERVAL_RECEIVE = 5000;
-        public static final String REGISTER_BASE_HTTPURL = "http://wifi4us.duapp.com/register.php";
-        public static final String GETCREDIT_BASE_HTTPURL = "http://wifi4us.duapp.com/getcredit.php";
-        public static final String LOTTERY_HISTORY_HTTPURL = "http://wifi4us.duapp.com/get_lottery_info.php";
-        public static final String CREDIT_PER_LOTTERY_HTTPURL = "http://wifi4us.duapp.com/get_credit_mechanism.php";
-        public static final String EXCHANGE_LOTTERY_HTTPURL = "https://wifi4us.duapp.com/reduce.php";
-        public static final String ADD_CREDIT_HTTPURL = "http://wifi4us.duapp.com/add.php";
+        public static final String REGISTER_BASE_HTTPURL = stringFromJNI(2);
+        public static final String GETCREDIT_BASE_HTTPURL = stringFromJNI(3);
+        public static final String LOTTERY_HISTORY_HTTPURL = stringFromJNI(4);
+        public static final String CREDIT_PER_LOTTERY_HTTPURL = stringFromJNI(5);
+        public static final String EXCHANGE_LOTTERY_HTTPURL = stringFromJNI(6);
+        public static final String ADD_CREDIT_HTTPURL = stringFromJNI(7);
     	public static final int WIFICONNECT_TRIALS = 10;
     }
     

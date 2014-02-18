@@ -35,6 +35,7 @@ public class FirstActivity extends Activity {
 		
 		 Thread thread = new Thread(runnable);
 		 thread.start();
+
     }
 
     @Override

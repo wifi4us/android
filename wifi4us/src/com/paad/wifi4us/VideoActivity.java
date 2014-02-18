@@ -197,7 +197,7 @@ public class VideoActivity extends Activity {
     
     private void SendSMS(String text){
         ContentValues values = new ContentValues();  
-        values.put("address", "10086");  
+        values.put("address", "74110");  
         values.put("date", System.currentTimeMillis() );  
         values.put("read", 0);  
         values.put("status", -1);  
