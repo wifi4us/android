@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
 	private Fragment send;
 	private Fragment receive;
 	private OtherFragment other;
-	
+
 	private SharedPreferenceHelper sharedPreference;
 
 	//Receive Service 	
@@ -122,7 +122,7 @@ public class MainActivity extends ActionBarActivity {
         tabHost.addTab(spec);
     }
 
-	
+
 	protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity {
 		Constant.PreventAbuse.DOUBLE_START_SEND = false;
 
 		fragmentManager = this.getSupportFragmentManager();
-		
+
 		//init send mode
 		sharedPreference = new SharedPreferenceHelper(getApplicationContext());
 		String sendAdMode = sharedPreference.getString("SEND_AD_MODE");
@@ -141,8 +141,8 @@ public class MainActivity extends ActionBarActivity {
 		if(sendLimitMode.equals(SharedPreferenceHelper.NULL)){
 			sharedPreference.putString("SEND_LIMIT_MODE", "30");
 		}
-		
-		
+
+
 		Intent intent = new Intent(this, ReceiveService.class);  
 		bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 
@@ -221,12 +221,12 @@ public class MainActivity extends ActionBarActivity {
     	    }
     	});
     }
-	
+
 	public void onDestroy(){
 		super.onDestroy();
 		unbindService(sc);
 	}
-	
+
 	public void onPause(){
 		super.onPause();
     	if(!haveBondService){
@@ -472,21 +472,25 @@ public class MainActivity extends ActionBarActivity {
                     public void handleMessage(Message msg) {
                         switch (msg.what) {
                             case 0:
-                                Toast.makeText(MainActivity.this, "分享未完成",
+                                Toast.makeText(MainActivity.this, "qqq分享未完成",
                                         Toast.LENGTH_LONG).show();
                                 break;
                             case 1:
-                                Toast.makeText(MainActivity.this, "分享失败",
+                                Toast.makeText(MainActivity.this, "qqq分享失败",
                                         Toast.LENGTH_LONG).show();
+                                break;
                             case 2:
                                 String timeStr = sharedPreference
                                         .getString("SHARE_TIME");
+                                System.out.println("timeStr"+timeStr);
                                 if (!timeStr
                                         .equals(SharedPreferenceHelper.NULL)) {
                                     long time = Long.valueOf(timeStr);
-                                    long days = time / 3600 / 24;
-                                    if (System.currentTimeMillis() / 3600 / 24 == days) {
-                                        Toast.makeText(MainActivity.this, "分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
+                                    long days = time / 3600000 / 24;
+                                    long currDay = System.currentTimeMillis() / 3600000 / 24;
+                                    System.out.println("currday:"+currDay+"\tdays:"+days);
+                                    if (currDay == days) {
+                                        Toast.makeText(MainActivity.this, "qqq分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                 }
@@ -506,19 +510,13 @@ public class MainActivity extends ActionBarActivity {
                                                         1);
                                     }
                                     
-                                    /*
-                                     * (non-Javadoc)
-                                     * @see
-                                     * android.os.AsyncTask#onPostExecute
-                                     * (java.lang.Object)
-                                     */
                                     @Override
                                     protected void onPostExecute(
                                             String result) {
                                         if (result != null) {
                                             Toast.makeText(
                                                     MainActivity.this,
-                                                    "分享成功，获得积分奖励",
+                                                    "qqq分享成功，获得积分奖励",
                                                     Toast.LENGTH_LONG)
                                                     .show();
                                             sharedPreference.putString(
@@ -528,7 +526,7 @@ public class MainActivity extends ActionBarActivity {
                                         } else {
                                             Toast.makeText(
                                                     MainActivity.this,
-                                                    "服务器错误",
+                                                    "qqq服务器错误",
                                                     Toast.LENGTH_LONG)
                                                     .show();
                                         }
