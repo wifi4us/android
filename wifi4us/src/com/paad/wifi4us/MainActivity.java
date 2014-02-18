@@ -134,7 +134,7 @@ public class MainActivity extends ActionBarActivity {
 		String sendAdMode = sharedPreference.getString("SEND_AD_MODE");
 		String sendLimitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 		if(sendAdMode.equals(SharedPreferenceHelper.NULL)){
-			sharedPreference.putString("SEND_AD_MODE", "YES");
+			sharedPreference.putString("SEND_AD_MODE", "NO");
 		}
 		if(sendLimitMode.equals(SharedPreferenceHelper.NULL)){
 			sharedPreference.putString("SEND_LIMIT_MODE", "30");

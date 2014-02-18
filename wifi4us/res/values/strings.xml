@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">一起wifi</string>
-    <string name="startservice">share 15 mins and 3M</string>
-    <string name="hello">hello world</string>
-    <string name="send">send</string>
+  
     <string name="sponsor_line1">Android彩票宝</string>
     <string name="sponsor_line2">实名注册送5元彩金</string>
 	<string name="sponsor_url">http://data.cpbao.com/cpbao_lch.apk?.source=wifi4us</string>
@@ -90,6 +88,11 @@
 	<string name="lottery_state_unknow">未知</string>
 	<string name="lottery_more">获取最新购买记录</string>
 	
+	<string name="lottery_history_dialog_title">查询彩票</string>
+	<string name="lottery_history_dialog_content">正在查询，请稍等...</string>
+	<string name="lottery_plate_dialog_title">兑换彩票</string>
+	<string name="lottery_plate_dialog_content">正在兑换，请稍等...</string>
+			
 	<string name="lottery_pref_username_dialogTitle">请输入真实姓名</string>
 	<string name="lottery_pref_username_summery">用于兑大额奖金的真实姓名</string>
 	<string name="lottery_pref_username_title">姓名</string>

@@ -122,7 +122,13 @@ public class SendStartShareButton extends Fragment{
 		adMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 			public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
 				if(isChecked){
-					sharedPreference.putString("SEND_AD_MODE", "YES");
+					if(sharedPreference.getString("SEND_LIMIT_MODE").equals("UN")){
+						adMode.setChecked(false);
+						sharedPreference.putString("SEND_AD_MODE", "NO");
+						Toast.makeText(getActivity(), "不限流量无法插播广告", Toast.LENGTH_SHORT).show();
+					}else{
+						sharedPreference.putString("SEND_AD_MODE", "YES");
+					}
 				}else{
 					sharedPreference.putString("SEND_AD_MODE", "NO");
 				}
@@ -152,11 +158,12 @@ public class SendStartShareButton extends Fragment{
                 	sharedPreference.putString("SEND_LIMIT_MODE", "60");
                 }else{
                 	sharedPreference.putString("SEND_LIMIT_MODE", "UN");
+                	adMode.setChecked(false);
+					sharedPreference.putString("SEND_AD_MODE", "NO");
+					Toast.makeText(getActivity(), "不限流量无法插播广告", Toast.LENGTH_SHORT).show();
                 }
             }  
-        });  
-		
-		
+        });  	
 		return view_res;
 	}
 	

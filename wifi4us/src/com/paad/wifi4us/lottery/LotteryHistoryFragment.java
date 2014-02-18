@@ -8,12 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,8 +115,8 @@ public class LotteryHistoryFragment extends Fragment {
             @Override
             protected void onPreExecute() {
                 dialog = new ProgressDialog(LotteryHistoryFragment.this.getActivity());
-                dialog.setTitle("qqq兑换历史");
-                dialog.setMessage("qqq正在获取兑换历史，请稍后...");
+                dialog.setTitle(getActivity().getString(R.string.lottery_history_dialog_title));
+                dialog.setMessage(getActivity().getString(R.string.lottery_history_dialog_content));
                 dialog.show();
                 super.onPreExecute();
             }

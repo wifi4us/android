@@ -5,6 +5,7 @@ package com.paad.wifi4us.lottery;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -15,8 +16,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
@@ -33,6 +32,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.paad.wifi4us.LotteryActivity;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
@@ -369,8 +369,8 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                     @Override
                     protected void onPreExecute() {
                         dialog = new ProgressDialog(activity);
-                        dialog.setTitle("qqq兑换彩票");
-                        dialog.setMessage("qqq正在兑换，请稍等...");
+                        dialog.setTitle(getActivity().getString(R.string.lottery_plate_dialog_title));
+                        dialog.setMessage(getActivity().getString(R.string.lottery_plate_dialog_content));
                         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         dialog.show();
                         super.onPreExecute();

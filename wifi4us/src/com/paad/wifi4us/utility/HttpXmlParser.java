@@ -2,7 +2,6 @@ package com.paad.wifi4us.utility;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 
@@ -34,13 +33,13 @@ public class HttpXmlParser {
         public static synchronized HttpClient getHttpClient() {
                   
                         if (null == httpClient) {
-                           // 初始化工作
+                           // ���濮����宸ヤ��
                             try {
                               KeyStore trustStore = KeyStore.getInstance(KeyStore
                                       .getDefaultType());
                                trustStore.load(null, null);
                                SSLSocketFactoryEx sf = new SSLSocketFactoryEx(trustStore);
-                               sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);  //允许所有主机的验证
+                               sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);  //���璁告�����涓绘�虹��楠�璇�
                  
                                HttpParams params = new BasicHttpParams();
                 
@@ -49,14 +48,14 @@ public class HttpXmlParser {
                                        HTTP.UTF_8);
                                HttpProtocolParams.setUseExpectContinue(params, true);
                 
-                               // 设置连接管理器的超时
+                               // 璁剧疆杩���ョ�＄����ㄧ��瓒����
                                  ConnManagerParams.setTimeout(params, 5000);
-                               // 设置连接超时
+                               // 璁剧疆杩���ヨ�����
                                HttpConnectionParams.setConnectionTimeout(params, 5000);
-                              // 设置socket超时
+                              // 璁剧疆socket瓒����
                               HttpConnectionParams.setSoTimeout(params, 5000);
                 
-                              // 设置http https支持
+                              // 璁剧疆http https������
                               SchemeRegistry schReg = new SchemeRegistry();
                               schReg.register(new Scheme("http", PlainSocketFactory
                                       .getSocketFactory(), 80));
@@ -100,11 +99,11 @@ public class HttpXmlParser {
 				mapInArr = null;  
 	            while (eventType != XmlPullParser.END_DOCUMENT) {  
 	                switch (eventType) {  
-	                case XmlPullParser.START_DOCUMENT:// �ĵ���ʼ�¼�,���Խ�����ݳ�ʼ������  
-	                	mapInArr = new ArrayList<SimpleArrayMap<String, String>>();// ʵ�����  
+	                case XmlPullParser.START_DOCUMENT:// 锟侥碉拷锟斤拷始锟铰硷拷,锟斤拷锟皆斤拷锟斤拷锟斤拷莩锟绞硷拷锟斤拷锟斤拷锟�  
+	                	mapInArr = new ArrayList<SimpleArrayMap<String, String>>();// 实锟斤拷锟斤拷锟�  
 	                    break;  
-	                case XmlPullParser.START_TAG://��ʼ��ȡĳ����ǩ  
-	                    //ͨ��getName�ж϶����ĸ���ǩ��Ȼ��ͨ��nextText()��ȡ�ı��ڵ�ֵ����ͨ��getAttributeValue(i)��ȡ���Խڵ�ֵ  
+	                case XmlPullParser.START_TAG://锟斤拷始锟斤拷取某锟斤拷锟斤拷签  
+	                    //通锟斤拷getName锟叫断讹拷锟斤拷锟侥革拷锟斤拷签锟斤拷然锟斤拷通锟斤拷nextText()锟斤拷取锟侥憋拷锟节碉拷值锟斤拷锟斤拷通锟斤拷getAttributeValue(i)锟斤拷取锟斤拷锟皆节碉拷值  
 	                    String name = xpp.getName();  
 	                    if (name.equalsIgnoreCase("record")) {  
 	                    	currentMap = new SimpleArrayMap<String, String>();  
@@ -112,11 +111,11 @@ public class HttpXmlParser {
 	                    		currentMap.put(xpp.getAttributeName(i), xpp.getAttributeValue(i));  
 	                        }   
 	                    } else if (currentMap != null) { 
-	                    	currentMap.put(name, xpp.nextText());// ��������TextԪ��,���������ֵ    
+	                    	currentMap.put(name, xpp.nextText());// 锟斤拷锟斤拷锟斤拷锟斤拷Text元锟斤拷,锟斤拷锟斤拷锟斤拷锟斤拷锟街�    
 	                    }  
 	                    break;  
-	                case XmlPullParser.END_TAG:// ����Ԫ���¼�  
-	                    //����һ��Person�����Խ�����ӵ���������  
+	                case XmlPullParser.END_TAG:// 锟斤拷锟斤拷元锟斤拷锟铰硷拷  
+	                    //锟斤拷锟斤拷一锟斤拷Person锟斤拷锟斤拷锟皆斤拷锟斤拷锟斤拷拥锟斤拷锟斤拷锟斤拷锟斤拷锟�  
 	                    if (xpp.getName().equalsIgnoreCase("record")&& currentMap != null) {  
 	                    	mapInArr.add(currentMap);  
 	                    	currentMap = null;  
