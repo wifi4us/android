@@ -237,8 +237,8 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		case R.id.btn_clear_cache:
 			try {
 				new Builder(getActivity())
-						.setMessage("确认清空缓存" + context.getCacheDir() + "?")
-						.setTitle("缓存确认")
+						.setMessage("清空" + clearCache(false) + "字节缓存?")
+						.setTitle("清理缓存")
 						.setIcon(android.R.drawable.ic_dialog_alert)
 						.setPositiveButton("清空",
 								new DialogInterface.OnClickListener() {
@@ -246,7 +246,8 @@ public class OtherFragment extends Fragment implements OnClickListener {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										dialog.dismiss();
-										clearCache();
+										clearCache(true);
+										Toast.makeText(context, "清理完毕", Toast.LENGTH_SHORT).show();
 									}
 								})
 						.setNegativeButton("取消",
@@ -296,29 +297,20 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	}
 
-	private void clearCache() {
+	private long clearCache(boolean delete) {
 		// TODO Auto-generated method stub
-		long clear = 0;
 		long all = 0;
 		File directory = context.getCacheDir();
         if (directory != null && directory.exists() && directory.isDirectory()) {
             for (File item : directory.listFiles()) {
             	long length = item.length();
             	all+=length;
-                if(item.delete()){
-                	clear+=length;
-                }
+            	if(delete){
+            	    item.delete();
+            	}
             }
         }
-        new Builder(getActivity()).setMessage("清除完毕")
-				.setTitle("共" + all + "字节，" + "成功清除" + clear + "字节")
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				}).create().show();
+        return all;
 	}
 
 	/*
