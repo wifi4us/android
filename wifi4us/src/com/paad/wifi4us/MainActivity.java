@@ -479,43 +479,63 @@ public class MainActivity extends ActionBarActivity {
                                 Toast.makeText(MainActivity.this, "qqq分享失败",
                                         Toast.LENGTH_LONG).show();
                             case 2:
-                                // TODO Auto-generated method stub
-                                new AsyncTask<Object, Object, String>(){
-
+                                String timeStr = sharedPreference
+                                        .getString("SHARE_TIME");
+                                if (!timeStr
+                                        .equals(SharedPreferenceHelper.NULL)) {
+                                    long time = Long.valueOf(timeStr);
+                                    long days = time / 3600 / 24;
+                                    if (System.currentTimeMillis() / 3600 / 24 == days) {
+                                        Toast.makeText(MainActivity.this, "qqq分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
+                                        break;
+                                    }
+                                }
+                                new AsyncTask<Object, Object, String>() {
+                                    
                                     @Override
                                     protected String doInBackground(
                                             Object... params) {
                                         return RemoteInfoFetcher
                                         .addUserCredit(
-                                                DeviceInfo.getInstance(
+                                                DeviceInfo
+                                                .getInstance(
                                                         MainActivity.this)
                                                         .getIMEI(),
-                                                sharedPreference
+                                                        sharedPreference
                                                         .getString("USER_ID"),
-                                                1);
+                                                        1);
                                     }
-
-                                    /* (non-Javadoc)
-                                     * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+                                    
+                                    /*
+                                     * (non-Javadoc)
+                                     * @see
+                                     * android.os.AsyncTask#onPostExecute
+                                     * (java.lang.Object)
                                      */
                                     @Override
-                                    protected void onPostExecute(String result) {
+                                    protected void onPostExecute(
+                                            String result) {
                                         if (result != null) {
-                                            Toast.makeText(MainActivity.this,
-                                                    "qqq分享成功，获得积分奖励", Toast.LENGTH_LONG)
+                                            Toast.makeText(
+                                                    MainActivity.this,
+                                                    "qqq分享成功，获得积分奖励",
+                                                    Toast.LENGTH_LONG)
                                                     .show();
-                                            sharedPreference
-                                                    .putString("CREDIT", result);
+                                            sharedPreference.putString(
+                                                    "CREDIT", result);
                                             other.refreshCredit(result);
+                                            sharedPreference.putString("SHARE_TIME", String.valueOf(System.currentTimeMillis()));
                                         } else {
-                                            Toast.makeText(MainActivity.this,
-                                                    "qqq服务器错误", Toast.LENGTH_LONG)
+                                            Toast.makeText(
+                                                    MainActivity.this,
+                                                    "qqq服务器错误",
+                                                    Toast.LENGTH_LONG)
                                                     .show();
-                                        }                                        super.onPostExecute(result);
+                                        }
+                                        super.onPostExecute(result);
                                     }
                                     
-                                    
-                                }.execute(new Object[]{});
+                                }.execute(new Object[] {});
                                 break;
                             default:
                                 // do nothing;
