@@ -297,10 +297,6 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         }
         sb.append("\n蓝球：");
         for (int i = 0; i < blueTbs.size(); ++i) {
-        	if(i+1<=9){
-        		sb.append(0);
-        	}
-
             if (blueTbs.get(i).isChecked()) {
                 sb.append(i + 1);
                 sb.append(" ");
@@ -330,6 +326,9 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
         sb = new StringBuilder();
         for (int i = 0; i < blueTbs.size(); ++i) {
             if (blueTbs.get(i).isChecked()) {
+                if(i+1<=9){
+                    sb.append(0);
+                }
                 sb.append(i + 1);
                 sb.append(",");
             }
