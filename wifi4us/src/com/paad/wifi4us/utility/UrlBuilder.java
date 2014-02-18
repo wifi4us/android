@@ -14,15 +14,13 @@ public class UrlBuilder {
 	public static final String SEG_URL = "?";
 	public static final String SEG_KV = "=";
 
-	public static String buildAddCreditUrl(String imei,String userid,Integer type, Long duriation, Long traffic){
+	public static String buildAddCreditUrl(String imei,String userid,Integer type){
 		StringBuilder sb = new StringBuilder();
-		sb.append(Constant.Networks.LOTTERY_HISTORY_HTTPURL);
+		sb.append(Constant.Networks.ADD_CREDIT_HTTPURL);
 		sb.append(SEG_URL);
 		appendOnePara(sb, Constant.HttpParas.IMEI, imei, false);
 		appendOnePara(sb, Constant.HttpParas.USER_ID, userid, false);
-		appendOnePara(sb, Constant.HttpParas.TYPE, type.toString(), false);
-		appendOnePara(sb, Constant.HttpParas.DURATION, duriation.toString(), false);
-		appendOnePara(sb, Constant.HttpParas.TRAFFIC, traffic.toString(), true);
+		appendOnePara(sb, Constant.HttpParas.TYPE, type.toString(), true);
 		return sb.toString();
 	}
 	

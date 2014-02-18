@@ -280,6 +280,13 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		case R.id.btn_Set_Discuss:
 			((MainActivity)getActivity()).startShare(getActivity());
 			break;
+		case R.id.btn_help:
+	                  try {
+                              showWebViewDialog("help.html");
+                      } catch (Exception e) {
+                              e.printStackTrace();
+                      }
+                      break;
 		case R.id.btn_check_update:
 			startUpdate();
 			break;

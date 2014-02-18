@@ -60,15 +60,16 @@ public class RemoteInfoFetcher {
 		return histories;
 	}
 	
-	public static boolean addUserCredit(String imei,String userid,Integer type, Long duriation, Long traffic){
+	public static String addUserCredit(String imei,String userid,Integer type){
 		if(debug){
-			return true;
+			return "9527";
 		}
-		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildAddCreditUrl(imei, userid, type, duriation, traffic));
+		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildAddCreditUrl(imei, userid, type));
 		if(mapInArr == null){
-			return false;
+		    System.out.println("null mapInArr");
+			return null;
 		}
-		return true;
+		return mapInArr.get(0).get(Constant.XmlResultKey.ACCOUNT);
 	}
 	
 	public static Integer fetchLotteryCredit(){
