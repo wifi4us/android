@@ -478,14 +478,18 @@ public class MainActivity extends ActionBarActivity {
                             case 1:
                                 Toast.makeText(MainActivity.this, "qqq分享失败",
                                         Toast.LENGTH_LONG).show();
+                                break;
                             case 2:
                                 String timeStr = sharedPreference
                                         .getString("SHARE_TIME");
+                                System.out.println("timeStr"+timeStr);
                                 if (!timeStr
                                         .equals(SharedPreferenceHelper.NULL)) {
                                     long time = Long.valueOf(timeStr);
-                                    long days = time / 3600 / 24;
-                                    if (System.currentTimeMillis() / 3600 / 24 == days) {
+                                    long days = time / 3600000 / 24;
+                                    long currDay = System.currentTimeMillis() / 3600000 / 24;
+                                    System.out.println("currday:"+currDay+"\tdays:"+days);
+                                    if (currDay == days) {
                                         Toast.makeText(MainActivity.this, "qqq分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
                                         break;
                                     }
@@ -506,12 +510,6 @@ public class MainActivity extends ActionBarActivity {
                                                         1);
                                     }
                                     
-                                    /*
-                                     * (non-Javadoc)
-                                     * @see
-                                     * android.os.AsyncTask#onPostExecute
-                                     * (java.lang.Object)
-                                     */
                                     @Override
                                     protected void onPostExecute(
                                             String result) {
