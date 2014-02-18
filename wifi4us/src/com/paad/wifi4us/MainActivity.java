@@ -10,7 +10,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -61,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private Fragment send;
 	private Fragment receive;
-	private Fragment other;
+	private OtherFragment other;
 	
 	private SharedPreferenceHelper sharedPreference;
 
@@ -435,73 +437,130 @@ public class MainActivity extends ActionBarActivity {
 
     	send = fragmentManager.findFragmentById(R.id.send);
     	receive = fragmentManager.findFragmentById(R.id.receive);
-    	other = fragmentManager.findFragmentById(R.id.other);
+    	other = (OtherFragment)fragmentManager.findFragmentById(R.id.other);
     }
     
 	boolean initShare = false;
 	FrontiaSocialShareContent mImageContent;
 	FrontiaSocialShare mSocialShare;
-	public void startShare(final Context context) {
-		if (!initShare) {
-			mImageContent = new FrontiaSocialShareContent();
-			boolean isInit = Frontia.init(
-					context,
-					"gxLMGxsKv6q3WRAKxBZwuidD");
-			if (!isInit) {// Frontia is successfully initialized.
-				// Use Frontia
-				Toast.makeText(context, "init frontia fail", Toast.LENGTH_SHORT)
-						.show();
-			}
-			mSocialShare = Frontia.getSocialShare();
-			mSocialShare.setContext(context);
-			mImageContent.setTitle(context.getResources()
-					.getString(R.string.setDiscuss));
-			mImageContent.setContent(getString(R.string.main_activity_social_share_content));
-			mImageContent.setLinkUrl("http://www.wifitogether.com/");
-			mImageContent.setImageData(BitmapFactory.decodeResource(
-					context.getResources(), R.drawable.ic_launcher));
-			initShare = true;
-		}
-		mSocialShare.share(mImageContent, MediaType.BATCHSHARE.toString(),
-				new FrontiaSocialShareListener() {
 
-					@Override
-					public void onCancel() {
-						Log.d("Test", "share cancel");
+    public void startShare(final Context context) {
+        if (!initShare) {
+            mImageContent = new FrontiaSocialShareContent();
+            boolean isInit = Frontia.init(context, "gxLMGxsKv6q3WRAKxBZwuidD");
+            if (!isInit) {// Frontia is successfully initialized.
+                // Use Frontia
+                Toast.makeText(context, "init frontia fail", Toast.LENGTH_SHORT)
+                        .show();
+            }
+            mSocialShare = Frontia.getSocialShare();
+            mSocialShare.setContext(context);
+            mImageContent.setTitle(context.getResources().getString(
+                    R.string.setDiscuss));
+            mImageContent
+                    .setContent(getString(R.string.main_activity_social_share_content));
+            mImageContent.setLinkUrl("http://www.wifitogether.com/");
+            mImageContent.setImageData(BitmapFactory.decodeResource(
+                    context.getResources(), R.drawable.ic_launcher));
+            initShare = true;
+        }
 
-					}
+        mSocialShare.share(mImageContent, MediaType.BATCHSHARE.toString(),
+                new CustomListener(new Handler() {
 
-					@Override
-					public void onFailure(int arg0, String arg1) {
-						// TODO Auto-generated method stub
-						Log.d("Test", "share fail");
-					}
+                    @Override
+                    public void handleMessage(Message msg) {
+                        switch (msg.what) {
+                            case 0:
+                                Toast.makeText(MainActivity.this, "qqq分享未完成",
+                                        Toast.LENGTH_LONG).show();
+                                break;
+                            case 1:
+                                Toast.makeText(MainActivity.this, "qqq分享失败",
+                                        Toast.LENGTH_LONG).show();
+                            case 2:
+                                // TODO Auto-generated method stub
+                                new AsyncTask<Object, Object, String>(){
 
-					@Override
-					public void onSuccess() {
-						// TODO Auto-generated method stub
-						Log.d("Test", "share success");
-						new AsyncTask<Object, Object, Boolean>() {
+                                    @Override
+                                    protected String doInBackground(
+                                            Object... params) {
+                                        return RemoteInfoFetcher
+                                        .addUserCredit(
+                                                DeviceInfo.getInstance(
+                                                        MainActivity.this)
+                                                        .getIMEI(),
+                                                sharedPreference
+                                                        .getString("USER_ID"),
+                                                1);
+                                    }
 
-							@Override
-							protected Boolean doInBackground(Object... arg0) {
-								// TODO Auto-generated method stub
-								return RemoteInfoFetcher.addUserCredit(DeviceInfo.getInstance(context).getIMEI(), sharedPreference.getString("USER_ID"), 1, 0l, 0l);
-							}
+                                    /* (non-Javadoc)
+                                     * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+                                     */
+                                    @Override
+                                    protected void onPostExecute(String result) {
+                                        if (result != null) {
+                                            Toast.makeText(MainActivity.this,
+                                                    "qqq分享成功，获得积分奖励", Toast.LENGTH_LONG)
+                                                    .show();
+                                            sharedPreference
+                                                    .putString("CREDIT", result);
+                                            other.refreshCredit(result);
+                                        } else {
+                                            Toast.makeText(MainActivity.this,
+                                                    "qqq服务器错误", Toast.LENGTH_LONG)
+                                                    .show();
+                                        }                                        super.onPostExecute(result);
+                                    }
+                                    
+                                    
+                                }.execute(new Object[]{});
+                                break;
+                            default:
+                                // do nothing;
+                                break;
+                        }
+                        // TODO Auto-generated method stub
+                        super.handleMessage(msg);
+                    }
 
-							@Override
-							protected void onPostExecute(Boolean result) {
-								if(result){
-									Toast.makeText(MainActivity.this, "分享成功，已获得奖励积分", Toast.LENGTH_SHORT).show();
-								}
-								super.onPostExecute(result);
-							}
-							
-						};
-					}
-
-				}, true);
-	}
+                }), true);
+    }
+    
+        public static class CustomListener implements FrontiaSocialShareListener {
+    
+            Context context;
+    
+            OtherFragment otherFragment;
+    
+            SharedPreferenceHelper spf;
+            Handler handler;
+    
+            CustomListener(Handler handler) {
+                this.handler = handler;
+            }
+    
+            @Override
+            public void onCancel() {
+                System.out.println("share cancel");
+                handler.obtainMessage(0).sendToTarget();
+            }
+    
+            @Override
+            public void onFailure(int arg0, String arg1) {
+                // TODO Auto-generated method stub
+                System.out.println("share fail");
+                handler.obtainMessage(1).sendToTarget();
+            }
+    
+            @Override
+            public void onSuccess() {
+                // TODO Auto-generated method stub
+                System.out.println("share success");
+                handler.obtainMessage(2).sendToTarget();
+            }
+        }
     
     
 }
