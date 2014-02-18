@@ -13,6 +13,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -39,7 +41,7 @@ public class SendService extends Service {
 	
 	private SharedPreferenceHelper sharedPreference;
 	private WakeLock wakeLock;  
-
+	private ConnectivityManager connectivityManager;
 	
 	public class MyBinder extends Binder {  
 		SendService getService() {  
@@ -58,6 +60,8 @@ public class SendService extends Service {
         super.onCreate();  
 		myWifiManager = new MyWifiManager(getApplicationContext());   
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+    	connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
     	wakeLock = null;
 		try{
 	    	serverSocket = new ServerSocket(Constant.Networks.SERVER_PORT);	
@@ -246,7 +250,7 @@ public class SendService extends Service {
 			public void run(){
 				while(true){
 						SystemClock.sleep(1000);
-
+						
 						if(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_DISABLED){
 								sendConnectionFinishBroadcast();	
 								try{
@@ -272,6 +276,19 @@ public class SendService extends Service {
 			}
 		};
 		
+		Runnable moniterMobile = new Runnable(){
+			public void run(){
+				while(true){
+						SystemClock.sleep(1000);
+						NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);  
+						if (!mobNetInfo.isConnected()){
+							WifiApOff();
+							return;
+						}
+				}
+			}
+		};
+		
 		String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 		if(!limitMode.equals("UN")){
 			Thread thread1 = new Thread(heartBeat);
@@ -280,6 +297,9 @@ public class SendService extends Service {
 		
 		Thread thread2 = new Thread(moniterAp);
 		thread2.start();
+		
+		Thread thread3 = new Thread(moniterMobile);
+		thread3.start();
 		
 		sendListenSetupBroadcast();
 	}

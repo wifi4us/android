@@ -62,6 +62,18 @@
     <string name="main_activity_tabwidget_sendtext">分享</string>
 	<string name="main_activity_tabwidget_receivetext">发现</string>
 	<string name="main_activity_tabwidget_othertext">更多</string>
+	<string name="main_activity_update_latest_already">已经是最新版本</string>
+	<string name="main_activity_update_nowifi">没有wifi连接，只在wifi下更新</string>
+	<string name="main_activity_update_fail">更新失败，请检查网络连接</string>
+	
+	<string name="main_activity_onkeydown_warning">再按一次退出</string>
+	
+	<string name="main_activity_share_unfinished">分享未完成</string>
+	<string name="main_activity_share_fail">分享失败</string>
+	<string name="main_activity_share_success">分享成功，获得1积分奖励</string>
+	<string name="main_activity_share_success_once">分享成功，每天只获得一次积分奖励</string>	
+	<string name="main_activity_share_error">分享成功，服务器错误</string>	
+
 	<string name="main_activity_otherfragment_useridtext">你的id为：</string>
 	<string name="main_activity_otherfragment_useridtext_initfail">用户id获取失败</string>
 	<string name="main_activity_otherfragment_credittext">你的积分为：</string>

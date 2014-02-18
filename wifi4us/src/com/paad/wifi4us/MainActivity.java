@@ -88,7 +88,7 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actiongbar_menu, menu);
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.green));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">一起wifi</font>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#ffffff\">" + getString(R.string.app_name) + "</font>"));
         return super.onCreateOptionsMenu(menu);
     }
     
@@ -210,12 +210,12 @@ public class MainActivity extends ActionBarActivity {
     	            UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
     	            break;
     	        case UpdateStatus.No: // has no update
-    	            Toast.makeText(MainActivity.this, "已经是最新版本", Toast.LENGTH_SHORT).show();
+    	            Toast.makeText(MainActivity.this, getString(R.string.main_activity_update_latest_already), Toast.LENGTH_SHORT).show();
     	            break;
     	        case UpdateStatus.NoneWifi: // none wifi
-    	            Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
+    	            Toast.makeText(MainActivity.this, getString(R.string.main_activity_update_nowifi), Toast.LENGTH_SHORT).show();
     	        case UpdateStatus.Timeout: // time out
-    	            Toast.makeText(MainActivity.this, "更新失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+    	            Toast.makeText(MainActivity.this, getString(R.string.main_activity_update_fail), Toast.LENGTH_SHORT).show();
     	            break;
     	        }
     	    }
@@ -408,7 +408,7 @@ public class MainActivity extends ActionBarActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){   
             if((System.currentTimeMillis()-exitTime) > 2000){  
-                Toast.makeText(getApplicationContext(), "qqq再按一次退出程序", Toast.LENGTH_SHORT).show();                                
+                Toast.makeText(getApplicationContext(), getString(R.string.main_activity_onkeydown_warning), Toast.LENGTH_SHORT).show();                                
                 exitTime = System.currentTimeMillis();   
             } else {
                 finish();
@@ -472,11 +472,11 @@ public class MainActivity extends ActionBarActivity {
                     public void handleMessage(Message msg) {
                         switch (msg.what) {
                             case 0:
-                                Toast.makeText(MainActivity.this, "qqq分享未完成",
+                                Toast.makeText(MainActivity.this, getString(R.string.main_activity_share_unfinished),
                                         Toast.LENGTH_LONG).show();
                                 break;
                             case 1:
-                                Toast.makeText(MainActivity.this, "qqq分享失败",
+                                Toast.makeText(MainActivity.this, getString(R.string.main_activity_share_fail),
                                         Toast.LENGTH_LONG).show();
                                 break;
                             case 2:
@@ -490,7 +490,7 @@ public class MainActivity extends ActionBarActivity {
                                     long currDay = System.currentTimeMillis() / 3600000 / 24;
                                     System.out.println("currday:"+currDay+"\tdays:"+days);
                                     if (currDay == days) {
-                                        Toast.makeText(MainActivity.this, "qqq分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MainActivity.this, getString(R.string.main_activity_share_success_once), Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                 }
@@ -516,7 +516,7 @@ public class MainActivity extends ActionBarActivity {
                                         if (result != null) {
                                             Toast.makeText(
                                                     MainActivity.this,
-                                                    "qqq分享成功，获得积分奖励",
+                                                    getString(R.string.main_activity_share_success),
                                                     Toast.LENGTH_LONG)
                                                     .show();
                                             sharedPreference.putString(
@@ -526,7 +526,7 @@ public class MainActivity extends ActionBarActivity {
                                         } else {
                                             Toast.makeText(
                                                     MainActivity.this,
-                                                    "qqq服务器错误",
+                                                    getString(R.string.main_activity_share_error),
                                                     Toast.LENGTH_LONG)
                                                     .show();
                                         }

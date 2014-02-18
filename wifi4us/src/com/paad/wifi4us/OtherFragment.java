@@ -237,7 +237,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		case R.id.btn_clear_cache:
 			try {
 				new Builder(getActivity())
-						.setMessage("清空" + clearCache(false) + "字节缓存?")
+						.setMessage("清空" + clearCache(false) + "MB缓存?")
 						.setTitle("清理缓存")
 						.setIcon(android.R.drawable.ic_dialog_alert)
 						.setPositiveButton("清空",
@@ -310,7 +310,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
             	}
             }
         }
-        return all;
+        return all / (1024*1024);
 	}
 
 	/*

@@ -258,7 +258,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 
 			if (checkedBlueBalls == 0 && checkedRedBalls == 0) {
 				if (creditPerCaipiao == null) {
-					tv.setText(Html.fromHtml("无法获取每注彩票所需积分"+htmlStr));
+					tv.setText(Html.fromHtml("每注100积分"+htmlStr));
 					return;
 				}
 				tv.setText(Html.fromHtml("每注" + creditPerCaipiao + "积分"

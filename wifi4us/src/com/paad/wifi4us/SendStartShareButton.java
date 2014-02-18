@@ -106,7 +106,6 @@ public class SendStartShareButton extends Fragment{
 
 				//The progress bar fragment
 				UIScanFromShareToProgress();
-
 		        sendService.WifiApOn();
 			}
 		});

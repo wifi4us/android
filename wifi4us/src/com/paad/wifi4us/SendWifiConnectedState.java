@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -24,7 +25,6 @@ public class SendWifiConnectedState extends Fragment{
 	
 	private ConnectedStateReceiver connectedStateReceiver;
 	private ConnectedFinishedReceiver connectedFinishedReceiver;
-	private MobileDisconnectReceiver mobileDisconnectReceiver;
 	private FragmentManager fragmentManager;
 	
 	private Fragment send_id_start_share_button;
@@ -54,9 +54,9 @@ public class SendWifiConnectedState extends Fragment{
 		fragmentManager = getFragmentManager();
 		connectedStateReceiver = new ConnectedStateReceiver();
 		connectedFinishedReceiver = new ConnectedFinishedReceiver();
+		
         getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_HEARTBEAT));
         getActivity().getApplicationContext().registerReceiver(connectedFinishedReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_FINISH));
-        getActivity().getApplicationContext().registerReceiver(mobileDisconnectReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         Intent intent = new Intent(getActivity(), SendService.class);  
         //bind service to get ready for all the clickable element
@@ -65,7 +65,6 @@ public class SendWifiConnectedState extends Fragment{
 	
 	public void onDestroy(){
 		super.onDestroy();
-		getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
 		getActivity().unbindService(sc);
 	}
 	
@@ -89,6 +88,7 @@ public class SendWifiConnectedState extends Fragment{
 	private class ConnectedFinishedReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
 			c.unregisterReceiver(this);
+			getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
 			FragmentTransaction transaction = fragmentManager.beginTransaction();
 			send_id_start_share_button = new SendStartShareButton();
 			send_id_start_share_text = new SendStartShareText();
@@ -99,19 +99,6 @@ public class SendWifiConnectedState extends Fragment{
 		}
 	}
 	
-	private class MobileDisconnectReceiver extends BroadcastReceiver{
-		public void onReceive(Context c, Intent intent) {
-			if(!haveBondService){
-				c.unregisterReceiver(this);
-				return;
-			}
-			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-			State state = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();  
-			if(State.DISCONNECTED == state){  					
-				sendService.WifiApOff();
-			}  
-
-		}
-	}
+	
 	
 }
