@@ -17,7 +17,7 @@
 		<TextView
 		    android:layout_width="150dp"   
 			android:layout_height="50dp"
-			android:background="#9ACD32"
+			android:background="#B6D268"
 			android:textColor="#FFFFFF"
 			android:textSize="40sp"
 			android:gravity="right"

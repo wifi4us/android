@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">wifi4us</string>
+    <string name="app_name">一起wifi</string>
     <string name="startservice">share 15 mins and 3M</string>
     <string name="hello">hello world</string>
     <string name="send">send</string>
     <string name="sponsor_line1">Android彩票宝</string>
     <string name="sponsor_line2">实名注册送5元彩金</string>
-	<string name="sponsor_url">http://www.baidu.com</string>
+	<string name="sponsor_url">http://data.cpbao.com/cpbao_lch.apk?.source=wifi4us</string>
     
     <string name="receive_string_switcher_text_on">Wifi已打开</string>
     <string name="receive_string_switcher_text_off">Wifi已关闭</string>

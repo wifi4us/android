@@ -49,7 +49,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 	private static final int MSG_FAILURE = 1;
 	//"<br><small><font size=\"1\" color=\"#ff3030\">(早九点至晚八点出票)<font></small>";
 	private static final String USER_HTML_STR="<font size=\"8\" color=\"#000000\"  >ID   </font><font size=\"8\" color=\"#919191\">xxx</font>"; 
-	private static final String CREDIT_HTML_STR="<font size=\"5\" color=\"#9ACD32\">积分    </font><font size=\"5\" color=\"#919191\">xxx</font>"; 
+	private static final String CREDIT_HTML_STR="<font size=\"5\" color=\"#B6D268\">积分    </font><font size=\"5\" color=\"#919191\">xxx</font>"; 
 
 	FrontiaSocialShareContent mImageContent = new FrontiaSocialShareContent();
 	FrontiaSocialShare mSocialShare;

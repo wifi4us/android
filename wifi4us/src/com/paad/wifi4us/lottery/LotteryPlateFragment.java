@@ -307,7 +307,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
             }
         }
 		if (creditPerCaipiao == null) {
-			sb.append("\n无法获取每注彩票所需积分");
+			sb.append("\n无法获");
 		} else {
 			sb.append("\n共" + caipiaoCnt + "注, 需要" + caipiaoCnt * creditPerCaipiao
                 + "积分");
