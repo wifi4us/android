@@ -472,11 +472,11 @@ public class MainActivity extends ActionBarActivity {
                     public void handleMessage(Message msg) {
                         switch (msg.what) {
                             case 0:
-                                Toast.makeText(MainActivity.this, "qqq分享未完成",
+                                Toast.makeText(MainActivity.this, "分享未完成",
                                         Toast.LENGTH_LONG).show();
                                 break;
                             case 1:
-                                Toast.makeText(MainActivity.this, "qqq分享失败",
+                                Toast.makeText(MainActivity.this, "分享失败",
                                         Toast.LENGTH_LONG).show();
                             case 2:
                                 String timeStr = sharedPreference
@@ -486,7 +486,7 @@ public class MainActivity extends ActionBarActivity {
                                     long time = Long.valueOf(timeStr);
                                     long days = time / 3600 / 24;
                                     if (System.currentTimeMillis() / 3600 / 24 == days) {
-                                        Toast.makeText(MainActivity.this, "qqq分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MainActivity.this, "分享成功，每天只获得一次积分奖励", Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                 }
@@ -518,7 +518,7 @@ public class MainActivity extends ActionBarActivity {
                                         if (result != null) {
                                             Toast.makeText(
                                                     MainActivity.this,
-                                                    "qqq分享成功，获得积分奖励",
+                                                    "分享成功，获得积分奖励",
                                                     Toast.LENGTH_LONG)
                                                     .show();
                                             sharedPreference.putString(
@@ -528,7 +528,7 @@ public class MainActivity extends ActionBarActivity {
                                         } else {
                                             Toast.makeText(
                                                     MainActivity.this,
-                                                    "qqq服务器错误",
+                                                    "服务器错误",
                                                     Toast.LENGTH_LONG)
                                                     .show();
                                         }
