@@ -1,16 +1,10 @@
 package com.paad.wifi4us;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.NetworkInfo.State;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,22 +25,6 @@ public class SendWifiConnectedState extends Fragment{
 	private Fragment send_id_start_share_text;
 	
 	private TextView traffic;
-	
-	//Send Service 	
-    private SendService sendService;
-	private boolean haveBondService;
-	private ServiceConnection sc = new ServiceConnection() {
-        @Override  
-        public void onServiceDisconnected(ComponentName arg0) {  
-        	haveBondService = false;
-        }  
-          
-        @Override  
-        public void onServiceConnected(ComponentName name, IBinder binder) {
-        	sendService = ((SendService.MyBinder)binder).getService();
-        	haveBondService = true;
-        }  
-    }; 
     
 
 	public void onCreate(Bundle savedInstanceState){
@@ -57,15 +35,15 @@ public class SendWifiConnectedState extends Fragment{
 		
         getActivity().getApplicationContext().registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_HEARTBEAT));
         getActivity().getApplicationContext().registerReceiver(connectedFinishedReceiver, new IntentFilter(Constant.BroadcastSend.CONNECTION_FINISH));
-
-        Intent intent = new Intent(getActivity(), SendService.class);  
-        //bind service to get ready for all the clickable element
-		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 	}
 	
 	public void onDestroy(){
+		try{
+			getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		super.onDestroy();
-		getActivity().unbindService(sc);
 	}
 	
 
@@ -87,14 +65,20 @@ public class SendWifiConnectedState extends Fragment{
 	
 	private class ConnectedFinishedReceiver extends BroadcastReceiver{
 		public void onReceive(Context c, Intent intent){
-			c.unregisterReceiver(this);
-			getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
-			FragmentTransaction transaction = fragmentManager.beginTransaction();
-			send_id_start_share_button = new SendStartShareButton();
-			send_id_start_share_text = new SendStartShareText();
-			transaction.replace(R.id.send_container, send_id_start_share_button, "send_id_start_share_button");
-			transaction.replace(R.id.send_stateinfo_container, send_id_start_share_text, "send_id_start_share_text");
-			transaction.commitAllowingStateLoss();
+			try{
+				getActivity().getApplicationContext().unregisterReceiver(connectedStateReceiver);
+				c.unregisterReceiver(this);
+				FragmentTransaction transaction = fragmentManager.beginTransaction();
+				send_id_start_share_button = new SendStartShareButton();
+				send_id_start_share_text = new SendStartShareText();
+				transaction.replace(R.id.send_container, send_id_start_share_button, "send_id_start_share_button");
+				transaction.replace(R.id.send_stateinfo_container, send_id_start_share_text, "send_id_start_share_text");
+				transaction.commitAllowingStateLoss();
+				
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			
 		}
 	}

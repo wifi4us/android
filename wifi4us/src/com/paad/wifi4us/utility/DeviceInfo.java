@@ -1,7 +1,6 @@
 package com.paad.wifi4us.utility;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
@@ -9,17 +8,12 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-/**
- * Here is some shared members used by multiple components.
- * @author yangshi
- *
- */
+
 public class DeviceInfo {
 	private static DeviceInfo instance = null;
 
 	private Context context;
 	private TelephonyManager telephonyManager;
-	private ConnectivityManager connectMgr;
 	synchronized public static DeviceInfo getInstance(Context c) {
 		if (instance == null) {
 			instance = new DeviceInfo();
@@ -66,9 +60,7 @@ public class DeviceInfo {
 
 	protected void init(Context c) {
 		context = c;
-		telephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-		connectMgr = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-		 
+		telephonyManager = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);		 
 	}
 
 }

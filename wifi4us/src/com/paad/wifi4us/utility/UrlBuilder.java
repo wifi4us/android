@@ -24,6 +24,18 @@ public class UrlBuilder {
 		return sb.toString();
 	}
 	
+	public static String buildAddCreditUrlWithTraffic(String imei,String userid, String traffic, Integer type){
+		StringBuilder sb = new StringBuilder();
+		sb.append(Constant.Networks.ADD_CREDIT_HTTPURL);
+		sb.append(SEG_URL);
+		appendOnePara(sb, Constant.HttpParas.IMEI, imei, false);
+		appendOnePara(sb, Constant.HttpParas.USER_ID, userid, false);
+		appendOnePara(sb, Constant.HttpParas.TRAFFIC, traffic, false);
+		appendOnePara(sb, Constant.HttpParas.DURATION, "1234", false);
+		appendOnePara(sb, Constant.HttpParas.TYPE, type.toString(), true);
+		return sb.toString();
+	}
+	
 	public static String buildLotteryHistoryUrl(String imei, String userid) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Constant.Networks.LOTTERY_HISTORY_HTTPURL);

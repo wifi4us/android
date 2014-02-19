@@ -13,13 +13,13 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -115,9 +115,9 @@ public class VideoActivity extends Activity {
         button_sound.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
 				if(isVoiceOn()){
-					audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+			        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
 				}else{
-					audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+			        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2 + 1, 0);
 				}
 			}
         });
@@ -138,6 +138,17 @@ public class VideoActivity extends Activity {
         controller = new MediaController(this);
         controller.setVisibility(View.INVISIBLE); 
         video.setMediaController(controller);
+
+        video.setOnErrorListener(new OnErrorListener(){
+             public boolean onError(MediaPlayer videostream, int what, int extra)
+             {
+            	 Constant.FLAG.FINISH_VIDEO = true;
+         		 Constant.FLAG.STATE_RECEIVE = true;
+            	 video.stopPlayback();
+          		 finish();
+            	 return false;
+             }           
+         });
         
       
 
@@ -187,11 +198,6 @@ public class VideoActivity extends Activity {
         }
           
         video.setVideoPath(filename);
-        try{
-        	SystemClock.sleep(1000);
-        }catch(Exception e){
-        	e.printStackTrace();
-        }
         video.start();
     }
     

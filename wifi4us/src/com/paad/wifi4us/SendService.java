@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 
 import android.app.Notification;
@@ -17,15 +18,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.MyWifiManager;
 import com.paad.wifi4us.utility.PasswdUtil;
+import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
 public class SendService extends Service {
@@ -43,6 +49,7 @@ public class SendService extends Service {
 	private WakeLock wakeLock;  
 	private ConnectivityManager connectivityManager;
 	
+	private String showcredit;
 	public class MyBinder extends Binder {  
 		SendService getService() {  
             return SendService.this;  
@@ -61,6 +68,7 @@ public class SendService extends Service {
 		myWifiManager = new MyWifiManager(getApplicationContext());   
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
     	connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		Constant.FLAG.ADD_ONCE = false;
 
     	wakeLock = null;
 		try{
@@ -75,6 +83,12 @@ public class SendService extends Service {
 		stopForeground();
 		Runnable myRunnable = new Runnable(){
 			public void run(){
+            	if(Constant.FLAG.TRAFFIC_SHARED > 0 && sharedPreference.getString("SEND_AD_MODE").equals("YES") && Constant.FLAG.ADD_ONCE){
+            		Constant.FLAG.ADD_ONCE = false;
+            		AddCredit(Constant.FLAG.TRAFFIC_SHARED);
+            		Constant.FLAG.TRAFFIC_SHARED = 0;
+            	}
+
 				while(myWifiManager.getWifiApState() == myWifiManager.WIFI_AP_STATE_ENABLING){
 					try {
 						Thread.sleep(100);
@@ -125,6 +139,7 @@ public class SendService extends Service {
 	
 	public void WifiApOn(){		
 		startForeground();
+    	Constant.FLAG.TRAFFIC_SHARED = 0;
 		randomString = PasswdUtil.getRandomPasswd();
 		myWifiManager.getWifiManager().setWifiEnabled(false); 
 		Runnable myRunnable = new Runnable(){
@@ -205,17 +220,21 @@ public class SendService extends Service {
 	            		out.println("hello_client");
 	            		out.flush();
 	            	}
-	            	
 	            	boolean connect_setup_done = false;
+            		Constant.FLAG.ADD_ONCE = true;
 		            while(true){
 		            	info = reader.readLine();
 						socket.setSoTimeout(Constant.Networks.TIME_INTERVAL);
+						
 		            	if(info == null){
 							WifiApOff();
 		            	}
 		            	if(!isNumeric(info)){
 		            		continue;
 		            	}
+		            	
+		            	Constant.FLAG.TRAFFIC_SHARED = Double.parseDouble(info);
+		            	
 		            	if(limitMode.equals("30")){
 		            		if(Integer.parseInt(info) > 5 * 1024 * 1024){
 			            		WifiApOff();
@@ -282,6 +301,12 @@ public class SendService extends Service {
 						SystemClock.sleep(1000);
 						NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);  
 						if (!mobNetInfo.isConnected()){
+							Handler handler = new Handler(Looper.getMainLooper());                                                 
+					    	handler.post(new Runnable() {     
+			                         public void run() {     
+			             		    	Toast.makeText(getApplicationContext(), "数据流量打开才能分享", Toast.LENGTH_LONG).show();  
+			                         }     
+			                });
 							WifiApOff();
 							return;
 						}
@@ -439,8 +464,33 @@ public class SendService extends Service {
 	        }  
 	    } 
 
-	    public static boolean isNumeric(String str){
+	    private static boolean isNumeric(String str){
 	        Pattern pattern = Pattern.compile("[0-9]*");
 	        return pattern.matcher(str).matches();   
 	    }
+	    
+	    private void AddCredit(double traffic){
+	    	String credit = RemoteInfoFetcher.addUserCreditWithTraffic(DeviceInfo.getInstance(this).getIMEI(), sharedPreference.getString("USER_ID"), String.valueOf(traffic / 1024), 0);
+	    	if(!credit.equals(null)){
+	    		String tmpcredit = sharedPreference.getString("CREDIT");
+		    	sharedPreference.putString("CREDIT", credit);
+		    	DecimalFormat df = new DecimalFormat( "0.0");
+	            showcredit = String.valueOf(df.format(Double.parseDouble(credit) - Double.parseDouble(tmpcredit)));
+		    	
+		    	Handler handler = new Handler(Looper.getMainLooper());                                                 
+		    	handler.post(new Runnable() {     
+                         public void run() {     
+             		    	Toast.makeText(getApplicationContext(), "本次分享获得" + showcredit + "积分", Toast.LENGTH_LONG).show();  
+                         }     
+                }); 
+	    	}else{
+	    		Handler handler = new Handler(Looper.getMainLooper());                                                 
+		    	handler.post(new Runnable() {     
+                         public void run() {     
+             	            Toast.makeText(getApplicationContext(), "获取积分失败，服务器繁忙", Toast.LENGTH_LONG).show();  
+                         }     
+                });
+	    	}
+	    }
+	    
 }

@@ -9,9 +9,12 @@
 		android:layout_gravity="center"
 		android:layout_width="match_parent"
 		android:text="@string/send_button_start_share"
-		android:id="@+id/send_button_start_share" />
+		android:id="@+id/send_button_start_share" 
+		android:paddingBottom="10dp"/>
     
-	<CheckBox android:id="@+id/send_checkbox"
+	<CheckBox 
+	    android:id="@+id/send_checkbox"
+	    android:paddingTop="10dp"
 		android:text="@string/send_checkbox"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>

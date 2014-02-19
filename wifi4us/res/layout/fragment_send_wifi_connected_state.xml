@@ -16,7 +16,7 @@
 			android:text="@string/send_text_state_startwork"/>
 		
 		<TextView
-		    android:layout_width="130dp"   
+		    android:layout_width="120dp"   
 			android:layout_height="50dp"
 			android:background="#B6D268"
 			android:textColor="#FFFFFF"
@@ -25,7 +25,7 @@
 			android:id="@+id/send_text_traffic_used"/>
 		
 	    <TextView
-		    android:layout_width="50dp"   
+		    android:layout_width="30dp"   
 			android:layout_height="50dp"
 			android:paddingLeft="5dp"
 			android:textSize="20sp"

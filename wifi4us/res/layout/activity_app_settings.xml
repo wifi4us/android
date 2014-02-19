@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <CheckBox 
+    	android:id="@+id/app_setting_connect_sound"
+	    android:padding="10dp"
+		android:text="@string/app_setting_text_connect_sound"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+    <CheckBox 
+    	android:id="@+id/app_setting_ad_sound"
+	    android:padding="10dp"
+		android:text="@string/app_setting_text_ad_sound"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+</LinearLayout>

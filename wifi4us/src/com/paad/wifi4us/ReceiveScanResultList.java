@@ -4,9 +4,11 @@ package com.paad.wifi4us;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.paad.wifi4us.utility.data.AdContent;
 
 public class ReceiveScanResultList extends ListFragment{
@@ -47,6 +50,7 @@ public class ReceiveScanResultList extends ListFragment{
 	private Activity currentActivity;
 	
 	private MyWifiManager myWifiManager;
+	private SharedPreferenceHelper sharedPreference;
 	private String rawssid;
 
 	private boolean FINISH_CONNECT;
@@ -84,6 +88,7 @@ public class ReceiveScanResultList extends ListFragment{
 		Intent intent = new Intent(getActivity(), ReceiveService.class);  
 		currentActivity = getActivity();
 		context = getActivity().getApplicationContext();
+    	sharedPreference = new SharedPreferenceHelper(context);
 		unResgiterOldReceiver(context);
 
         //bind service to get ready for all the clickable element
@@ -109,6 +114,23 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
+		if(sharedPreference.getString("FIRST_CLICK_CONNECT_AD").equals("NULL")){
+			sharedPreference.putString("FIRST_CLICK_CONNECT_AD", "NOT_FIRST");
+			new Builder(getActivity())
+			.setMessage("配置过程和广告播放时请保持窗口，最小化或退出app将导致网络连接失败，广告播放完即可随意使用")
+			.setTitle("注意事项")
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							dialog.dismiss();
+
+						}
+					})
+			.create().show();
+		}
 		FINISH_CONNECT = false;
 		if(!haveBondService)
 			return;

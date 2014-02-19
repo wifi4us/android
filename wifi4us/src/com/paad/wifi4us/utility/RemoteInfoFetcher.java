@@ -72,6 +72,18 @@ public class RemoteInfoFetcher {
 		return mapInArr.get(0).get(Constant.XmlResultKey.ACCOUNT);
 	}
 	
+	public static String addUserCreditWithTraffic(String imei,String userid, String traffic, Integer type){
+		if(debug){
+			return "9527";
+		}
+		ArrayList<SimpleArrayMap<String, String>> mapInArr = HttpXmlParser.getResultFromURL(UrlBuilder.buildAddCreditUrlWithTraffic(imei, userid, traffic, type));
+		if(mapInArr == null){
+		    System.out.println("null mapInArr");
+			return null;
+		}
+		return mapInArr.get(0).get(Constant.XmlResultKey.ACCOUNT);
+	}
+	
 	public static Integer fetchLotteryCredit(){
 		if(debug){
 			return 5;

@@ -50,6 +50,8 @@ public class Constant {
 		public static String  LAST_TAB = "NULL";
 		public static boolean RECEIVE_HAS_AD;
 		public static String RECEIVE_LIMIT_MODE;
+		public static double TRAFFIC_SHARED;
+		public static boolean ADD_ONCE;
 	}
 	
     public static final class Security {

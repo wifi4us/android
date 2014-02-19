@@ -76,6 +76,7 @@ public class ReceiveService extends Service {
 		wifiApList = new ArrayList<String>();
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
     	wakeLock = null;
+    	timer = null;
     }  
 	
 	public void onDestroy() {  
@@ -285,6 +286,9 @@ public class ReceiveService extends Service {
 		//init the time counter total seconds
 	
 		//start the alarm and send broadcast every 5 seconds
+		if(timer != null){
+			timer.cancel();
+		}
 		timer = new Timer();  
 		
 	    TimerTask task = new TimerTask(){  
