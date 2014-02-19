@@ -8,6 +8,7 @@ public class LotteryHistory {
 	public String periodNumber;
 	public String program;
 	public String ticketId;
+	public String bonus;
 	public int state = -1;
 	public String tradeId;
 	
@@ -23,6 +24,7 @@ public class LotteryHistory {
 		LotteryHistory history = new LotteryHistory();
 		history.periodNumber = map.get(Constant.XmlResultKey.PERIOD_NUMBER);
 		history.program = map.get(Constant.XmlResultKey.PROGRAM);
+		history.bonus = map.get(Constant.XmlResultKey.BONUS);
 		history.ticketId = map.get(Constant.XmlResultKey.TICKET_ID);
 		history.tradeId = map.get(Constant.XmlResultKey.TRADE_ID);
 		String strState = map.get(Constant.XmlResultKey.STATE);
