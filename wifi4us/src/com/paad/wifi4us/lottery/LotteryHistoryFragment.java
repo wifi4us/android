@@ -146,7 +146,11 @@ public class LotteryHistoryFragment extends Fragment {
         map.put(groupkeys[0],
                 getResources().getString(R.string.lottery_info_period) + ":"
                         + history.periodNumber);
-        map.put(groupkeys[1], getStateString(history.state));
+        if(history.state == 4){
+            map.put(groupkeys[1], getStateString(history.state).replace("xxx", history.bonus));
+        }else{
+            map.put(groupkeys[1], getStateString(history.state));
+        }
         return map;
     }
 

@@ -41,6 +41,8 @@
     <string name="binary_code">刷二维码下载本软件</string>
     <string name="help">帮助</string>
     <string name="check_update">检查更新</string>
+    <string name="update_dialog_title">版本更新</string>
+    <string name="update_dialog_content">正在下载最新版本...</string>
     <string name="feedback">反馈</string>
     <string name="about">关于我们</string>
     <string name="quit">退出</string>
@@ -97,7 +99,7 @@
 	<string name="lottery_state_0">申购成功</string>
 	<string name="lottery_state_2">出票成功</string>
 	<string name="lottery_state_3">出票失败</string>
-	<string name="lottery_state_4">已中奖</string>
+	<string name="lottery_state_4">奖金xxx元</string>
 	<string name="lottery_state_5">未中奖</string>
 	<string name="lottery_state_6">已派奖</string>
     <string name="lottery_state_7">正在派奖</string>
