@@ -461,7 +461,7 @@ public class MainActivity extends ActionBarActivity {
                     .setContent(getString(R.string.main_activity_social_share_content));
             mImageContent.setLinkUrl("http://www.wifitogether.com/");
             mImageContent.setImageData(BitmapFactory.decodeResource(
-                    context.getResources(), R.drawable.ic_launcher));
+                    context.getResources(), R.drawable.qrcode));
             initShare = true;
         }
 

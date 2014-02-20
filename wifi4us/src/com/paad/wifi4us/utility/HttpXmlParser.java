@@ -49,11 +49,11 @@ public class HttpXmlParser {
                                HttpProtocolParams.setUseExpectContinue(params, true);
                 
                                // 璁剧疆杩���ョ�＄����ㄧ��瓒����
-                                 ConnManagerParams.setTimeout(params, 5000);
+                                 ConnManagerParams.setTimeout(params, 8000);
                                // 璁剧疆杩���ヨ�����
-                               HttpConnectionParams.setConnectionTimeout(params, 5000);
+                               HttpConnectionParams.setConnectionTimeout(params, 8000);
                               // 璁剧疆socket瓒����
-                              HttpConnectionParams.setSoTimeout(params, 5000);
+                              HttpConnectionParams.setSoTimeout(params, 8000);
                 
                               // 璁剧疆http https������
                               SchemeRegistry schReg = new SchemeRegistry();

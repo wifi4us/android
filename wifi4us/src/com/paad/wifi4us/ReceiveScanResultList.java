@@ -14,7 +14,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
-import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -42,7 +41,6 @@ public class ReceiveScanResultList extends ListFragment{
 	public static ClickConnectReceiver clickConnectReceiver;
 	public static ConmunicationReceiver conmunicationReceiver;
 	public static ConnectFailReceiver connectFailReceiver;
-	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
 	
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_connect_progressbar;
@@ -151,7 +149,6 @@ public class ReceiveScanResultList extends ListFragment{
 		clickConnectReceiver = new ClickConnectReceiver();
 		conmunicationReceiver = new ConmunicationReceiver();
 		connectFailReceiver = new ConnectFailReceiver();
-		wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
 
 		/*
 		 * process the next step until the wifi has been disconnected completely, 
@@ -198,6 +195,10 @@ public class ReceiveScanResultList extends ListFragment{
      				return;
 				} 
 				c.unregisterReceiver(this);
+				//check userid
+				if(sharedPreference.getString("USER_ID").equals("NULL")){
+					receiveService.retrieveUserid();
+				}
 	        	receiveService.EstablishConmunication();
 			}  
 			}catch(Exception e){
@@ -265,25 +266,6 @@ public class ReceiveScanResultList extends ListFragment{
 			c.unregisterReceiver(this);
 		}
 	}
-	
-
-	public class WifiDisconnectWrongReceiver extends BroadcastReceiver{
-		public void onReceive(Context c, Intent intent) {
-			if(!haveBondService)
-				return;
-			//get reward for receiving
-			SupplicantState state = (SupplicantState)intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-			if(state.equals(SupplicantState.COMPLETED)){
-				FINISH_CONNECT = true;
-			}
-			if(state.equals(SupplicantState.DISCONNECTED) && FINISH_CONNECT){ 
-				ProgressbarToFail("分享者的共享意外中断");
-     	   		receiveService.WifiDisconnectCompletely();
-     	   		c.unregisterReceiver(this);
-    		}  
-
-		}
-	}
 
 	private void UIToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
@@ -308,25 +290,25 @@ public class ReceiveScanResultList extends ListFragment{
 	private ArrayList<String> getShownName(ArrayList<String> arr){
 		ArrayList<String> temp_arr = new ArrayList<String>(arr);
 		for(int i = 0; i < temp_arr.size(); i++){
-			String shownname = "无私的" + temp_arr.get(i).substring(1, 8);
+			String shownname = "点击这里，使用" + temp_arr.get(i).substring(1, 8);
 			String modepart = temp_arr.get(i).substring(24, 28);
 			if(modepart.equals("0130")){
-				shownname = shownname + "分享了5M流量，不过TA要求你看了30秒广告才能用";
+				shownname = shownname + "分享的5M流量，不过TA要求你看了30秒广告才能用";
 			}
 			if(modepart.equals("0030")){
-				shownname = shownname + "分享了5M流量，随便用别客气";
+				shownname = shownname + "分享的5M流量，随便用别客气";
 			}
 			if(modepart.equals("0160")){
-				shownname = shownname + "分享了10M流量，不过TA要求你看了30秒广告才能用";
+				shownname = shownname + "分享的10M流量，不过TA要求你看了30秒广告才能用";
 			}
 			if(modepart.equals("0060")){
-				shownname = shownname + "分享了10M流量，随便用别客气";
+				shownname = shownname + "分享的10M流量，随便用别客气";
 			}
 			if(modepart.equals("01UN")){
-				shownname = shownname + "分享了无限的流量，不过TA要求你看了30秒广告才能用";
+				shownname = shownname + "分享的无限的流量，不过TA要求你看了30秒广告才能用";
 			}
 			if(modepart.equals("00UN")){
-				shownname = shownname + "分享了无限的流量，随便用别客气";
+				shownname = shownname + "分享的无限的流量，随便用别客气";
 			}
 			temp_arr.set(i, shownname);
 		}

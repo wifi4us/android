@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
+import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.paad.wifi4us.utility.data.AdContent;
 
 public class VideoActivity extends Activity {
@@ -47,7 +48,8 @@ public class VideoActivity extends Activity {
 	private boolean doubleClick;
 	public static WifiDisconnectWrongReceiver wifiDisconnectReceiver;
 	private Activity currentActivity;
-	
+	private SharedPreferenceHelper sharedPreference;
+
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -103,12 +105,18 @@ public class VideoActivity extends Activity {
         //set receiver in video activity
         currentActivity = this;
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        sharedPreference = new SharedPreferenceHelper(getApplicationContext());
 
         wifiDisconnectReceiver = new WifiDisconnectWrongReceiver();
 		getApplicationContext().registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 		
 		//set init volume
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2 + 1, 0);
+		if(sharedPreference.getString("SOUND_AD").equals("YES")){
+	        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2 + 1, 0);	
+		}else{
+	        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+		}
+
         //set sound button
         button_sound = (Button)findViewById(R.id.receive_button_ad_sound_button);
         button_sound.getBackground().setAlpha(100);

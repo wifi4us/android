@@ -14,6 +14,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -39,6 +41,7 @@ public class SendService extends Service {
 	private final IBinder binder = new MyBinder();
 	private MyWifiManager myWifiManager;
     private String randomString;
+	private SoundPool soundPool;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
@@ -48,8 +51,10 @@ public class SendService extends Service {
 	private SharedPreferenceHelper sharedPreference;
 	private WakeLock wakeLock;  
 	private ConnectivityManager connectivityManager;
-	
+	private Context currentContext;
+
 	private String showcredit;
+	
 	public class MyBinder extends Binder {  
 		SendService getService() {  
             return SendService.this;  
@@ -69,6 +74,10 @@ public class SendService extends Service {
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
     	connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 		Constant.FLAG.ADD_ONCE = false;
+		currentContext = getApplicationContext();
+		soundPool= new SoundPool(5, AudioManager.STREAM_SYSTEM,50);
+		soundPool.load(this,R.raw.start,1);
+		soundPool.load(this,R.raw.stop,1);
 
     	wakeLock = null;
 		try{
@@ -248,6 +257,7 @@ public class SendService extends Service {
 		            	}
 		   
 		            	if(!connect_setup_done){
+		            		playSendSound(true);
 							sendConnectionSetupBroadcast();
 							connect_setup_done = true;
 		            	}
@@ -255,6 +265,7 @@ public class SendService extends Service {
 		            }
 				}catch(SocketTimeoutException e){
 					e.printStackTrace();
+			    	playSendSound(false);
 					WifiApOff();
 					//heartbeat stop 
 				}catch(Exception e){
@@ -329,13 +340,27 @@ public class SendService extends Service {
 		sendListenSetupBroadcast();
 	}
 		
-
-	 	private void sendApShutSuccessBroadcast(){
-	 		Intent intent  = new Intent();  
-            intent.setAction(Constant.BroadcastSend.AP_STATE_SHUT_ACTION);  
-            intent.putExtra("apstate", "ok");  
-            sendBroadcast(intent);  
-	 	}
+	public void retrieveUserid(){
+		Runnable getUseridRunner = new Runnable(){
+			public void run(){
+				String imei = DeviceInfo.getInstance(currentContext).getIMEI();
+				String tmpuserid = RemoteInfoFetcher.resgisterUserId(imei);
+				String userid = String.format("%07d", Integer.parseInt(tmpuserid));
+				if (userid != null) {
+					sharedPreference.putString("USER_ID", userid);
+				}
+			}
+		};
+		Thread thread = new Thread(getUseridRunner);
+		thread.start();
+	}
+	
+	private void sendApShutSuccessBroadcast(){
+		Intent intent  = new Intent();  
+        intent.setAction(Constant.BroadcastSend.AP_STATE_SHUT_ACTION);  
+        intent.putExtra("apstate", "ok");  
+        sendBroadcast(intent);  
+	 }
 	 	
 	 	private void sendApShutFailBroadcast(){
 	 		Intent intent  = new Intent();  
@@ -408,6 +433,7 @@ public class SendService extends Service {
 	 		String modepart = modepart1 + modepart2;
 	 		
 	 		String signpart = PasswdUtil.getMD5Sign(namepart + passwdpart + modepart);
+
 	 		return namepart + passwdpart + modepart + signpart;
 	 	}
 	 	
@@ -490,6 +516,16 @@ public class SendService extends Service {
              	            Toast.makeText(getApplicationContext(), "获取积分失败，服务器繁忙", Toast.LENGTH_LONG).show();  
                          }     
                 });
+	    	}
+	    }
+	    
+	    private void playSendSound(boolean start){
+	    	if(sharedPreference.getString("SOUND_CONNECT").equals("YES")){
+	        	if(start){
+	        	    soundPool.play(1,(float)0.3, (float)0.3, 0, 0, (float)1.0);
+	        	}else{
+	        	    soundPool.play(2,(float)0.3, (float)0.3, 0, 0, (float)1.0);
+	        	}
 	    	}
 	    }
 	    

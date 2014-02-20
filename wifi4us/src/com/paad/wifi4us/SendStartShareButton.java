@@ -90,6 +90,14 @@ public class SendStartShareButton extends Fragment{
 		startShare = (Button) view_res.findViewById(R.id.send_button_start_share);
 		startShare.setOnClickListener(new OnClickListener(){
 			public void onClick(View view){
+        		//check userid
+        		if(sharedPreference.getString("USER_ID").equals("NULL")){
+        			sendService.retrieveUserid();
+        			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "数据网络异常，无法建立热点", Toast.LENGTH_SHORT);
+					toast.show();
+		        	return;
+				}
+        		
 				if(Constant.PreventAbuse.DOUBLE_START_SEND){
 					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "努力配置分享网络中", Toast.LENGTH_SHORT);
 					toast.show();
@@ -198,7 +206,7 @@ public class SendStartShareButton extends Fragment{
         			Constant.PreventAbuse.DOUBLE_START_SEND = false;
         			return;
         		}
-				
+        		
         		String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 				if(limitMode.equals("UN")){
 	    			Constant.PreventAbuse.DOUBLE_START_SEND = false;

@@ -17,10 +17,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.net.TrafficStats;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -46,6 +49,7 @@ public class ReceiveService extends Service {
     
     private static long totalTrafficBytes;
     public  Timer timer; 
+	private SoundPool soundPool;
 
  
     private Socket socket;
@@ -53,7 +57,7 @@ public class ReceiveService extends Service {
 	private BufferedReader in;
 
 	private SharedPreferenceHelper sharedPreference;
-
+	private Context currentContext;
 	private WakeLock wakeLock;  
 
 	
@@ -77,6 +81,10 @@ public class ReceiveService extends Service {
     	sharedPreference = new SharedPreferenceHelper(getApplicationContext());
     	wakeLock = null;
     	timer = null;
+    	currentContext = getApplicationContext();
+		soundPool= new SoundPool(5, AudioManager.STREAM_SYSTEM,50);
+		soundPool.load(this,R.raw.start,1);
+		soundPool.load(this,R.raw.stop,1);
     }  
 	
 	public void onDestroy() {  
@@ -118,6 +126,17 @@ public class ReceiveService extends Service {
 	
 	//get the scan result list
 	public ArrayList<String> getWifiScanResult(){
+		//clean the networkid which is not cleaned correctly
+		List<WifiConfiguration> all = myWifiManager.getWifiManager().getConfiguredNetworks();
+		for(int i = 0; i < all.size(); i++)
+		{
+			WifiConfiguration wificonfig = all.get(i);
+			if(wificonfig.SSID.length() == 34 || wificonfig.SSID.length() == 32){
+				myWifiManager.getWifiManager().removeNetwork(wificonfig.networkId);
+			}
+		}
+		
+		//start get result
 		wifiApList.clear();
 		List<ScanResult> scanResultList = myWifiManager.getWifiManager().getScanResults();
 		if(scanResultList == null){
@@ -208,6 +227,21 @@ public class ReceiveService extends Service {
 		myWifiManager.getWifiManager().disconnect();
 	}
 	
+	public void retrieveUserid(){
+		Runnable getUseridRunner = new Runnable(){
+			public void run(){
+				String imei = DeviceInfo.getInstance(currentContext).getIMEI();
+				String tmpuserid = RemoteInfoFetcher.resgisterUserId(imei);
+				String userid = String.format("%07d", Integer.parseInt(tmpuserid));
+				if (userid != null) {
+					sharedPreference.putString("USER_ID", userid);
+				}
+			}
+		};
+		Thread thread = new Thread(getUseridRunner);
+		thread.start();
+	}
+	
 	public void EstablishConmunication(){
 		totalTrafficBytes = TrafficStats.getTotalTxBytes() + TrafficStats.getTotalRxBytes();
 
@@ -266,6 +300,7 @@ public class ReceiveService extends Service {
 
 			String firstResponse = in.readLine();
 			if(firstResponse.equals("hello_client")){
+				playSendSound(true);
 				return true;
 			}else{
 				return false;
@@ -456,5 +491,15 @@ public class ReceiveService extends Service {
             wakeLock = null;  
         }  
     } 
+    
+    public void playSendSound(boolean start){
+    	if(sharedPreference.getString("SOUND_CONNECT").equals("YES")){
+        	if(start){
+        	    soundPool.play(1,(float)0.3, (float)0.3, 0, 0, (float)1.0);
+        	}else{
+        	    soundPool.play(2,(float)0.3, (float)0.3, 0, 0, (float)1.0);
+        	}
+    	}
+    }
 	
 }

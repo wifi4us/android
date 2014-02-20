@@ -97,12 +97,6 @@ public class ReceiveWifiConnectedState extends Fragment{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		try{
-			context.unregisterReceiver(ReceiveScanResultList.wifiDisconnectReceiver);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-
 	}
 	
 	private class ConnectedStateReceiver extends BroadcastReceiver{
@@ -129,6 +123,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 					}
 					c.unregisterReceiver(this);
 					receiveService.WifiDisconnectCompletely();
+					receiveService.playSendSound(false);
 					
 	     	   		Constant.FLAG.STATE_RECEIVE = false;
 	     			

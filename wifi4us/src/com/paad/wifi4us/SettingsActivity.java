@@ -7,12 +7,6 @@ import android.widget.CompoundButton;
 
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 
-/**
- * 
- *
- * @author yangshi
- *
- */
 public class SettingsActivity extends Activity {
 	
 	private CheckBox app_setting_connect_sound;
@@ -22,7 +16,9 @@ public class SettingsActivity extends Activity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        super.onCreate(savedInstanceState);
+       
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_app_settings);
         sharedPreference = new SharedPreferenceHelper(getApplicationContext());
         
         app_setting_connect_sound = (CheckBox) findViewById(R.id.app_setting_connect_sound);           
@@ -49,25 +45,26 @@ public class SettingsActivity extends Activity {
 		
 		
 		app_setting_ad_sound = (CheckBox) findViewById(R.id.app_setting_ad_sound);    
-        String currentAdSoundMode = sharedPreference.getString("AD_CONNECT");
+        String currentAdSoundMode = sharedPreference.getString("SOUND_AD");
 		if(currentAdSoundMode.equals("YES")){
 			app_setting_ad_sound.setChecked(true);
 		}else if(currentAdSoundMode.equals("NO")){
 			app_setting_ad_sound.setChecked(false);
 		}else{
 			app_setting_ad_sound.setChecked(true);
-			sharedPreference.putString("AD_CONNECT", "YES");
+			sharedPreference.putString("SOUND_AD", "YES");
 		}
 		app_setting_ad_sound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 			public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
 				if(isChecked){
-					sharedPreference.putString("AD_CONNECT", "YES");
+					sharedPreference.putString("SOUND_AD", "YES");
 				}else{
-					sharedPreference.putString("AD_CONNECT", "NO");
+					sharedPreference.putString("SOUND_AD", "NO");
 				}
 			}
 
 		});
-    }
+      }
+       
     
 }

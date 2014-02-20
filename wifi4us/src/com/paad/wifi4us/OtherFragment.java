@@ -69,7 +69,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 				sharedPreference.putString("USER_ID", userid);
 				break;
 			case MSG_FAILURE:
-				refreshUserId(getResources().getString(R.string.main_activity_otherfragment_useridtext_initfail));
+				refreshUserId("NULL");
 				break;
 			}
 		}
@@ -220,10 +220,10 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.btn_binary_code:
 			ImageView iv = new ImageView(context);
-			iv.setImageResource(R.drawable.logo);
+			iv.setImageResource(R.drawable.qrcode);
 			new Builder(getActivity())
 					.setTitle("二维码")
-					.setIcon(R.drawable.logo)
+					.setIcon(R.drawable.qrcode)
 					.setIcon(android.R.drawable.ic_dialog_info)
 					.setPositiveButton("确认",
 							new DialogInterface.OnClickListener() {
@@ -323,19 +323,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		super.onDestroy();
 		Process.killProcess(android.os.Process.myPid());
 	}
-
-	public void onStart() {
+	
+	public void onStart(){
 		super.onStart();
-		other_id_credit_text = (TextView) getActivity().findViewById(
-				R.id.other_id_credits);
-		String creditText = sharedPreference.getString("CREDIT");
-		refreshCredit(creditText);
-		
-		other_id_userid_text = (TextView) (TextView) getActivity().findViewById(
-				R.id.other_id_userid);
-		String userid = sharedPreference.getString("USER_ID");
-		if(!userid.equals("NULL")){
-			refreshUserId(userid);
-		}
+		refreshCredit(sharedPreference.getString("CREDIT"));
 	}
 }

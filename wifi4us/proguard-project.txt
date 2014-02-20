@@ -18,3 +18,17 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-ignorewarnings 
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+-libraryjars libs/Baidu-Frontia-Android-2.0.1.jar
+-libraryjars libs/umeng_sdk.jar
+
+-keep class **.R$* {   *;  }
+-keep class com.baidu.frontia.** { *;} 
+-keep class com.umeng.** { *;} 
