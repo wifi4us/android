@@ -306,24 +306,6 @@ public class SendService extends Service {
 			}
 		};
 		
-		Runnable moniterMobile = new Runnable(){
-			public void run(){
-				while(true){
-						SystemClock.sleep(1000);
-						NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);  
-						if (!mobNetInfo.isConnected()){
-							Handler handler = new Handler(Looper.getMainLooper());                                                 
-					    	handler.post(new Runnable() {     
-			                         public void run() {     
-			             		    	Toast.makeText(getApplicationContext(), "数据流量打开才能分享", Toast.LENGTH_LONG).show();  
-			                         }     
-			                });
-							WifiApOff();
-							return;
-						}
-				}
-			}
-		};
 		
 		String limitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 		if(!limitMode.equals("UN")){
@@ -333,9 +315,6 @@ public class SendService extends Service {
 		
 		Thread thread2 = new Thread(moniterAp);
 		thread2.start();
-		
-		Thread thread3 = new Thread(moniterMobile);
-		thread3.start();
 		
 		sendListenSetupBroadcast();
 	}

@@ -25,7 +25,7 @@
 			android:id="@+id/send_text_traffic_used"/>
 		
 	    <TextView
-		    android:layout_width="30dp"   
+		    android:layout_width="40dp"   
 			android:layout_height="50dp"
 			android:paddingLeft="5dp"
 			android:textSize="20sp"

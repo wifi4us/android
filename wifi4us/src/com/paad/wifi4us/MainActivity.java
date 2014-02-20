@@ -129,10 +129,21 @@ public class MainActivity extends ActionBarActivity {
     	Constant.FLAG.STATE_RECEIVE = false;
 		Constant.PreventAbuse.DOUBLE_START_SEND = false;
 
+		
 		fragmentManager = this.getSupportFragmentManager();
 
 		//init send mode
 		sharedPreference = new SharedPreferenceHelper(getApplicationContext());
+		
+		String currentConnectSoundMode = sharedPreference.getString("SOUND_CONNECT");
+        String currentAdSoundMode = sharedPreference.getString("SOUND_AD");
+        if(currentConnectSoundMode.equals("NULL")){
+			sharedPreference.putString("SOUND_CONNECT", "YES");
+        }
+        if(currentAdSoundMode.equals("NULL")){
+			sharedPreference.putString("SOUND_AD", "YES");
+        }
+        
 		String sendAdMode = sharedPreference.getString("SEND_AD_MODE");
 		String sendLimitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 		if(sendAdMode.equals(SharedPreferenceHelper.NULL)){
