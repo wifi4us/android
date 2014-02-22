@@ -121,6 +121,8 @@ public class MainActivity extends ActionBarActivity {
         spec.setContent(contentId);
         tabHost.addTab(spec);
     }
+    
+    boolean hasUpdated = false;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -211,26 +213,42 @@ public class MainActivity extends ActionBarActivity {
 			}
     		
     	});
-    	UmengUpdateAgent.setUpdateOnlyWifi(false);
-    	UmengUpdateAgent.update(this);
-    	UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
-    	    @Override
-    	    public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
-    	        switch (updateStatus) {
-    	        case UpdateStatus.Yes: // has update
-    	            UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
-    	            break;
-    	        case UpdateStatus.No: // has no update
-    	            Toast.makeText(MainActivity.this, getString(R.string.main_activity_update_latest_already), Toast.LENGTH_SHORT).show();
-    	            break;
-    	        case UpdateStatus.NoneWifi: // none wifi
-    	            Toast.makeText(MainActivity.this, getString(R.string.main_activity_update_nowifi), Toast.LENGTH_SHORT).show();
-    	        case UpdateStatus.Timeout: // time out
-    	            Toast.makeText(MainActivity.this, getString(R.string.main_activity_update_fail), Toast.LENGTH_SHORT).show();
-    	            break;
-    	        }
-    	    }
-    	});
+		if (!hasUpdated) {
+			//Toast.makeText(this, "checkUpdate", Toast.LENGTH_LONG).show();
+			UmengUpdateAgent.setUpdateOnlyWifi(false);
+			UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+				@Override
+				public void onUpdateReturned(int updateStatus,
+						UpdateResponse updateInfo) {
+					switch (updateStatus) {
+					case UpdateStatus.Yes: // has update
+						UmengUpdateAgent.showUpdateDialog(MainActivity.this,
+								updateInfo);
+						break;
+					case UpdateStatus.No: // has no update
+						if(hasUpdated){
+						Toast.makeText(
+								MainActivity.this,
+								getString(R.string.main_activity_update_latest_already),
+								Toast.LENGTH_SHORT).show();
+						}
+						break;
+					case UpdateStatus.NoneWifi: // none wifi
+						Toast.makeText(
+								MainActivity.this,
+								getString(R.string.main_activity_update_nowifi),
+								Toast.LENGTH_SHORT).show();
+					case UpdateStatus.Timeout: // time out
+						Toast.makeText(MainActivity.this,
+								getString(R.string.main_activity_update_fail),
+								Toast.LENGTH_SHORT).show();
+						break;
+					}
+				}
+			});
+			UmengUpdateAgent.update(this);
+			hasUpdated = true;
+		}
     }
 
 	public void onDestroy(){
