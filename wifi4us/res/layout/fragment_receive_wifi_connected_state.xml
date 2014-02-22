@@ -3,6 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:orientation="vertical" >
+
+	<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="4"
+    android:gravity="center"
     android:orientation="horizontal" >
 
 		<TextView
@@ -31,5 +38,28 @@
 			android:textColor="#111111"
 			android:gravity="bottom"
 			android:text="@string/receive_text_state_unit"/>
+		
+</LinearLayout>
+
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="6"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+		<TextView
+		    android:layout_width="wrap_content"   
+			android:layout_height="50dp"
+			android:paddingRight="10dp"
+			android:textSize="10sp"
+			android:gravity="bottom"
+			android:textColor="#111111"
+			android:text="@string/receive_text_notice"/>
+		
+</LinearLayout>
+    
+
+
 		
 </LinearLayout>

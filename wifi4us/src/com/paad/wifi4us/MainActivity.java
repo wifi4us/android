@@ -147,7 +147,7 @@ public class MainActivity extends ActionBarActivity {
 		String sendAdMode = sharedPreference.getString("SEND_AD_MODE");
 		String sendLimitMode = sharedPreference.getString("SEND_LIMIT_MODE");
 		if(sendAdMode.equals(SharedPreferenceHelper.NULL)){
-			sharedPreference.putString("SEND_AD_MODE", "NO");
+			sharedPreference.putString("SEND_AD_MODE", "YES");
 		}
 		if(sendLimitMode.equals(SharedPreferenceHelper.NULL)){
 			sharedPreference.putString("SEND_LIMIT_MODE", "30");
@@ -196,8 +196,8 @@ public class MainActivity extends ActionBarActivity {
     	
     	tabHost.setup();
     	
-    	addTab("receive", getString(R.string.main_activity_tabwidget_receivetext),  R.drawable.tab_search_selector, R.id.receive, tabHost);
     	addTab("send", getString(R.string.main_activity_tabwidget_sendtext),  R.drawable.tab_share_selector, R.id.send, tabHost);
+    	addTab("receive", getString(R.string.main_activity_tabwidget_receivetext),  R.drawable.tab_search_selector, R.id.receive, tabHost);
     	addTab("other", getString(R.string.main_activity_tabwidget_othertext),  R.drawable.tab_settings_selector, R.id.other, tabHost);
     	tabHost.setCurrentTab(0);
     	for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {

@@ -93,7 +93,7 @@ public class SendStartShareButton extends Fragment{
         		//check userid
         		if(sharedPreference.getString("USER_ID").equals("NULL")){
         			sendService.retrieveUserid();
-        			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "数据网络异常，无法建立热点", Toast.LENGTH_SHORT);
+        			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "正在初始化中...", Toast.LENGTH_SHORT);
 					toast.show();
 		        	return;
 				}
@@ -130,27 +130,7 @@ public class SendStartShareButton extends Fragment{
 		}
 		adMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 			public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-				if(isChecked){
-					if(sharedPreference.getString("FIRST_SET_AD").equals("NULL")){
-						sharedPreference.putString("FIRST_SET_AD", "NOT_FIRST");
-						new Builder(getActivity())
-						.setMessage("2G手机分享广告对方无法使用")
-						.setTitle("2G手机请注意")
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setPositiveButton("确定",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										dialog.dismiss();
-
-									}
-								})
-						.create().show();
-					}
-					
-					
-					
+				if(isChecked){					
 					if(sharedPreference.getString("SEND_LIMIT_MODE").equals("UN")){
 						adMode.setChecked(false);
 						sharedPreference.putString("SEND_AD_MODE", "NO");
@@ -189,7 +169,6 @@ public class SendStartShareButton extends Fragment{
                 	sharedPreference.putString("SEND_LIMIT_MODE", "UN");
                 	adMode.setChecked(false);
 					sharedPreference.putString("SEND_AD_MODE", "NO");
-					Toast.makeText(getActivity(), "不限流量无法插播广告", Toast.LENGTH_SHORT).show();
                 }
             }  
         });  	

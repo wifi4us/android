@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">一起wifi</string>
 	<string name="wifi_progressbar_text">配置中请保持</string>
+    <string name="wifi_progressbar_text_receive_1">根据手机的性能，连接过程从3秒到15秒不等，请耐心等待。</string>
+	<string name="wifi_progressbar_text_receive_2">连接建立和播放广告时请勿退出软件，会造成连接失败</string>
     
 	<string name="app_setting_text_connect_sound">打开连接提示声音</string>
 	<string name="app_setting_text_ad_sound">打开广告播放声音</string>
@@ -10,27 +12,28 @@
     <string name="sponsor_line2">实名注册送5元彩金</string>
 	<string name="sponsor_url">http://data.cpbao.com/cpbao_lch.apk?.source=wifi4us</string>
     
-    <string name="receive_string_switcher_text_on">Wifi已打开</string>
-    <string name="receive_string_switcher_text_off">Wifi已关闭</string>
+    <string name="receive_string_switcher_text_on">打开</string>
+    <string name="receive_string_switcher_text_off">关闭</string>
     <string name="receive_string_switcher_button">Wifi开关</string>
-    <string name="receive_string_start_scan_button">发现周围的分享者</string>
-    <string name="receive_string_start_scan_nothing">没找到任何分享者在周围</string> 
+    <string name="receive_string_start_scan_button">搜索周边的智能热点</string>
+    <string name="receive_string_start_scan_nothing">没找到打开的智能热点</string> 
     <string name="receive_string_start_scan_text_openwifi">请打开wifi开关</string>   
     <string name="receive_string_ad_sound_button">声音开关</string>   
     <string name="receive_string_disconnect_wifi">断开连接</string>   
     <string name="receive_text_state_unit">KB</string>
     <string name="receive_text_state_startwork">已经使用</string>
+    <string name="receive_text_notice">本软件只有广告第一次下载时，消耗约900KB的来自智能热点的流量，以后每次使用时的广告播放均不额外消耗流量，如果您的智能热点流量使用过快，请您检查您手机上的其他应用。</string>
     
-    <string name="send_button_start_share">开始分享</string>
-    <string name="send_checkbox">3G可以要求对方收看广告，获取积分，月初分享，积分更多</string>
-    <string name="send_radio_button_30">分享5M流量，只能供一人使用</string>
-    <string name="send_radio_button_60">分享10M流量，只能供一人使用</string>
-    <string name="send_radio_button_unlimit">不限制流量，可以供多人使用，无法插播广告</string>
+    <string name="send_button_start_share">点击建立智能wifi热点</string>
+    <string name="send_checkbox">3G可以要求对方收看广告，获取积分换彩票</string>
+    <string name="send_radio_button_30">分享5M流量，只有一人能接入</string>
+    <string name="send_radio_button_60">分享10M流量，只有一人能接入</string>
+    <string name="send_radio_button_unlimit">不限制流量，可多人接入，无法插播广告</string>
             
-    <string name="send_text_start_share">领先的流量算法，到达设定的上限即断网，保证亲的流量万无一失</string>
-    <string name="send_text_stop_share">已经创建完成，等待接入中</string>
-    <string name="send_button_stop_share">立刻停止分享流量</string>
-    <string name="send_text_start_fail">分享失败，某些android系统ROM存在漏洞，请退出软件重试或重启手机</string>
+    <string name="send_text_start_share">点击建立智能热点，采用安全的动态密码机制，只有安装了一起wifi的客户端才能接入</string>
+    <string name="send_text_stop_share">创建完成，安装了一起wifi的客户端才能发现并接入你的智能热点，流量到达上限会自动断网</string>
+    <string name="send_button_stop_share">手动关闭热点</string>
+    <string name="send_text_start_fail">建立热点失败，某些android系统ROM存在漏洞，请退出软件重试或重启手机</string>
     <string name="send_text_state_unit">KB</string>
     <string name="send_text_state_startwork">已经分享</string>
     
@@ -65,8 +68,8 @@
     <string name="title_activity_feedback">意见反馈</string>
     <string name="exchange">积分换彩票</string>
 
-    <string name="main_activity_tabwidget_sendtext">分享</string>
-	<string name="main_activity_tabwidget_receivetext">发现</string>
+    <string name="main_activity_tabwidget_sendtext">建立热点</string>
+	<string name="main_activity_tabwidget_receivetext">搜寻</string>
 	<string name="main_activity_tabwidget_othertext">更多</string>
 	<string name="main_activity_update_latest_already">已经是最新版本</string>
 	<string name="main_activity_update_nowifi">没有wifi连接，只在wifi下更新</string>

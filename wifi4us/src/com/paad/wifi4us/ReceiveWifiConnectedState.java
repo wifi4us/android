@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paad.wifi4us.utility.Constant;
 
@@ -30,6 +31,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 	private FragmentManager fragmentManager;
 	private Fragment receive_id_start_scan_button;
 	
+	private boolean startflag;
     //Receive Service 	
     private ReceiveService receiveService;
 	private boolean haveBondService;
@@ -53,15 +55,18 @@ public class ReceiveWifiConnectedState extends Fragment{
 		getActivity().bindService(intent, sc, Context.BIND_AUTO_CREATE); 
 		fragmentManager = getFragmentManager();
 		currentFragment = this;
+		startflag = true;
 		
 		Context context = getActivity().getApplicationContext();
 		unResgiterOldReceiver(context);
 		connectedStateReceiver = new ConnectedStateReceiver();
 		wifiDisconnectReceiver = new WifiDisconnectReceiver();
+		context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
 		if(!Constant.FLAG.RECEIVE_LIMIT_MODE.equals("UN")){
 	        context.registerReceiver(connectedStateReceiver, new IntentFilter(Constant.BroadcastReceive.CONMUNICATION_SETUP_HEART_BEATEN));
 		}
-		context.registerReceiver(wifiDisconnectReceiver, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
+
+			
 	}
 	
 	public void onDestroy(){
@@ -81,6 +86,16 @@ public class ReceiveWifiConnectedState extends Fragment{
 		return view_res;
 	}
 	
+	public void onResume(){
+		super.onResume();
+		if(startflag){
+			startflag = false;
+			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "连接完成，正在通过wifi使用智能热点的流量", Toast.LENGTH_SHORT);
+			toast.show();
+			getActivity().moveTaskToBack(true);
+		}
+	
+	}
 	private void unResgiterOldReceiver(Context context){
 		try{
 			context.unregisterReceiver(ReceiveScanResultList.clickConnectReceiver);

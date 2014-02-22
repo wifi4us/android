@@ -70,7 +70,7 @@ public class Constant {
         public static final String CREDIT_PER_LOTTERY_HTTPURL = stringFromJNI(5);
         public static final String EXCHANGE_LOTTERY_HTTPURL = stringFromJNI(6);
         public static final String ADD_CREDIT_HTTPURL = stringFromJNI(7);
-    	public static final int WIFICONNECT_TRIALS = 10;
+    	public static final int WIFICONNECT_TRIALS = 30;
     }
     
     public static final class BroadcastSend {

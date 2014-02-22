@@ -112,23 +112,7 @@ public class ReceiveScanResultList extends ListFragment{
 	}
 
 	public void onListItemClick(ListView arg0, View view, int pos, long id){
-		if(sharedPreference.getString("FIRST_CLICK_CONNECT_AD").equals("NULL")){
-			sharedPreference.putString("FIRST_CLICK_CONNECT_AD", "NOT_FIRST");
-			new Builder(getActivity())
-			.setMessage("配置过程和广告播放时请保持窗口，最小化或退出app将导致网络连接失败，广告播放完即可随意使用")
-			.setTitle("注意事项")
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
-							dialog.dismiss();
 
-						}
-					})
-			.create().show();
-		}
 		FINISH_CONNECT = false;
 		if(!haveBondService)
 			return;
@@ -270,7 +254,7 @@ public class ReceiveScanResultList extends ListFragment{
 	private void UIToProgressbar(){
 		FragmentTransaction transaction = fragmentManager.beginTransaction(); 
 		transaction.remove(this);
-		receive_id_start_connect_progressbar = new WifiProgressBar();
+		receive_id_start_connect_progressbar = new WifiProgressBarReceive();
 		transaction.replace(R.id.receive_container_scan_result, receive_id_start_connect_progressbar, "receive_id_start_connect_progressbar");
 		transaction.commitAllowingStateLoss(); 
 	}
