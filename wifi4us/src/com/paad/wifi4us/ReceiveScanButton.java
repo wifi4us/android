@@ -90,7 +90,7 @@ public class ReceiveScanButton extends Fragment{
 		        	return;
 		        }
 				if(myWifiManager.getWifiManager().getWifiState() != WifiManager.WIFI_STATE_ENABLED){
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "请先打开wifi", Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "请先打开WiFi", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 					return;

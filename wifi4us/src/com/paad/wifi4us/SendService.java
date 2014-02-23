@@ -426,7 +426,7 @@ public class SendService extends Service {
 			   
 			mBuilder.setSmallIcon(R.drawable.ic_launcher);
 			mBuilder.setContentTitle("正在使用一起wifi的服务");
-			mBuilder.setContentText("使用结束后我会在通知栏消失哦~~");
+			mBuilder.setContentText("查看流量情况");
 			mBuilder.setTicker("正在使用一起wifi的服务");//第一次提示消息的时候显示在通知栏上
 			mBuilder.setNumber(12);
 			//构建一个Intent

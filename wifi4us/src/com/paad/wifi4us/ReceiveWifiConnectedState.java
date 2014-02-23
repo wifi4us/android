@@ -90,7 +90,7 @@ public class ReceiveWifiConnectedState extends Fragment{
 		super.onResume();
 		if(startflag){
 			startflag = false;
-			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "连接完成，正在通过wifi使用智能热点的流量", Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(getActivity().getApplicationContext(), "可以使用流量了！", Toast.LENGTH_LONG);
 			toast.show();
 			getActivity().moveTaskToBack(true);
 		}

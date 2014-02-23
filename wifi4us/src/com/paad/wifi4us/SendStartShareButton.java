@@ -1,10 +1,8 @@
 package com.paad.wifi4us;
 
-import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;

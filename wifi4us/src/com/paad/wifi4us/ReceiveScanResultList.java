@@ -4,11 +4,9 @@ package com.paad.wifi4us;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -274,25 +272,25 @@ public class ReceiveScanResultList extends ListFragment{
 	private ArrayList<String> getShownName(ArrayList<String> arr){
 		ArrayList<String> temp_arr = new ArrayList<String>(arr);
 		for(int i = 0; i < temp_arr.size(); i++){
-			String shownname = "点击这里，使用" + temp_arr.get(i).substring(1, 8);
+			String shownname = "智能热点" + temp_arr.get(i).substring(1, 8);
 			String modepart = temp_arr.get(i).substring(24, 28);
 			if(modepart.equals("0130")){
-				shownname = shownname + "分享的5M流量，不过TA要求你看了30秒广告才能用";
+				shownname = shownname + "，5M流量，30秒广告";
 			}
 			if(modepart.equals("0030")){
-				shownname = shownname + "分享的5M流量，随便用别客气";
+				shownname = shownname + "，5M流量，无广告";
 			}
 			if(modepart.equals("0160")){
-				shownname = shownname + "分享的10M流量，不过TA要求你看了30秒广告才能用";
+				shownname = shownname + "，10M流量，30秒广告";
 			}
 			if(modepart.equals("0060")){
-				shownname = shownname + "分享的10M流量，随便用别客气";
+				shownname = shownname + "，10M流量，无广告";
 			}
 			if(modepart.equals("01UN")){
-				shownname = shownname + "分享的无限的流量，不过TA要求你看了30秒广告才能用";
+				shownname = shownname + "，不限流量，无广告";
 			}
 			if(modepart.equals("00UN")){
-				shownname = shownname + "分享的无限的流量，随便用别客气";
+				shownname = shownname + "，不限流量，无广告";
 			}
 			temp_arr.set(i, shownname);
 		}

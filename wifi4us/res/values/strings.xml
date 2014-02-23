@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">一起wifi</string>
+    <string name="app_name">一起WiFi</string>
 	<string name="wifi_progressbar_text">配置中请保持</string>
-    <string name="wifi_progressbar_text_receive_1">根据手机的性能，连接过程从3秒到15秒不等，请耐心等待。</string>
-	<string name="wifi_progressbar_text_receive_2">连接建立和播放广告时请勿退出软件，会造成连接失败</string>
+    <string name="wifi_progressbar_text_receive_1">请耐心。</string>
+	<string name="wifi_progressbar_text_receive_2">现在退出，连接会失败。</string>
     
 	<string name="app_setting_text_connect_sound">打开连接提示声音</string>
 	<string name="app_setting_text_ad_sound">打开广告播放声音</string>
@@ -14,24 +14,24 @@
     
     <string name="receive_string_switcher_text_on">打开</string>
     <string name="receive_string_switcher_text_off">关闭</string>
-    <string name="receive_string_switcher_button">Wifi开关</string>
-    <string name="receive_string_start_scan_button">搜索周边的智能热点</string>
-    <string name="receive_string_start_scan_nothing">没找到打开的智能热点</string> 
-    <string name="receive_string_start_scan_text_openwifi">请打开wifi开关</string>   
+    <string name="receive_string_switcher_button">WiFi开关</string>
+    <string name="receive_string_start_scan_button">点击搜寻智能热点</string>
+    <string name="receive_string_start_scan_nothing">周围没有智能热点</string> 
+    <string name="receive_string_start_scan_text_openwifi">请打开WiFi开关</string>   
     <string name="receive_string_ad_sound_button">声音开关</string>   
     <string name="receive_string_disconnect_wifi">断开连接</string>   
     <string name="receive_text_state_unit">KB</string>
     <string name="receive_text_state_startwork">已经使用</string>
-    <string name="receive_text_notice">本软件只有广告第一次下载时，消耗约900KB的来自智能热点的流量，以后每次使用时的广告播放均不额外消耗流量，如果您的智能热点流量使用过快，请您检查您手机上的其他应用。</string>
+    <string name="receive_text_notice">初次播放广告，会消耗约900KB来自智能流量，流量使用过快，请您检查您手机上的其他应用。</string>
     
-    <string name="send_button_start_share">点击建立智能wifi热点</string>
+    <string name="send_button_start_share">点击建立智能WiFi热点</string>
     <string name="send_checkbox">3G可以要求对方收看广告，获取积分换彩票</string>
     <string name="send_radio_button_30">分享5M流量，只有一人能接入</string>
     <string name="send_radio_button_60">分享10M流量，只有一人能接入</string>
     <string name="send_radio_button_unlimit">不限制流量，可多人接入，无法插播广告</string>
             
-    <string name="send_text_start_share">点击建立智能热点，采用安全的动态密码机制，只有安装了一起wifi的客户端才能接入</string>
-    <string name="send_text_stop_share">创建完成，安装了一起wifi的客户端才能发现并接入你的智能热点，流量到达上限会自动断网</string>
+    <string name="send_text_start_share">点击建立智能热点，只有安装了一起WiFi的客户端才能接入</string>
+    <string name="send_text_stop_share">只有一起WiFi客户端才能接入智能热点,流量用完自动断开。</string>
     <string name="send_button_stop_share">手动关闭热点</string>
     <string name="send_text_start_fail">建立热点失败，某些android系统ROM存在漏洞，请退出软件重试或重启手机</string>
     <string name="send_text_state_unit">KB</string>
@@ -72,7 +72,7 @@
 	<string name="main_activity_tabwidget_receivetext">搜寻</string>
 	<string name="main_activity_tabwidget_othertext">更多</string>
 	<string name="main_activity_update_latest_already">已经是最新版本</string>
-	<string name="main_activity_update_nowifi">没有wifi连接，只在wifi下更新</string>
+	<string name="main_activity_update_nowifi">没有WiFi连接，只在WiFi下更新</string>
 	<string name="main_activity_update_fail">更新失败，请检查网络连接</string>
 	
 	<string name="main_activity_onkeydown_warning">再按一次退出</string>
@@ -86,7 +86,7 @@
 	<string name="main_activity_otherfragment_useridtext">你的id为：</string>
 	<string name="main_activity_otherfragment_useridtext_initfail">用户id获取失败</string>
 	<string name="main_activity_otherfragment_credittext">你的积分为：</string>
-	<string name="main_activity_social_share_content">#流量月底不清零#流量用不完？便宜了谁也不能便宜移动！流量不够用？赶紧找小伙伴要把，买啥流量包！“一起wifi”，全球首款带积分奖励和流量限制的手机个人wifi热点管理工具。把你的手机变成智能wifi热点，分享流量给小伙伴们获取积分。@一起wifi</string>
+	<string name="main_activity_social_share_content">#流量月底不清零#流量用不完？便宜了谁也不能便宜移动！流量不够用？赶紧找小伙伴要把，买啥流量包！“一起WiFi”，全球首款带积分奖励和流量限制的手机个人WiFi热点管理工具。把你的手机变成智能WiFi热点，分享流量给小伙伴们获取积分。@一起wifi</string>
 	
 	<string name="lottery_tab_1">兑换</string>
 	<string name="lottery_tab_2">购彩记录</string>
