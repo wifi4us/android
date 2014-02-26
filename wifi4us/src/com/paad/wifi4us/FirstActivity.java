@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.View;
 
 import com.paad.wifi4us.utility.Constant;
+import com.umeng.analytics.MobclickAgent;
 
 public class FirstActivity extends Activity {
     private Activity currentActivity;
@@ -35,7 +36,7 @@ public class FirstActivity extends Activity {
 		
 		 Thread thread = new Thread(runnable);
 		 thread.start();
-
+		 MobclickAgent.openActivityDurationTrack(false);
     }
 
     @Override

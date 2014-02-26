@@ -39,6 +39,7 @@ import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * @author yangshi
@@ -76,9 +77,19 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     
     Button confirmButton;
     
-    static final String htmlStr = "<br><small><font size=\"1\" color=\"#ff3030\">(早九点至晚八点出票)<font></small>";
+    static final String htmlStr = "<br><small><font size=\"1\" color=\"#ff3030\">(鏃╀節鐐硅嚦鏅氬叓鐐瑰嚭绁�<font></small>";
 	
     SharedPreferenceHelper sharedPreference;
+    
+	public void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("LotteryPlateFragment");
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPageEnd("LotteryPlateFragment");
+	}
     
     void reset(){
     	redTbs.clear();
@@ -258,10 +269,10 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 
 			if (checkedBlueBalls == 0 && checkedRedBalls == 0) {
 				if (creditPerCaipiao == null) {
-					tv.setText(Html.fromHtml("每注100积分"+htmlStr));
+					tv.setText(Html.fromHtml("姣忔敞100绉垎"+htmlStr));
 					return;
 				}
-				tv.setText(Html.fromHtml("每注" + creditPerCaipiao + "积分"
+				tv.setText(Html.fromHtml("姣忔敞" + creditPerCaipiao + "绉垎"
 						+ htmlStr));
 				confirmButton.setClickable(false);
 				confirmButton.setBackgroundColor(Color.LTGRAY);
@@ -269,15 +280,15 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 			}
 			if (caipiaoCnt > 0) {
 				if (creditPerCaipiao == null) {
-					tv.setText(Html.fromHtml("qqq已购买" + caipiaoCnt + "注"+htmlStr));
+					tv.setText(Html.fromHtml("qqq宸茶喘涔�" + caipiaoCnt + "娉�"+htmlStr));
 				} else {
-					tv.setText(Html.fromHtml("已购买" + caipiaoCnt + "注，需"
-							+ caipiaoCnt * creditPerCaipiao + "积分" + htmlStr));
+					tv.setText(Html.fromHtml("宸茶喘涔�"+ caipiaoCnt + "娉紝闇�"
+							+ caipiaoCnt * creditPerCaipiao + "绉垎" + htmlStr));
 				}
 				confirmButton.setClickable(true);
 				confirmButton.setBackgroundColor(Color.parseColor("#66B3FF"));
 			} else {
-				tv.setText(Html.fromHtml("选择至少6个红球和一个篮球" + htmlStr));
+				tv.setText(Html.fromHtml("閫夋嫨鑷冲皯6涓孩鐞冨拰涓�釜绡悆" + htmlStr));
 				confirmButton.setClickable(false);
 				confirmButton.setBackgroundColor(Color.LTGRAY);
 
@@ -288,14 +299,14 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
 
     String buildConfirmInfo() {
         StringBuilder sb = new StringBuilder();
-        sb.append("您购买的彩票是：\n红球：");
+        sb.append("鎮ㄨ喘涔扮殑褰╃エ鏄細\n绾㈢悆锛�");
         for (int i = 0; i < redTbs.size(); ++i) {
             if (redTbs.get(i).isChecked()) {
                 sb.append(i + 1);
                 sb.append(" ");
             }
         }
-        sb.append("\n蓝球：");
+        sb.append("\n钃濈悆锛�");
         for (int i = 0; i < blueTbs.size(); ++i) {
             if (blueTbs.get(i).isChecked()) {
                 sb.append(i + 1);
@@ -303,10 +314,10 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
             }
         }
 		if (creditPerCaipiao == null) {
-			sb.append("\n无法获");
+			sb.append("\n鏃犳硶鑾�");
 		} else {
-			sb.append("\n共" + caipiaoCnt + "注, 需要" + caipiaoCnt * creditPerCaipiao
-                + "积分");
+			sb.append("\n鍏�" + caipiaoCnt + "娉� 闇�" + caipiaoCnt * creditPerCaipiao
+                + "绉垎");
 		}
         return sb.toString();
     }
@@ -350,14 +361,14 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
     @Override
     public void onClick(View arg0) {
     	if(!checkUserInfo()){
-    		Toast.makeText(getActivity(), "请先完善用户信息", Toast.LENGTH_LONG).show();
+    		Toast.makeText(getActivity(), "璇峰厛瀹屽杽鐢ㄦ埛淇℃伅", Toast.LENGTH_LONG).show();
     		activity.switchTo(2);
     		return;
     	}
         AlertDialog.Builder builder = new Builder(getActivity());
         builder.setMessage(buildConfirmInfo());
-        builder.setTitle("购买确认");
-        builder.setPositiveButton("购买", new DialogInterface.OnClickListener() {
+        builder.setTitle("璐拱纭");
+        builder.setPositiveButton("璐拱", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final DeviceInfo di = DeviceInfo.getInstance(activity);
@@ -403,11 +414,11 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                     protected void onPostExecute(int[] result) {
                         dialog.dismiss();
                         if (result != null && result[0] == 0) {
-                            Toast.makeText(activity, "购买成功", Toast.LENGTH_SHORT)
+                            Toast.makeText(activity, "璐拱鎴愬姛", Toast.LENGTH_SHORT)
                                     .show();
                             sph.putString("CREDIT", String.valueOf(result[1]));
                         } else {
-                            Toast.makeText(activity, "购买失败", Toast.LENGTH_SHORT)
+                            Toast.makeText(activity, "璐拱澶辫触", Toast.LENGTH_SHORT)
                                     .show();
                         }
                         super.onPostExecute(result);
@@ -417,7 +428,7 @@ public class LotteryPlateFragment extends Fragment implements OnClickListener {
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("杩斿洖", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

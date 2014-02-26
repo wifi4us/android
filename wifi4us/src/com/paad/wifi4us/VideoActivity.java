@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.paad.wifi4us.utility.data.AdContent;
+import com.umeng.analytics.MobclickAgent;
 
 public class VideoActivity extends Activity {
 	
@@ -65,6 +66,11 @@ public class VideoActivity extends Activity {
         	haveBondService = true;
         }  
     };  
+    
+	protected void onResume(){
+		super.onResume();
+		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
+	}
 	
 	public void onDestroy(){
 		super.onDestroy();
@@ -74,6 +80,7 @@ public class VideoActivity extends Activity {
 	
     public void onPause() {  
     	super.onPause();
+    	MobclickAgent.onPause(this);
     	if(!haveBondService){
     		return;
     	}

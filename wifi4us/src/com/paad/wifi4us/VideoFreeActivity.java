@@ -16,10 +16,21 @@ import android.os.Message;
 import android.view.View;
 
 import com.paad.wifi4us.utility.Constant;
+import com.umeng.analytics.MobclickAgent;
 
 public class VideoFreeActivity extends Activity {
 	private boolean startFlag;
 
+	protected void onResume(){
+		super.onResume();
+		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

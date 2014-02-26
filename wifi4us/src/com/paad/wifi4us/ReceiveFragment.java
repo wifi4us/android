@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.umeng.analytics.MobclickAgent;
 
 public class ReceiveFragment extends Fragment{
 	private FragmentManager fragmentManager;
@@ -26,6 +27,16 @@ public class ReceiveFragment extends Fragment{
 
     //The call back functions start here
     
+	public void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("ReceiveFragment");
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPageEnd("ReceiveFragment");
+	}
+	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 	}

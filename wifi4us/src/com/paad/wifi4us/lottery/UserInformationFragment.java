@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.paad.wifi4us.R;
 import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.umeng.analytics.MobclickAgent;
 
 
 /**
@@ -63,6 +64,7 @@ public class UserInformationFragment extends Fragment{
 		savePref(alipay,Constant.HttpParas.ALIPAY_ID);
 		savePref(phone,Constant.HttpParas.PHONE);
 		super.onPause();
+		MobclickAgent.onPageEnd("LotteryPlateFragment");
 	}
 	
 	void savePref(EditText editText, String key){
@@ -71,5 +73,11 @@ public class UserInformationFragment extends Fragment{
 			sharedPreference.putString(key, value);
 		}
 	}
+	
+	public void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("LotteryPlateFragment");
+	}
+	
 	
 }

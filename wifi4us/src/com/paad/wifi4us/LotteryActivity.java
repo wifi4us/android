@@ -7,6 +7,8 @@ package com.paad.wifi4us;
 import com.paad.wifi4us.lottery.LotteryHistoryFragment;
 import com.paad.wifi4us.lottery.LotteryPlateFragment;
 import com.paad.wifi4us.lottery.UserInformationFragment;
+import com.paad.wifi4us.utility.Constant;
+import com.umeng.analytics.MobclickAgent;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +32,15 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
     ActionBar actionBar;
     public static final int TAG_NUM = 3;
     
+	protected void onResume(){
+		super.onResume();
+		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub

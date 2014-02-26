@@ -6,6 +6,10 @@ public class Constant {
 		System.loadLibrary("com_paad_wifi4us_utility_Constant");
 	} 
 	
+	public static final String UMENG_KEY = "52d0e47956240b1c0b11e8da";
+	
+	public static final String UMENG_CHANNEL = "main_page";
+
 	public static class HttpParas{
 		public static String IMEI = "imei";
 		public static String PHONE = "phone";

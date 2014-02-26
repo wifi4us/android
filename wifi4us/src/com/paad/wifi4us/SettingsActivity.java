@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.umeng.analytics.MobclickAgent;
 
 public class SettingsActivity extends Activity {
 	
@@ -13,6 +15,15 @@ public class SettingsActivity extends Activity {
 	private CheckBox app_setting_ad_sound;
 	private SharedPreferenceHelper sharedPreference;
 
+	protected void onResume(){
+		super.onResume();
+		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 	
 	protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub

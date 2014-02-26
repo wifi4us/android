@@ -31,9 +31,11 @@ import android.widget.Toast;
 
 import com.baidu.frontia.api.FrontiaSocialShare;
 import com.baidu.frontia.api.FrontiaSocialShareContent;
+import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
@@ -47,9 +49,9 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	private static final int MSG_SUCCESS = 0;
 	private static final int MSG_FAILURE = 1;
-	//"<br><small><font size=\"1\" color=\"#ff3030\">(早九点至晚八点出票)<font></small>";
+	//"<br><small><font size=\"1\" color=\"#ff3030\">(鏃╀節鐐硅嚦鏅氬叓鐐瑰嚭绁�<font></small>";
 	private static final String USER_HTML_STR="<font size=\"8\" color=\"#000000\"  >ID   </font><font size=\"8\" color=\"#919191\">xxx</font>"; 
-	private static final String CREDIT_HTML_STR="<font size=\"5\" color=\"#B6D268\">积分    </font><font size=\"5\" color=\"#919191\">xxx</font>"; 
+	private static final String CREDIT_HTML_STR="<font size=\"5\" color=\"#B6D268\">绉垎    </font><font size=\"5\" color=\"#919191\">xxx</font>"; 
 
 	FrontiaSocialShareContent mImageContent = new FrontiaSocialShareContent();
 	FrontiaSocialShare mSocialShare;
@@ -57,6 +59,15 @@ public class OtherFragment extends Fragment implements OnClickListener {
 
 	Context context;
 
+	public void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("OtherFragment");
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPageEnd("OtherFragment");
+	}
 	private SharedPreferenceHelper sharedPreference;
 
 	private Handler useridHandler = new Handler() {
@@ -186,7 +197,7 @@ public class OtherFragment extends Fragment implements OnClickListener {
 	boolean initShare = false;
 
 	public void startUpdate() {
-    	Toast.makeText(getActivity(), "正在获取最新版本...", Toast.LENGTH_SHORT).show();
+    	Toast.makeText(getActivity(), "姝ｅ湪鑾峰彇鏈�柊鐗堟湰...", Toast.LENGTH_SHORT).show();
 		UmengUpdateAgent.forceUpdate(context);
 	}
 
@@ -222,10 +233,10 @@ public class OtherFragment extends Fragment implements OnClickListener {
 			ImageView iv = new ImageView(context);
 			iv.setImageResource(R.drawable.qrcode);
 			new Builder(getActivity())
-					.setTitle("二维码")
+					.setTitle("浜岀淮鐮�")
 					.setIcon(R.drawable.qrcode)
 					.setIcon(android.R.drawable.ic_dialog_info)
-					.setPositiveButton("确认",
+					.setPositiveButton("纭",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
@@ -237,20 +248,20 @@ public class OtherFragment extends Fragment implements OnClickListener {
 		case R.id.btn_clear_cache:
 			try {
 				new Builder(getActivity())
-						.setMessage("清空" + clearCache(false) + "MB缓存?")
-						.setTitle("清理缓存")
+						.setMessage("娓呯┖" + clearCache(false) + "MB缂撳瓨?")
+						.setTitle("娓呯悊缂撳瓨")
 						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setPositiveButton("清空",
+						.setPositiveButton("娓呯┖",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
 										dialog.dismiss();
 										clearCache(true);
-										Toast.makeText(context, "清理完毕", Toast.LENGTH_SHORT).show();
+										Toast.makeText(context, "娓呯悊瀹屾瘯", Toast.LENGTH_SHORT).show();
 									}
 								})
-						.setNegativeButton("取消",
+						.setNegativeButton("鍙栨秷",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,

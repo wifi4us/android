@@ -26,6 +26,7 @@ import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
 import com.paad.wifi4us.utility.data.LotteryHistory;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * for show lottery exchange history
@@ -57,6 +58,16 @@ public class LotteryHistoryFragment extends Fragment {
     };
 
     TextView textView;
+    
+	public void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("LotteryHistoryFragment");
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPageEnd("LotteryHistoryFragment");
+	}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

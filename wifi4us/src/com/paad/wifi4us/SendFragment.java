@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.paad.wifi4us.utility.MyWifiManager;
+import com.umeng.analytics.MobclickAgent;
 
 public class SendFragment extends Fragment{
 	private FragmentManager fragmentManager;
@@ -18,7 +19,15 @@ public class SendFragment extends Fragment{
 	
 	private MyWifiManager myWifiManager;
 
-    
+	public void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("SendFragment");
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPageEnd("SendFragment");
+	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
 		fragmentManager = getFragmentManager();

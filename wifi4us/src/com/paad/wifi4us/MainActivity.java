@@ -38,6 +38,7 @@ import com.paad.wifi4us.utility.Constant;
 import com.paad.wifi4us.utility.DeviceInfo;
 import com.paad.wifi4us.utility.RemoteInfoFetcher;
 import com.paad.wifi4us.utility.SharedPreferenceHelper;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -256,8 +257,14 @@ public class MainActivity extends ActionBarActivity {
 		unbindService(sc);
 	}
 
+	protected void onResume(){
+		super.onResume();
+		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
+	}
+	
 	public void onPause(){
 		super.onPause();
+		MobclickAgent.onPause(this);
     	if(!haveBondService){
     		return;
     	}
