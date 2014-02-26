@@ -23,11 +23,13 @@ public class VideoFreeActivity extends Activity {
 
 	protected void onResume(){
 		super.onResume();
+		MobclickAgent.onPageStart("VideoFreeActivity");
 		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
 	}
 	
 	public void onPause(){
 		super.onPause();
+		MobclickAgent.onPageEnd("VideoFreeActivity");
 		MobclickAgent.onPause(this);
 	}
 	

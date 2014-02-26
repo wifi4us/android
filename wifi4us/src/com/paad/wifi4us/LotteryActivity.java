@@ -34,11 +34,13 @@ public class LotteryActivity extends ActionBarActivity implements TabListener{
     
 	protected void onResume(){
 		super.onResume();
+		MobclickAgent.onPageStart("LotteryActivity");
 		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
 	}
 	
 	public void onPause(){
 		super.onPause();
+		MobclickAgent.onPageEnd("LotteryActivity");
 		MobclickAgent.onPause(this);
 	}
     @Override

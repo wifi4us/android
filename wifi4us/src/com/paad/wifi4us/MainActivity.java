@@ -259,11 +259,13 @@ public class MainActivity extends ActionBarActivity {
 
 	protected void onResume(){
 		super.onResume();
+		MobclickAgent.onPageStart("MainActivity");
 		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
 	}
 	
 	public void onPause(){
 		super.onPause();
+		MobclickAgent.onPageEnd("MainActivity");
 		MobclickAgent.onPause(this);
     	if(!haveBondService){
     		return;

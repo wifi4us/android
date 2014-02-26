@@ -69,6 +69,7 @@ public class VideoActivity extends Activity {
     
 	protected void onResume(){
 		super.onResume();
+		MobclickAgent.onPageStart("VideoActivity");
 		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
 	}
 	
@@ -80,6 +81,7 @@ public class VideoActivity extends Activity {
 	
     public void onPause() {  
     	super.onPause();
+		MobclickAgent.onPageEnd("VideoActivity");
     	MobclickAgent.onPause(this);
     	if(!haveBondService){
     		return;

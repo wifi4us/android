@@ -23,6 +23,18 @@ import com.umeng.analytics.MobclickAgent;
 public class FirstActivity extends Activity {
     private Activity currentActivity;
 	private boolean startFlag;
+	
+	protected void onResume(){
+		super.onResume();
+		MobclickAgent.onPageStart("FirstActivity");
+		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
+	}
+	
+	public void onPause(){
+		super.onPause();
+		MobclickAgent.onPageEnd("FirstActivity");
+		MobclickAgent.onPause(this);
+	}
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +49,7 @@ public class FirstActivity extends Activity {
 		 Thread thread = new Thread(runnable);
 		 thread.start();
 		 MobclickAgent.openActivityDurationTrack(false);
+		 //MobclickAgent.setDebugMode(true);
     }
 
     @Override

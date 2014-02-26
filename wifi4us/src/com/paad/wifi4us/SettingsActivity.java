@@ -17,11 +17,13 @@ public class SettingsActivity extends Activity {
 
 	protected void onResume(){
 		super.onResume();
+		MobclickAgent.onPageStart("SettingsActivity");
 		MobclickAgent.onResume(this, Constant.UMENG_KEY, Constant.UMENG_CHANNEL);
 	}
 	
 	public void onPause(){
 		super.onPause();
+		MobclickAgent.onPageEnd("SettingsActivity");
 		MobclickAgent.onPause(this);
 	}
 	
