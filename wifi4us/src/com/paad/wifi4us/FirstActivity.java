@@ -10,13 +10,18 @@
 package com.paad.wifi4us;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 
+import com.baidu.android.pushservice.CustomPushNotificationBuilder;
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.paad.wifi4us.utility.Constant;
 import com.umeng.analytics.MobclickAgent;
 
@@ -50,6 +55,21 @@ public class FirstActivity extends Activity {
 		 thread.start();
 		 MobclickAgent.openActivityDurationTrack(false);
 		 //MobclickAgent.setDebugMode(true);
+		 PushManager.startWork(this, PushConstants.LOGIN_TYPE_API_KEY, "gxLMGxsKv6q3WRAKxBZwuidD");
+		 /*
+	             Resources resource = this.getResources();
+	                String pkgName = this.getPackageName();
+		 CustomPushNotificationBuilder cBuilder = new CustomPushNotificationBuilder(                      getApplicationContext(),
+	                        resource.getIdentifier("notification_custom_builder", "layout", pkgName), 
+	                        resource.getIdentifier("notification_icon", "id", pkgName), 
+	                        resource.getIdentifier("notification_title", "id", pkgName), 
+	                        resource.getIdentifier("notification_text", "id", pkgName));
+		        cBuilder.setNotificationFlags(Notification.FLAG_AUTO_CANCEL);
+		        cBuilder.setNotificationDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+		        cBuilder.setStatusbarIcon(this.getApplicationInfo().icon);
+		        cBuilder.setLayoutDrawable(resource.getIdentifier("simple_notification_icon", "drawable", pkgName));
+		        PushManager.setNotificationBuilder(this, 1, cBuilder);
+		        */
     }
 
     @Override
@@ -77,7 +97,7 @@ public class FirstActivity extends Activity {
             super.handleMessage(msg);
 
             if(((String)msg.obj).equals("MainActivity")) {
-                //Ìø×ª
+                //ï¿½ï¿½×ª
             	StartMainActivity(null);
             }
         }
@@ -88,7 +108,7 @@ public class FirstActivity extends Activity {
         public void run() {
             // TODO Auto-generated method stub
             Message msg = mHandler.obtainMessage();
-            //ÑÓÊ±3Ãë
+            //ï¿½ï¿½Ê±3ï¿½ï¿½
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
